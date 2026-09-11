@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  MANAGER
+  WAITER
+  COOK
+}
+
+enum MealStatus {
+  VALIDATION
+  IN_PROGRESS
+  READY
+  SERVED
+  CANCELED
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  role     Role
+  name     String @unique
+  password String
+}
+
+model Order {
+  id      Int     @id @default(autoincrement())
+  table   Int
+  waiter  String
+
+  meals   Meal[]
+}
+
+model Meal {
+  id        Int        @id @default(autoincrement())
+  status    MealStatus
+  date      DateTime
+  quantity  Int
+  price     Float
+  comment   String
+
+  orderId   Int
+  order     Order @relation(fields: [orderId], references: [id])
+}
