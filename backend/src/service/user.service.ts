@@ -1,6 +1,6 @@
 import {ConflictException, Injectable, UnauthorizedException} from "@nestjs/common";
 import {PrismaService} from "../../prisma/prisma.service.js";
-import {UserType, BaseUserType} from "shared";
+import {UserType, BaseUserType, Role, SafeUser} from "shared";
 import * as bcrypt from "bcrypt";
 import { Prisma } from "../../generated/prisma/client.js";
 
@@ -11,13 +11,28 @@ export class UserService {
 
     async register(user:UserType){
         try{
+            const restaurant = await this.prisma.restaurant.findUnique({
+                where: { name: user.restaurant },
+            });
+
+            if (!restaurant) {
+                throw new Error("Restaurant not found");
+            }
             const hashedPassword = await bcrypt.hash(user.password, 10);
-            this.prisma.user.create({
+            const userCreated = await this.prisma.user.create({
                 data: {
-                    ...user,
+                    name: user.name,
+                    role: user.role as Role,
                     password: hashedPassword,
+                    restaurantId: restaurant.id,
                 },
             });
+            return {
+                id: userCreated.id,
+                name: userCreated.name,
+                role: userCreated.role,
+                restaurant: userCreated.restaurantId,
+            } as SafeUser;
         }
         catch (error){
             if (
@@ -31,8 +46,18 @@ export class UserService {
     }
 
     async login(user:BaseUserType){
+        const restaurant = await this.prisma.restaurant.findUnique({
+            where: { name: user.restaurant },
+        });
+
         const foundUser = await this.prisma.user.findFirst({
-            where: { name: user.name },
+            where: {
+                name: user.name,
+                restaurantId: restaurant?.id,
+            },
+            include: {
+                restaurant: true,
+            },
         });
         if (!foundUser) {
             throw new UnauthorizedException("Identifiants invalides.");
@@ -42,6 +67,11 @@ export class UserService {
         if (!isValid) {
             throw new UnauthorizedException("Identifiants invalides.");
         }
-        return { name: foundUser.name, password: foundUser.password, role: foundUser.role} as UserType;
+        return {
+            id: foundUser.id,
+            name: foundUser.name,
+            role: foundUser.role,
+            restaurant: foundUser.restaurant.id,
+        } as SafeUser;
     }
 }

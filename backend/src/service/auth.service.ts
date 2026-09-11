@@ -1,5 +1,5 @@
 import {Injectable} from "@nestjs/common";
-import {UserType, BaseUserType} from "shared";
+import {UserType, BaseUserType, SafeUser} from "shared";
 import {UserService} from "./user.service.js";
 import {JwtService} from "@nestjs/jwt";
 
@@ -10,8 +10,8 @@ export class AuthService {
                 private readonly jwtService: JwtService,){}
 
     async register(user:UserType){
-        await this.userService.register(user);
-        const access_token = this.generateAccessToken(user)
+        const userRegister = await this.userService.register(user);
+        const access_token = this.generateAccessToken(userRegister)
         return { access_token };
     }
 
@@ -21,10 +21,11 @@ export class AuthService {
         return { access_token };
     }
 
-    async generateAccessToken(user: UserType){
+    async generateAccessToken(user: SafeUser){
         return await this.jwtService.signAsync({
             name: user.name,
             role: user.role,
+            restaurant: user.restaurant,
         });
     }
 }

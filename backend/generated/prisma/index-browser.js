@@ -120,17 +120,24 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
+exports.Prisma.RestaurantScalarFieldEnum = {
+  id: 'id',
+  name: 'name'
+};
+
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   role: 'role',
   name: 'name',
-  password: 'password'
+  password: 'password',
+  restaurantId: 'restaurantId'
 };
 
 exports.Prisma.OrderScalarFieldEnum = {
   id: 'id',
   table: 'table',
-  waiter: 'waiter'
+  restaurantId: 'restaurantId',
+  waiterId: 'waiterId'
 };
 
 exports.Prisma.MealScalarFieldEnum = {
@@ -167,6 +174,7 @@ exports.MealStatus = exports.$Enums.MealStatus = {
 };
 
 exports.Prisma.ModelName = {
+  Restaurant: 'Restaurant',
   User: 'User',
   Order: 'Order',
   Meal: 'Meal'
