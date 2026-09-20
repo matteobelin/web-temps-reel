@@ -4,7 +4,7 @@ import { JwtModule } from "@nestjs/jwt";
 import { PassportModule } from "@nestjs/passport";
 import { AuthService } from "../service/auth.service.js";
 import { UserModule } from "./user.module.js";
-import { JwtStrategy } from "../strategy/jwt.stategy.js";
+import { JwtStrategy } from "../common/strategy/jwt.strategy.js";
 import { StringValue } from "ms";
 
 @Module({
@@ -19,6 +19,6 @@ import { StringValue } from "ms";
         }),
     ],
     providers: [AuthService, JwtStrategy],
-    exports: [AuthService],
+    exports: [AuthService, JwtModule],
 })
 export class AuthModule {}

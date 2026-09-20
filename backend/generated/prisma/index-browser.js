@@ -122,20 +122,22 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
 
 exports.Prisma.RestaurantScalarFieldEnum = {
   id: 'id',
-  name: 'name'
+  name: 'name',
+  code: 'code'
 };
 
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   role: 'role',
   name: 'name',
+  matricule: 'matricule',
   password: 'password',
   restaurantId: 'restaurantId'
 };
 
 exports.Prisma.OrderScalarFieldEnum = {
   id: 'id',
-  table: 'table',
+  tableNumber: 'tableNumber',
   restaurantId: 'restaurantId',
   waiterId: 'waiterId'
 };
@@ -143,11 +145,19 @@ exports.Prisma.OrderScalarFieldEnum = {
 exports.Prisma.MealScalarFieldEnum = {
   id: 'id',
   status: 'status',
-  date: 'date',
+  createdAt: 'createdAt',
   quantity: 'quantity',
   price: 'price',
   comment: 'comment',
   orderId: 'orderId'
+};
+
+exports.Prisma.MessageScalarFieldEnum = {
+  id: 'id',
+  content: 'content',
+  createdAt: 'createdAt',
+  restaurantId: 'restaurantId',
+  authorId: 'authorId'
 };
 
 exports.Prisma.SortOrder = {
@@ -158,6 +168,11 @@ exports.Prisma.SortOrder = {
 exports.Prisma.QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
+};
+
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
 };
 exports.Role = exports.$Enums.Role = {
   MANAGER: 'MANAGER',
@@ -177,7 +192,8 @@ exports.Prisma.ModelName = {
   Restaurant: 'Restaurant',
   User: 'User',
   Order: 'Order',
-  Meal: 'Meal'
+  Meal: 'Meal',
+  Message: 'Message'
 };
 
 /**

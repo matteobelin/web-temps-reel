@@ -1,77 +1,70 @@
-import {ConflictException, Injectable, UnauthorizedException} from "@nestjs/common";
+import {ConflictException, Injectable, NotFoundException, UnauthorizedException} from "@nestjs/common";
 import {PrismaService} from "../../prisma/prisma.service.js";
-import {UserType, BaseUserType, Role, SafeUser} from "shared";
+import {type UserInputRegistrationType, type UserInputType, type UserOutputType} from "shared";
 import * as bcrypt from "bcrypt";
 import { Prisma } from "../../generated/prisma/client.js";
 
+const DUMMY_HASH = "$2b$10$CwTycUXWue0Thq9StjUM0uJ8.GxJb2mQkX9yYw7vQ8dJ9Z0Zc1eWa";
 
 @Injectable()
 export class UserService {
     constructor(private readonly prisma: PrismaService){}
 
-    async register(user:UserType){
-        try{
-            const restaurant = await this.prisma.restaurant.findUnique({
-                where: { name: user.restaurant },
-            });
+    async register(user: UserInputRegistrationType): Promise<UserOutputType> {
+        const restaurant = await this.prisma.restaurant.findUnique({
+            where: { code: user.restaurantCode },
+        });
+        if (!restaurant) {
+            throw new NotFoundException("Restaurant not found");
+        }
 
-            if (!restaurant) {
-                throw new Error("Restaurant not found");
-            }
-            const hashedPassword = await bcrypt.hash(user.password, 10);
-            const userCreated = await this.prisma.user.create({
+        const password = await bcrypt.hash(user.password, 10);
+
+        try {
+            const created = await this.prisma.user.create({
                 data: {
                     name: user.name,
-                    role: user.role as Role,
-                    password: hashedPassword,
+                    matricule: user.matricule,
+                    role: user.role,
+                    password,
                     restaurantId: restaurant.id,
                 },
+                select: { matricule: true, name: true, role: true },
             });
+
             return {
-                id: userCreated.id,
-                name: userCreated.name,
-                role: userCreated.role,
-                restaurant: userCreated.restaurantId,
-            } as SafeUser;
-        }
-        catch (error){
-            if (
-                error instanceof Prisma.PrismaClientKnownRequestError &&
-                error.code === "P2002"
-            ) {
-                throw new ConflictException("Name already used");
+                ...created,
+                restaurantCode: restaurant.code,
+                restaurantName: restaurant.name,
+            };
+        } catch (e) {
+            if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
+                throw new ConflictException("Matricule already used");
             }
-            throw Error
+            throw e;
         }
     }
 
-    async login(user:BaseUserType){
-        const restaurant = await this.prisma.restaurant.findUnique({
-            where: { name: user.restaurant },
-        });
-
+    async login({ matricule, password, restaurantCode }: UserInputType): Promise<UserOutputType> {
         const foundUser = await this.prisma.user.findFirst({
             where: {
-                name: user.name,
-                restaurantId: restaurant?.id,
+                matricule,
+                restaurant: { code: restaurantCode },
             },
-            include: {
-                restaurant: true,
-            },
+            include: { restaurant: true },
         });
-        if (!foundUser) {
+
+        const isValid = await bcrypt.compare(password, foundUser?.password ?? DUMMY_HASH);
+        if (!foundUser || !isValid) {
             throw new UnauthorizedException("Identifiants invalides.");
         }
 
-        const isValid = await bcrypt.compare(user.password, foundUser.password);
-        if (!isValid) {
-            throw new UnauthorizedException("Identifiants invalides.");
-        }
         return {
-            id: foundUser.id,
+            matricule: foundUser.matricule,
             name: foundUser.name,
             role: foundUser.role,
-            restaurant: foundUser.restaurant.id,
-        } as SafeUser;
+            restaurantCode: foundUser.restaurant.code,
+            restaurantName: foundUser.restaurant.name,
+        };
     }
 }

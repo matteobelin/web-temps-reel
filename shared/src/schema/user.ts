@@ -1,15 +1,32 @@
-import {z} from "zod";
-import {Role} from "../enums/role.enum.js";
+import { z } from "zod";
+import { Role } from "../enums/role.enum.js";
 
-export const BaseUser = z.object({
-    name: z.string().nonempty(),
-    password: z.string().min(8),
-    restaurant: z.string().nonempty()
+const matricule = z.string().min(1);
+const password = z.string().min(8);
+const restaurantCode = z.string().min(1);
+const name = z.string().min(1);
+const role = z.enum(Role);
+
+
+export const UserInput = z.object({
+    matricule,
+    password,
+    restaurantCode,
 });
 
-export const User = BaseUser.extend({
-    role: z.enum(Object.values(Role) as [string, ...string[]]),
+export const UserInputRegistration = UserInput.extend({
+    role,
+    name,
 });
 
-export type BaseUserType = z.infer<typeof BaseUser>;
-export type UserType = z.infer<typeof User>;
+export const UserOutput = z.object({
+    matricule,
+    name,
+    role,
+    restaurantCode,
+    restaurantName: z.string().min(1),
+});
+
+export type UserInputType = z.infer<typeof UserInput>;
+export type UserInputRegistrationType = z.infer<typeof UserInputRegistration>;
+export type UserOutputType = z.infer<typeof UserOutput>;

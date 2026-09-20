@@ -33,6 +33,11 @@ export type Order = $Result.DefaultSelection<Prisma.$OrderPayload>
  * 
  */
 export type Meal = $Result.DefaultSelection<Prisma.$MealPayload>
+/**
+ * Model Message
+ * 
+ */
+export type Message = $Result.DefaultSelection<Prisma.$MessagePayload>
 
 /**
  * Enums
@@ -227,6 +232,16 @@ export class PrismaClient<
     * ```
     */
   get meal(): Prisma.MealDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.message`: Exposes CRUD operations for the **Message** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Messages
+    * const messages = await prisma.message.findMany()
+    * ```
+    */
+  get message(): Prisma.MessageDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -677,7 +692,8 @@ export namespace Prisma {
     Restaurant: 'Restaurant',
     User: 'User',
     Order: 'Order',
-    Meal: 'Meal'
+    Meal: 'Meal',
+    Message: 'Message'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -693,7 +709,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "restaurant" | "user" | "order" | "meal"
+      modelProps: "restaurant" | "user" | "order" | "meal" | "message"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -993,6 +1009,80 @@ export namespace Prisma {
           }
         }
       }
+      Message: {
+        payload: Prisma.$MessagePayload<ExtArgs>
+        fields: Prisma.MessageFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.MessageFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.MessageFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload>
+          }
+          findFirst: {
+            args: Prisma.MessageFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.MessageFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload>
+          }
+          findMany: {
+            args: Prisma.MessageFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload>[]
+          }
+          create: {
+            args: Prisma.MessageCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload>
+          }
+          createMany: {
+            args: Prisma.MessageCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.MessageCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload>[]
+          }
+          delete: {
+            args: Prisma.MessageDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload>
+          }
+          update: {
+            args: Prisma.MessageUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload>
+          }
+          deleteMany: {
+            args: Prisma.MessageDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.MessageUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.MessageUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload>[]
+          }
+          upsert: {
+            args: Prisma.MessageUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$MessagePayload>
+          }
+          aggregate: {
+            args: Prisma.MessageAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateMessage>
+          }
+          groupBy: {
+            args: Prisma.MessageGroupByArgs<ExtArgs>
+            result: $Utils.Optional<MessageGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.MessageCountArgs<ExtArgs>
+            result: $Utils.Optional<MessageCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1120,6 +1210,7 @@ export namespace Prisma {
     user?: UserOmit
     order?: OrderOmit
     meal?: MealOmit
+    message?: MessageOmit
   }
 
   /* Types for Logging */
@@ -1202,11 +1293,13 @@ export namespace Prisma {
   export type RestaurantCountOutputType = {
     users: number
     orders: number
+    messages: number
   }
 
   export type RestaurantCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     users?: boolean | RestaurantCountOutputTypeCountUsersArgs
     orders?: boolean | RestaurantCountOutputTypeCountOrdersArgs
+    messages?: boolean | RestaurantCountOutputTypeCountMessagesArgs
   }
 
   // Custom InputTypes
@@ -1234,6 +1327,13 @@ export namespace Prisma {
     where?: OrderWhereInput
   }
 
+  /**
+   * RestaurantCountOutputType without action
+   */
+  export type RestaurantCountOutputTypeCountMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MessageWhereInput
+  }
+
 
   /**
    * Count Type UserCountOutputType
@@ -1241,10 +1341,12 @@ export namespace Prisma {
 
   export type UserCountOutputType = {
     orders: number
+    messages: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     orders?: boolean | UserCountOutputTypeCountOrdersArgs
+    messages?: boolean | UserCountOutputTypeCountMessagesArgs
   }
 
   // Custom InputTypes
@@ -1263,6 +1365,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountOrdersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: OrderWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MessageWhereInput
   }
 
 
@@ -1324,16 +1433,19 @@ export namespace Prisma {
   export type RestaurantMinAggregateOutputType = {
     id: number | null
     name: string | null
+    code: string | null
   }
 
   export type RestaurantMaxAggregateOutputType = {
     id: number | null
     name: string | null
+    code: string | null
   }
 
   export type RestaurantCountAggregateOutputType = {
     id: number
     name: number
+    code: number
     _all: number
   }
 
@@ -1349,16 +1461,19 @@ export namespace Prisma {
   export type RestaurantMinAggregateInputType = {
     id?: true
     name?: true
+    code?: true
   }
 
   export type RestaurantMaxAggregateInputType = {
     id?: true
     name?: true
+    code?: true
   }
 
   export type RestaurantCountAggregateInputType = {
     id?: true
     name?: true
+    code?: true
     _all?: true
   }
 
@@ -1451,6 +1566,7 @@ export namespace Prisma {
   export type RestaurantGroupByOutputType = {
     id: number
     name: string
+    code: string
     _count: RestaurantCountAggregateOutputType | null
     _avg: RestaurantAvgAggregateOutputType | null
     _sum: RestaurantSumAggregateOutputType | null
@@ -1475,30 +1591,36 @@ export namespace Prisma {
   export type RestaurantSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    code?: boolean
     users?: boolean | Restaurant$usersArgs<ExtArgs>
     orders?: boolean | Restaurant$ordersArgs<ExtArgs>
+    messages?: boolean | Restaurant$messagesArgs<ExtArgs>
     _count?: boolean | RestaurantCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["restaurant"]>
 
   export type RestaurantSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    code?: boolean
   }, ExtArgs["result"]["restaurant"]>
 
   export type RestaurantSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    code?: boolean
   }, ExtArgs["result"]["restaurant"]>
 
   export type RestaurantSelectScalar = {
     id?: boolean
     name?: boolean
+    code?: boolean
   }
 
-  export type RestaurantOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name", ExtArgs["result"]["restaurant"]>
+  export type RestaurantOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "code", ExtArgs["result"]["restaurant"]>
   export type RestaurantInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     users?: boolean | Restaurant$usersArgs<ExtArgs>
     orders?: boolean | Restaurant$ordersArgs<ExtArgs>
+    messages?: boolean | Restaurant$messagesArgs<ExtArgs>
     _count?: boolean | RestaurantCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type RestaurantIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -1509,10 +1631,12 @@ export namespace Prisma {
     objects: {
       users: Prisma.$UserPayload<ExtArgs>[]
       orders: Prisma.$OrderPayload<ExtArgs>[]
+      messages: Prisma.$MessagePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
       name: string
+      code: string
     }, ExtArgs["result"]["restaurant"]>
     composites: {}
   }
@@ -1909,6 +2033,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     users<T extends Restaurant$usersArgs<ExtArgs> = {}>(args?: Subset<T, Restaurant$usersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     orders<T extends Restaurant$ordersArgs<ExtArgs> = {}>(args?: Subset<T, Restaurant$ordersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    messages<T extends Restaurant$messagesArgs<ExtArgs> = {}>(args?: Subset<T, Restaurant$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1940,6 +2065,7 @@ export namespace Prisma {
   interface RestaurantFieldRefs {
     readonly id: FieldRef<"Restaurant", 'Int'>
     readonly name: FieldRef<"Restaurant", 'String'>
+    readonly code: FieldRef<"Restaurant", 'String'>
   }
     
 
@@ -2381,6 +2507,30 @@ export namespace Prisma {
   }
 
   /**
+   * Restaurant.messages
+   */
+  export type Restaurant$messagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    where?: MessageWhereInput
+    orderBy?: MessageOrderByWithRelationInput | MessageOrderByWithRelationInput[]
+    cursor?: MessageWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MessageScalarFieldEnum | MessageScalarFieldEnum[]
+  }
+
+  /**
    * Restaurant without action
    */
   export type RestaurantDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2425,6 +2575,7 @@ export namespace Prisma {
     id: number | null
     role: $Enums.Role | null
     name: string | null
+    matricule: string | null
     password: string | null
     restaurantId: number | null
   }
@@ -2433,6 +2584,7 @@ export namespace Prisma {
     id: number | null
     role: $Enums.Role | null
     name: string | null
+    matricule: string | null
     password: string | null
     restaurantId: number | null
   }
@@ -2441,6 +2593,7 @@ export namespace Prisma {
     id: number
     role: number
     name: number
+    matricule: number
     password: number
     restaurantId: number
     _all: number
@@ -2461,6 +2614,7 @@ export namespace Prisma {
     id?: true
     role?: true
     name?: true
+    matricule?: true
     password?: true
     restaurantId?: true
   }
@@ -2469,6 +2623,7 @@ export namespace Prisma {
     id?: true
     role?: true
     name?: true
+    matricule?: true
     password?: true
     restaurantId?: true
   }
@@ -2477,6 +2632,7 @@ export namespace Prisma {
     id?: true
     role?: true
     name?: true
+    matricule?: true
     password?: true
     restaurantId?: true
     _all?: true
@@ -2572,6 +2728,7 @@ export namespace Prisma {
     id: number
     role: $Enums.Role
     name: string
+    matricule: string
     password: string
     restaurantId: number
     _count: UserCountAggregateOutputType | null
@@ -2599,10 +2756,12 @@ export namespace Prisma {
     id?: boolean
     role?: boolean
     name?: boolean
+    matricule?: boolean
     password?: boolean
     restaurantId?: boolean
     restaurant?: boolean | RestaurantDefaultArgs<ExtArgs>
     orders?: boolean | User$ordersArgs<ExtArgs>
+    messages?: boolean | User$messagesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2610,6 +2769,7 @@ export namespace Prisma {
     id?: boolean
     role?: boolean
     name?: boolean
+    matricule?: boolean
     password?: boolean
     restaurantId?: boolean
     restaurant?: boolean | RestaurantDefaultArgs<ExtArgs>
@@ -2619,6 +2779,7 @@ export namespace Prisma {
     id?: boolean
     role?: boolean
     name?: boolean
+    matricule?: boolean
     password?: boolean
     restaurantId?: boolean
     restaurant?: boolean | RestaurantDefaultArgs<ExtArgs>
@@ -2628,14 +2789,16 @@ export namespace Prisma {
     id?: boolean
     role?: boolean
     name?: boolean
+    matricule?: boolean
     password?: boolean
     restaurantId?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "role" | "name" | "password" | "restaurantId", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "role" | "name" | "matricule" | "password" | "restaurantId", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     restaurant?: boolean | RestaurantDefaultArgs<ExtArgs>
     orders?: boolean | User$ordersArgs<ExtArgs>
+    messages?: boolean | User$messagesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2650,11 +2813,13 @@ export namespace Prisma {
     objects: {
       restaurant: Prisma.$RestaurantPayload<ExtArgs>
       orders: Prisma.$OrderPayload<ExtArgs>[]
+      messages: Prisma.$MessagePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
       role: $Enums.Role
       name: string
+      matricule: string
       password: string
       restaurantId: number
     }, ExtArgs["result"]["user"]>
@@ -3053,6 +3218,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     restaurant<T extends RestaurantDefaultArgs<ExtArgs> = {}>(args?: Subset<T, RestaurantDefaultArgs<ExtArgs>>): Prisma__RestaurantClient<$Result.GetResult<Prisma.$RestaurantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     orders<T extends User$ordersArgs<ExtArgs> = {}>(args?: Subset<T, User$ordersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    messages<T extends User$messagesArgs<ExtArgs> = {}>(args?: Subset<T, User$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3085,6 +3251,7 @@ export namespace Prisma {
     readonly id: FieldRef<"User", 'Int'>
     readonly role: FieldRef<"User", 'Role'>
     readonly name: FieldRef<"User", 'String'>
+    readonly matricule: FieldRef<"User", 'String'>
     readonly password: FieldRef<"User", 'String'>
     readonly restaurantId: FieldRef<"User", 'Int'>
   }
@@ -3512,6 +3679,30 @@ export namespace Prisma {
   }
 
   /**
+   * User.messages
+   */
+  export type User$messagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    where?: MessageWhereInput
+    orderBy?: MessageOrderByWithRelationInput | MessageOrderByWithRelationInput[]
+    cursor?: MessageWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MessageScalarFieldEnum | MessageScalarFieldEnum[]
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3544,35 +3735,35 @@ export namespace Prisma {
 
   export type OrderAvgAggregateOutputType = {
     id: number | null
-    table: number | null
+    tableNumber: number | null
     restaurantId: number | null
     waiterId: number | null
   }
 
   export type OrderSumAggregateOutputType = {
     id: number | null
-    table: number | null
+    tableNumber: number | null
     restaurantId: number | null
     waiterId: number | null
   }
 
   export type OrderMinAggregateOutputType = {
     id: number | null
-    table: number | null
+    tableNumber: number | null
     restaurantId: number | null
     waiterId: number | null
   }
 
   export type OrderMaxAggregateOutputType = {
     id: number | null
-    table: number | null
+    tableNumber: number | null
     restaurantId: number | null
     waiterId: number | null
   }
 
   export type OrderCountAggregateOutputType = {
     id: number
-    table: number
+    tableNumber: number
     restaurantId: number
     waiterId: number
     _all: number
@@ -3581,35 +3772,35 @@ export namespace Prisma {
 
   export type OrderAvgAggregateInputType = {
     id?: true
-    table?: true
+    tableNumber?: true
     restaurantId?: true
     waiterId?: true
   }
 
   export type OrderSumAggregateInputType = {
     id?: true
-    table?: true
+    tableNumber?: true
     restaurantId?: true
     waiterId?: true
   }
 
   export type OrderMinAggregateInputType = {
     id?: true
-    table?: true
+    tableNumber?: true
     restaurantId?: true
     waiterId?: true
   }
 
   export type OrderMaxAggregateInputType = {
     id?: true
-    table?: true
+    tableNumber?: true
     restaurantId?: true
     waiterId?: true
   }
 
   export type OrderCountAggregateInputType = {
     id?: true
-    table?: true
+    tableNumber?: true
     restaurantId?: true
     waiterId?: true
     _all?: true
@@ -3703,7 +3894,7 @@ export namespace Prisma {
 
   export type OrderGroupByOutputType = {
     id: number
-    table: number
+    tableNumber: number
     restaurantId: number
     waiterId: number
     _count: OrderCountAggregateOutputType | null
@@ -3729,7 +3920,7 @@ export namespace Prisma {
 
   export type OrderSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    table?: boolean
+    tableNumber?: boolean
     restaurantId?: boolean
     waiterId?: boolean
     restaurant?: boolean | RestaurantDefaultArgs<ExtArgs>
@@ -3740,7 +3931,7 @@ export namespace Prisma {
 
   export type OrderSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    table?: boolean
+    tableNumber?: boolean
     restaurantId?: boolean
     waiterId?: boolean
     restaurant?: boolean | RestaurantDefaultArgs<ExtArgs>
@@ -3749,7 +3940,7 @@ export namespace Prisma {
 
   export type OrderSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    table?: boolean
+    tableNumber?: boolean
     restaurantId?: boolean
     waiterId?: boolean
     restaurant?: boolean | RestaurantDefaultArgs<ExtArgs>
@@ -3758,12 +3949,12 @@ export namespace Prisma {
 
   export type OrderSelectScalar = {
     id?: boolean
-    table?: boolean
+    tableNumber?: boolean
     restaurantId?: boolean
     waiterId?: boolean
   }
 
-  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "table" | "restaurantId" | "waiterId", ExtArgs["result"]["order"]>
+  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "tableNumber" | "restaurantId" | "waiterId", ExtArgs["result"]["order"]>
   export type OrderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     restaurant?: boolean | RestaurantDefaultArgs<ExtArgs>
     waiter?: boolean | UserDefaultArgs<ExtArgs>
@@ -3788,7 +3979,7 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
-      table: number
+      tableNumber: number
       restaurantId: number
       waiterId: number
     }, ExtArgs["result"]["order"]>
@@ -4218,7 +4409,7 @@ export namespace Prisma {
    */
   interface OrderFieldRefs {
     readonly id: FieldRef<"Order", 'Int'>
-    readonly table: FieldRef<"Order", 'Int'>
+    readonly tableNumber: FieldRef<"Order", 'Int'>
     readonly restaurantId: FieldRef<"Order", 'Int'>
     readonly waiterId: FieldRef<"Order", 'Int'>
   }
@@ -4693,7 +4884,7 @@ export namespace Prisma {
   export type MealMinAggregateOutputType = {
     id: number | null
     status: $Enums.MealStatus | null
-    date: Date | null
+    createdAt: Date | null
     quantity: number | null
     price: number | null
     comment: string | null
@@ -4703,7 +4894,7 @@ export namespace Prisma {
   export type MealMaxAggregateOutputType = {
     id: number | null
     status: $Enums.MealStatus | null
-    date: Date | null
+    createdAt: Date | null
     quantity: number | null
     price: number | null
     comment: string | null
@@ -4713,7 +4904,7 @@ export namespace Prisma {
   export type MealCountAggregateOutputType = {
     id: number
     status: number
-    date: number
+    createdAt: number
     quantity: number
     price: number
     comment: number
@@ -4739,7 +4930,7 @@ export namespace Prisma {
   export type MealMinAggregateInputType = {
     id?: true
     status?: true
-    date?: true
+    createdAt?: true
     quantity?: true
     price?: true
     comment?: true
@@ -4749,7 +4940,7 @@ export namespace Prisma {
   export type MealMaxAggregateInputType = {
     id?: true
     status?: true
-    date?: true
+    createdAt?: true
     quantity?: true
     price?: true
     comment?: true
@@ -4759,7 +4950,7 @@ export namespace Prisma {
   export type MealCountAggregateInputType = {
     id?: true
     status?: true
-    date?: true
+    createdAt?: true
     quantity?: true
     price?: true
     comment?: true
@@ -4856,10 +5047,10 @@ export namespace Prisma {
   export type MealGroupByOutputType = {
     id: number
     status: $Enums.MealStatus
-    date: Date
+    createdAt: Date
     quantity: number
     price: number
-    comment: string
+    comment: string | null
     orderId: number
     _count: MealCountAggregateOutputType | null
     _avg: MealAvgAggregateOutputType | null
@@ -4885,7 +5076,7 @@ export namespace Prisma {
   export type MealSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     status?: boolean
-    date?: boolean
+    createdAt?: boolean
     quantity?: boolean
     price?: boolean
     comment?: boolean
@@ -4896,7 +5087,7 @@ export namespace Prisma {
   export type MealSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     status?: boolean
-    date?: boolean
+    createdAt?: boolean
     quantity?: boolean
     price?: boolean
     comment?: boolean
@@ -4907,7 +5098,7 @@ export namespace Prisma {
   export type MealSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     status?: boolean
-    date?: boolean
+    createdAt?: boolean
     quantity?: boolean
     price?: boolean
     comment?: boolean
@@ -4918,14 +5109,14 @@ export namespace Prisma {
   export type MealSelectScalar = {
     id?: boolean
     status?: boolean
-    date?: boolean
+    createdAt?: boolean
     quantity?: boolean
     price?: boolean
     comment?: boolean
     orderId?: boolean
   }
 
-  export type MealOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "status" | "date" | "quantity" | "price" | "comment" | "orderId", ExtArgs["result"]["meal"]>
+  export type MealOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "status" | "createdAt" | "quantity" | "price" | "comment" | "orderId", ExtArgs["result"]["meal"]>
   export type MealInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     order?: boolean | OrderDefaultArgs<ExtArgs>
   }
@@ -4944,10 +5135,10 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: number
       status: $Enums.MealStatus
-      date: Date
+      createdAt: Date
       quantity: number
       price: number
-      comment: string
+      comment: string | null
       orderId: number
     }, ExtArgs["result"]["meal"]>
     composites: {}
@@ -5375,7 +5566,7 @@ export namespace Prisma {
   interface MealFieldRefs {
     readonly id: FieldRef<"Meal", 'Int'>
     readonly status: FieldRef<"Meal", 'MealStatus'>
-    readonly date: FieldRef<"Meal", 'DateTime'>
+    readonly createdAt: FieldRef<"Meal", 'DateTime'>
     readonly quantity: FieldRef<"Meal", 'Int'>
     readonly price: FieldRef<"Meal", 'Float'>
     readonly comment: FieldRef<"Meal", 'String'>
@@ -5800,6 +5991,1119 @@ export namespace Prisma {
 
 
   /**
+   * Model Message
+   */
+
+  export type AggregateMessage = {
+    _count: MessageCountAggregateOutputType | null
+    _avg: MessageAvgAggregateOutputType | null
+    _sum: MessageSumAggregateOutputType | null
+    _min: MessageMinAggregateOutputType | null
+    _max: MessageMaxAggregateOutputType | null
+  }
+
+  export type MessageAvgAggregateOutputType = {
+    id: number | null
+    restaurantId: number | null
+    authorId: number | null
+  }
+
+  export type MessageSumAggregateOutputType = {
+    id: number | null
+    restaurantId: number | null
+    authorId: number | null
+  }
+
+  export type MessageMinAggregateOutputType = {
+    id: number | null
+    content: string | null
+    createdAt: Date | null
+    restaurantId: number | null
+    authorId: number | null
+  }
+
+  export type MessageMaxAggregateOutputType = {
+    id: number | null
+    content: string | null
+    createdAt: Date | null
+    restaurantId: number | null
+    authorId: number | null
+  }
+
+  export type MessageCountAggregateOutputType = {
+    id: number
+    content: number
+    createdAt: number
+    restaurantId: number
+    authorId: number
+    _all: number
+  }
+
+
+  export type MessageAvgAggregateInputType = {
+    id?: true
+    restaurantId?: true
+    authorId?: true
+  }
+
+  export type MessageSumAggregateInputType = {
+    id?: true
+    restaurantId?: true
+    authorId?: true
+  }
+
+  export type MessageMinAggregateInputType = {
+    id?: true
+    content?: true
+    createdAt?: true
+    restaurantId?: true
+    authorId?: true
+  }
+
+  export type MessageMaxAggregateInputType = {
+    id?: true
+    content?: true
+    createdAt?: true
+    restaurantId?: true
+    authorId?: true
+  }
+
+  export type MessageCountAggregateInputType = {
+    id?: true
+    content?: true
+    createdAt?: true
+    restaurantId?: true
+    authorId?: true
+    _all?: true
+  }
+
+  export type MessageAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Message to aggregate.
+     */
+    where?: MessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Messages to fetch.
+     */
+    orderBy?: MessageOrderByWithRelationInput | MessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: MessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Messages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Messages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Messages
+    **/
+    _count?: true | MessageCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: MessageAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: MessageSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: MessageMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: MessageMaxAggregateInputType
+  }
+
+  export type GetMessageAggregateType<T extends MessageAggregateArgs> = {
+        [P in keyof T & keyof AggregateMessage]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateMessage[P]>
+      : GetScalarType<T[P], AggregateMessage[P]>
+  }
+
+
+
+
+  export type MessageGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MessageWhereInput
+    orderBy?: MessageOrderByWithAggregationInput | MessageOrderByWithAggregationInput[]
+    by: MessageScalarFieldEnum[] | MessageScalarFieldEnum
+    having?: MessageScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: MessageCountAggregateInputType | true
+    _avg?: MessageAvgAggregateInputType
+    _sum?: MessageSumAggregateInputType
+    _min?: MessageMinAggregateInputType
+    _max?: MessageMaxAggregateInputType
+  }
+
+  export type MessageGroupByOutputType = {
+    id: number
+    content: string
+    createdAt: Date
+    restaurantId: number
+    authorId: number
+    _count: MessageCountAggregateOutputType | null
+    _avg: MessageAvgAggregateOutputType | null
+    _sum: MessageSumAggregateOutputType | null
+    _min: MessageMinAggregateOutputType | null
+    _max: MessageMaxAggregateOutputType | null
+  }
+
+  type GetMessageGroupByPayload<T extends MessageGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<MessageGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof MessageGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], MessageGroupByOutputType[P]>
+            : GetScalarType<T[P], MessageGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type MessageSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    content?: boolean
+    createdAt?: boolean
+    restaurantId?: boolean
+    authorId?: boolean
+    restaurant?: boolean | RestaurantDefaultArgs<ExtArgs>
+    author?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["message"]>
+
+  export type MessageSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    content?: boolean
+    createdAt?: boolean
+    restaurantId?: boolean
+    authorId?: boolean
+    restaurant?: boolean | RestaurantDefaultArgs<ExtArgs>
+    author?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["message"]>
+
+  export type MessageSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    content?: boolean
+    createdAt?: boolean
+    restaurantId?: boolean
+    authorId?: boolean
+    restaurant?: boolean | RestaurantDefaultArgs<ExtArgs>
+    author?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["message"]>
+
+  export type MessageSelectScalar = {
+    id?: boolean
+    content?: boolean
+    createdAt?: boolean
+    restaurantId?: boolean
+    authorId?: boolean
+  }
+
+  export type MessageOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "content" | "createdAt" | "restaurantId" | "authorId", ExtArgs["result"]["message"]>
+  export type MessageInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    restaurant?: boolean | RestaurantDefaultArgs<ExtArgs>
+    author?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type MessageIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    restaurant?: boolean | RestaurantDefaultArgs<ExtArgs>
+    author?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type MessageIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    restaurant?: boolean | RestaurantDefaultArgs<ExtArgs>
+    author?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $MessagePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Message"
+    objects: {
+      restaurant: Prisma.$RestaurantPayload<ExtArgs>
+      author: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      content: string
+      createdAt: Date
+      restaurantId: number
+      authorId: number
+    }, ExtArgs["result"]["message"]>
+    composites: {}
+  }
+
+  type MessageGetPayload<S extends boolean | null | undefined | MessageDefaultArgs> = $Result.GetResult<Prisma.$MessagePayload, S>
+
+  type MessageCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<MessageFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: MessageCountAggregateInputType | true
+    }
+
+  export interface MessageDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Message'], meta: { name: 'Message' } }
+    /**
+     * Find zero or one Message that matches the filter.
+     * @param {MessageFindUniqueArgs} args - Arguments to find a Message
+     * @example
+     * // Get one Message
+     * const message = await prisma.message.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends MessageFindUniqueArgs>(args: SelectSubset<T, MessageFindUniqueArgs<ExtArgs>>): Prisma__MessageClient<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Message that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {MessageFindUniqueOrThrowArgs} args - Arguments to find a Message
+     * @example
+     * // Get one Message
+     * const message = await prisma.message.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends MessageFindUniqueOrThrowArgs>(args: SelectSubset<T, MessageFindUniqueOrThrowArgs<ExtArgs>>): Prisma__MessageClient<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Message that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageFindFirstArgs} args - Arguments to find a Message
+     * @example
+     * // Get one Message
+     * const message = await prisma.message.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends MessageFindFirstArgs>(args?: SelectSubset<T, MessageFindFirstArgs<ExtArgs>>): Prisma__MessageClient<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Message that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageFindFirstOrThrowArgs} args - Arguments to find a Message
+     * @example
+     * // Get one Message
+     * const message = await prisma.message.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends MessageFindFirstOrThrowArgs>(args?: SelectSubset<T, MessageFindFirstOrThrowArgs<ExtArgs>>): Prisma__MessageClient<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Messages that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Messages
+     * const messages = await prisma.message.findMany()
+     * 
+     * // Get first 10 Messages
+     * const messages = await prisma.message.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const messageWithIdOnly = await prisma.message.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends MessageFindManyArgs>(args?: SelectSubset<T, MessageFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Message.
+     * @param {MessageCreateArgs} args - Arguments to create a Message.
+     * @example
+     * // Create one Message
+     * const Message = await prisma.message.create({
+     *   data: {
+     *     // ... data to create a Message
+     *   }
+     * })
+     * 
+     */
+    create<T extends MessageCreateArgs>(args: SelectSubset<T, MessageCreateArgs<ExtArgs>>): Prisma__MessageClient<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Messages.
+     * @param {MessageCreateManyArgs} args - Arguments to create many Messages.
+     * @example
+     * // Create many Messages
+     * const message = await prisma.message.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends MessageCreateManyArgs>(args?: SelectSubset<T, MessageCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Messages and returns the data saved in the database.
+     * @param {MessageCreateManyAndReturnArgs} args - Arguments to create many Messages.
+     * @example
+     * // Create many Messages
+     * const message = await prisma.message.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Messages and only return the `id`
+     * const messageWithIdOnly = await prisma.message.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends MessageCreateManyAndReturnArgs>(args?: SelectSubset<T, MessageCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Message.
+     * @param {MessageDeleteArgs} args - Arguments to delete one Message.
+     * @example
+     * // Delete one Message
+     * const Message = await prisma.message.delete({
+     *   where: {
+     *     // ... filter to delete one Message
+     *   }
+     * })
+     * 
+     */
+    delete<T extends MessageDeleteArgs>(args: SelectSubset<T, MessageDeleteArgs<ExtArgs>>): Prisma__MessageClient<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Message.
+     * @param {MessageUpdateArgs} args - Arguments to update one Message.
+     * @example
+     * // Update one Message
+     * const message = await prisma.message.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends MessageUpdateArgs>(args: SelectSubset<T, MessageUpdateArgs<ExtArgs>>): Prisma__MessageClient<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Messages.
+     * @param {MessageDeleteManyArgs} args - Arguments to filter Messages to delete.
+     * @example
+     * // Delete a few Messages
+     * const { count } = await prisma.message.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends MessageDeleteManyArgs>(args?: SelectSubset<T, MessageDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Messages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Messages
+     * const message = await prisma.message.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends MessageUpdateManyArgs>(args: SelectSubset<T, MessageUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Messages and returns the data updated in the database.
+     * @param {MessageUpdateManyAndReturnArgs} args - Arguments to update many Messages.
+     * @example
+     * // Update many Messages
+     * const message = await prisma.message.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Messages and only return the `id`
+     * const messageWithIdOnly = await prisma.message.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends MessageUpdateManyAndReturnArgs>(args: SelectSubset<T, MessageUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Message.
+     * @param {MessageUpsertArgs} args - Arguments to update or create a Message.
+     * @example
+     * // Update or create a Message
+     * const message = await prisma.message.upsert({
+     *   create: {
+     *     // ... data to create a Message
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Message we want to update
+     *   }
+     * })
+     */
+    upsert<T extends MessageUpsertArgs>(args: SelectSubset<T, MessageUpsertArgs<ExtArgs>>): Prisma__MessageClient<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Messages.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageCountArgs} args - Arguments to filter Messages to count.
+     * @example
+     * // Count the number of Messages
+     * const count = await prisma.message.count({
+     *   where: {
+     *     // ... the filter for the Messages we want to count
+     *   }
+     * })
+    **/
+    count<T extends MessageCountArgs>(
+      args?: Subset<T, MessageCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], MessageCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Message.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends MessageAggregateArgs>(args: Subset<T, MessageAggregateArgs>): Prisma.PrismaPromise<GetMessageAggregateType<T>>
+
+    /**
+     * Group by Message.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {MessageGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends MessageGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: MessageGroupByArgs['orderBy'] }
+        : { orderBy?: MessageGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, MessageGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMessageGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Message model
+   */
+  readonly fields: MessageFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Message.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__MessageClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    restaurant<T extends RestaurantDefaultArgs<ExtArgs> = {}>(args?: Subset<T, RestaurantDefaultArgs<ExtArgs>>): Prisma__RestaurantClient<$Result.GetResult<Prisma.$RestaurantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    author<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Message model
+   */
+  interface MessageFieldRefs {
+    readonly id: FieldRef<"Message", 'Int'>
+    readonly content: FieldRef<"Message", 'String'>
+    readonly createdAt: FieldRef<"Message", 'DateTime'>
+    readonly restaurantId: FieldRef<"Message", 'Int'>
+    readonly authorId: FieldRef<"Message", 'Int'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Message findUnique
+   */
+  export type MessageFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    /**
+     * Filter, which Message to fetch.
+     */
+    where: MessageWhereUniqueInput
+  }
+
+  /**
+   * Message findUniqueOrThrow
+   */
+  export type MessageFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    /**
+     * Filter, which Message to fetch.
+     */
+    where: MessageWhereUniqueInput
+  }
+
+  /**
+   * Message findFirst
+   */
+  export type MessageFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    /**
+     * Filter, which Message to fetch.
+     */
+    where?: MessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Messages to fetch.
+     */
+    orderBy?: MessageOrderByWithRelationInput | MessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Messages.
+     */
+    cursor?: MessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Messages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Messages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Messages.
+     */
+    distinct?: MessageScalarFieldEnum | MessageScalarFieldEnum[]
+  }
+
+  /**
+   * Message findFirstOrThrow
+   */
+  export type MessageFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    /**
+     * Filter, which Message to fetch.
+     */
+    where?: MessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Messages to fetch.
+     */
+    orderBy?: MessageOrderByWithRelationInput | MessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Messages.
+     */
+    cursor?: MessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Messages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Messages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Messages.
+     */
+    distinct?: MessageScalarFieldEnum | MessageScalarFieldEnum[]
+  }
+
+  /**
+   * Message findMany
+   */
+  export type MessageFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    /**
+     * Filter, which Messages to fetch.
+     */
+    where?: MessageWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Messages to fetch.
+     */
+    orderBy?: MessageOrderByWithRelationInput | MessageOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Messages.
+     */
+    cursor?: MessageWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Messages from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Messages.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Messages.
+     */
+    distinct?: MessageScalarFieldEnum | MessageScalarFieldEnum[]
+  }
+
+  /**
+   * Message create
+   */
+  export type MessageCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Message.
+     */
+    data: XOR<MessageCreateInput, MessageUncheckedCreateInput>
+  }
+
+  /**
+   * Message createMany
+   */
+  export type MessageCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Messages.
+     */
+    data: MessageCreateManyInput | MessageCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Message createManyAndReturn
+   */
+  export type MessageCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * The data used to create many Messages.
+     */
+    data: MessageCreateManyInput | MessageCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Message update
+   */
+  export type MessageUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Message.
+     */
+    data: XOR<MessageUpdateInput, MessageUncheckedUpdateInput>
+    /**
+     * Choose, which Message to update.
+     */
+    where: MessageWhereUniqueInput
+  }
+
+  /**
+   * Message updateMany
+   */
+  export type MessageUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Messages.
+     */
+    data: XOR<MessageUpdateManyMutationInput, MessageUncheckedUpdateManyInput>
+    /**
+     * Filter which Messages to update
+     */
+    where?: MessageWhereInput
+    /**
+     * Limit how many Messages to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Message updateManyAndReturn
+   */
+  export type MessageUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * The data used to update Messages.
+     */
+    data: XOR<MessageUpdateManyMutationInput, MessageUncheckedUpdateManyInput>
+    /**
+     * Filter which Messages to update
+     */
+    where?: MessageWhereInput
+    /**
+     * Limit how many Messages to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Message upsert
+   */
+  export type MessageUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Message to update in case it exists.
+     */
+    where: MessageWhereUniqueInput
+    /**
+     * In case the Message found by the `where` argument doesn't exist, create a new Message with this data.
+     */
+    create: XOR<MessageCreateInput, MessageUncheckedCreateInput>
+    /**
+     * In case the Message was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<MessageUpdateInput, MessageUncheckedUpdateInput>
+  }
+
+  /**
+   * Message delete
+   */
+  export type MessageDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+    /**
+     * Filter which Message to delete.
+     */
+    where: MessageWhereUniqueInput
+  }
+
+  /**
+   * Message deleteMany
+   */
+  export type MessageDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Messages to delete
+     */
+    where?: MessageWhereInput
+    /**
+     * Limit how many Messages to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Message without action
+   */
+  export type MessageDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Message
+     */
+    select?: MessageSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Message
+     */
+    omit?: MessageOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MessageInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -5815,7 +7119,8 @@ export namespace Prisma {
 
   export const RestaurantScalarFieldEnum: {
     id: 'id',
-    name: 'name'
+    name: 'name',
+    code: 'code'
   };
 
   export type RestaurantScalarFieldEnum = (typeof RestaurantScalarFieldEnum)[keyof typeof RestaurantScalarFieldEnum]
@@ -5825,6 +7130,7 @@ export namespace Prisma {
     id: 'id',
     role: 'role',
     name: 'name',
+    matricule: 'matricule',
     password: 'password',
     restaurantId: 'restaurantId'
   };
@@ -5834,7 +7140,7 @@ export namespace Prisma {
 
   export const OrderScalarFieldEnum: {
     id: 'id',
-    table: 'table',
+    tableNumber: 'tableNumber',
     restaurantId: 'restaurantId',
     waiterId: 'waiterId'
   };
@@ -5845,7 +7151,7 @@ export namespace Prisma {
   export const MealScalarFieldEnum: {
     id: 'id',
     status: 'status',
-    date: 'date',
+    createdAt: 'createdAt',
     quantity: 'quantity',
     price: 'price',
     comment: 'comment',
@@ -5853,6 +7159,17 @@ export namespace Prisma {
   };
 
   export type MealScalarFieldEnum = (typeof MealScalarFieldEnum)[keyof typeof MealScalarFieldEnum]
+
+
+  export const MessageScalarFieldEnum: {
+    id: 'id',
+    content: 'content',
+    createdAt: 'createdAt',
+    restaurantId: 'restaurantId',
+    authorId: 'authorId'
+  };
+
+  export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -5869,6 +7186,14 @@ export namespace Prisma {
   };
 
   export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+  export const NullsOrder: {
+    first: 'first',
+    last: 'last'
+  };
+
+  export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
   /**
@@ -5969,30 +7294,37 @@ export namespace Prisma {
     NOT?: RestaurantWhereInput | RestaurantWhereInput[]
     id?: IntFilter<"Restaurant"> | number
     name?: StringFilter<"Restaurant"> | string
+    code?: StringFilter<"Restaurant"> | string
     users?: UserListRelationFilter
     orders?: OrderListRelationFilter
+    messages?: MessageListRelationFilter
   }
 
   export type RestaurantOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrder
+    code?: SortOrder
     users?: UserOrderByRelationAggregateInput
     orders?: OrderOrderByRelationAggregateInput
+    messages?: MessageOrderByRelationAggregateInput
   }
 
   export type RestaurantWhereUniqueInput = Prisma.AtLeast<{
     id?: number
-    name?: string
+    code?: string
     AND?: RestaurantWhereInput | RestaurantWhereInput[]
     OR?: RestaurantWhereInput[]
     NOT?: RestaurantWhereInput | RestaurantWhereInput[]
+    name?: StringFilter<"Restaurant"> | string
     users?: UserListRelationFilter
     orders?: OrderListRelationFilter
-  }, "id" | "name">
+    messages?: MessageListRelationFilter
+  }, "id" | "code">
 
   export type RestaurantOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrder
+    code?: SortOrder
     _count?: RestaurantCountOrderByAggregateInput
     _avg?: RestaurantAvgOrderByAggregateInput
     _max?: RestaurantMaxOrderByAggregateInput
@@ -6006,6 +7338,7 @@ export namespace Prisma {
     NOT?: RestaurantScalarWhereWithAggregatesInput | RestaurantScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"Restaurant"> | number
     name?: StringWithAggregatesFilter<"Restaurant"> | string
+    code?: StringWithAggregatesFilter<"Restaurant"> | string
   }
 
   export type UserWhereInput = {
@@ -6015,39 +7348,47 @@ export namespace Prisma {
     id?: IntFilter<"User"> | number
     role?: EnumRoleFilter<"User"> | $Enums.Role
     name?: StringFilter<"User"> | string
+    matricule?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
     restaurantId?: IntFilter<"User"> | number
     restaurant?: XOR<RestaurantScalarRelationFilter, RestaurantWhereInput>
     orders?: OrderListRelationFilter
+    messages?: MessageListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
     id?: SortOrder
     role?: SortOrder
     name?: SortOrder
+    matricule?: SortOrder
     password?: SortOrder
     restaurantId?: SortOrder
     restaurant?: RestaurantOrderByWithRelationInput
     orders?: OrderOrderByRelationAggregateInput
+    messages?: MessageOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
     id?: number
-    name?: string
+    matricule_restaurantId?: UserMatriculeRestaurantIdCompoundUniqueInput
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
     role?: EnumRoleFilter<"User"> | $Enums.Role
+    name?: StringFilter<"User"> | string
+    matricule?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
     restaurantId?: IntFilter<"User"> | number
     restaurant?: XOR<RestaurantScalarRelationFilter, RestaurantWhereInput>
     orders?: OrderListRelationFilter
-  }, "id" | "name">
+    messages?: MessageListRelationFilter
+  }, "id" | "matricule_restaurantId">
 
   export type UserOrderByWithAggregationInput = {
     id?: SortOrder
     role?: SortOrder
     name?: SortOrder
+    matricule?: SortOrder
     password?: SortOrder
     restaurantId?: SortOrder
     _count?: UserCountOrderByAggregateInput
@@ -6064,6 +7405,7 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"User"> | number
     role?: EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
     name?: StringWithAggregatesFilter<"User"> | string
+    matricule?: StringWithAggregatesFilter<"User"> | string
     password?: StringWithAggregatesFilter<"User"> | string
     restaurantId?: IntWithAggregatesFilter<"User"> | number
   }
@@ -6073,7 +7415,7 @@ export namespace Prisma {
     OR?: OrderWhereInput[]
     NOT?: OrderWhereInput | OrderWhereInput[]
     id?: IntFilter<"Order"> | number
-    table?: IntFilter<"Order"> | number
+    tableNumber?: IntFilter<"Order"> | number
     restaurantId?: IntFilter<"Order"> | number
     waiterId?: IntFilter<"Order"> | number
     restaurant?: XOR<RestaurantScalarRelationFilter, RestaurantWhereInput>
@@ -6083,7 +7425,7 @@ export namespace Prisma {
 
   export type OrderOrderByWithRelationInput = {
     id?: SortOrder
-    table?: SortOrder
+    tableNumber?: SortOrder
     restaurantId?: SortOrder
     waiterId?: SortOrder
     restaurant?: RestaurantOrderByWithRelationInput
@@ -6096,7 +7438,7 @@ export namespace Prisma {
     AND?: OrderWhereInput | OrderWhereInput[]
     OR?: OrderWhereInput[]
     NOT?: OrderWhereInput | OrderWhereInput[]
-    table?: IntFilter<"Order"> | number
+    tableNumber?: IntFilter<"Order"> | number
     restaurantId?: IntFilter<"Order"> | number
     waiterId?: IntFilter<"Order"> | number
     restaurant?: XOR<RestaurantScalarRelationFilter, RestaurantWhereInput>
@@ -6106,7 +7448,7 @@ export namespace Prisma {
 
   export type OrderOrderByWithAggregationInput = {
     id?: SortOrder
-    table?: SortOrder
+    tableNumber?: SortOrder
     restaurantId?: SortOrder
     waiterId?: SortOrder
     _count?: OrderCountOrderByAggregateInput
@@ -6121,7 +7463,7 @@ export namespace Prisma {
     OR?: OrderScalarWhereWithAggregatesInput[]
     NOT?: OrderScalarWhereWithAggregatesInput | OrderScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"Order"> | number
-    table?: IntWithAggregatesFilter<"Order"> | number
+    tableNumber?: IntWithAggregatesFilter<"Order"> | number
     restaurantId?: IntWithAggregatesFilter<"Order"> | number
     waiterId?: IntWithAggregatesFilter<"Order"> | number
   }
@@ -6132,10 +7474,10 @@ export namespace Prisma {
     NOT?: MealWhereInput | MealWhereInput[]
     id?: IntFilter<"Meal"> | number
     status?: EnumMealStatusFilter<"Meal"> | $Enums.MealStatus
-    date?: DateTimeFilter<"Meal"> | Date | string
+    createdAt?: DateTimeFilter<"Meal"> | Date | string
     quantity?: IntFilter<"Meal"> | number
     price?: FloatFilter<"Meal"> | number
-    comment?: StringFilter<"Meal"> | string
+    comment?: StringNullableFilter<"Meal"> | string | null
     orderId?: IntFilter<"Meal"> | number
     order?: XOR<OrderScalarRelationFilter, OrderWhereInput>
   }
@@ -6143,10 +7485,10 @@ export namespace Prisma {
   export type MealOrderByWithRelationInput = {
     id?: SortOrder
     status?: SortOrder
-    date?: SortOrder
+    createdAt?: SortOrder
     quantity?: SortOrder
     price?: SortOrder
-    comment?: SortOrder
+    comment?: SortOrderInput | SortOrder
     orderId?: SortOrder
     order?: OrderOrderByWithRelationInput
   }
@@ -6157,10 +7499,10 @@ export namespace Prisma {
     OR?: MealWhereInput[]
     NOT?: MealWhereInput | MealWhereInput[]
     status?: EnumMealStatusFilter<"Meal"> | $Enums.MealStatus
-    date?: DateTimeFilter<"Meal"> | Date | string
+    createdAt?: DateTimeFilter<"Meal"> | Date | string
     quantity?: IntFilter<"Meal"> | number
     price?: FloatFilter<"Meal"> | number
-    comment?: StringFilter<"Meal"> | string
+    comment?: StringNullableFilter<"Meal"> | string | null
     orderId?: IntFilter<"Meal"> | number
     order?: XOR<OrderScalarRelationFilter, OrderWhereInput>
   }, "id">
@@ -6168,10 +7510,10 @@ export namespace Prisma {
   export type MealOrderByWithAggregationInput = {
     id?: SortOrder
     status?: SortOrder
-    date?: SortOrder
+    createdAt?: SortOrder
     quantity?: SortOrder
     price?: SortOrder
-    comment?: SortOrder
+    comment?: SortOrderInput | SortOrder
     orderId?: SortOrder
     _count?: MealCountOrderByAggregateInput
     _avg?: MealAvgOrderByAggregateInput
@@ -6186,91 +7528,171 @@ export namespace Prisma {
     NOT?: MealScalarWhereWithAggregatesInput | MealScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"Meal"> | number
     status?: EnumMealStatusWithAggregatesFilter<"Meal"> | $Enums.MealStatus
-    date?: DateTimeWithAggregatesFilter<"Meal"> | Date | string
+    createdAt?: DateTimeWithAggregatesFilter<"Meal"> | Date | string
     quantity?: IntWithAggregatesFilter<"Meal"> | number
     price?: FloatWithAggregatesFilter<"Meal"> | number
-    comment?: StringWithAggregatesFilter<"Meal"> | string
+    comment?: StringNullableWithAggregatesFilter<"Meal"> | string | null
     orderId?: IntWithAggregatesFilter<"Meal"> | number
+  }
+
+  export type MessageWhereInput = {
+    AND?: MessageWhereInput | MessageWhereInput[]
+    OR?: MessageWhereInput[]
+    NOT?: MessageWhereInput | MessageWhereInput[]
+    id?: IntFilter<"Message"> | number
+    content?: StringFilter<"Message"> | string
+    createdAt?: DateTimeFilter<"Message"> | Date | string
+    restaurantId?: IntFilter<"Message"> | number
+    authorId?: IntFilter<"Message"> | number
+    restaurant?: XOR<RestaurantScalarRelationFilter, RestaurantWhereInput>
+    author?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type MessageOrderByWithRelationInput = {
+    id?: SortOrder
+    content?: SortOrder
+    createdAt?: SortOrder
+    restaurantId?: SortOrder
+    authorId?: SortOrder
+    restaurant?: RestaurantOrderByWithRelationInput
+    author?: UserOrderByWithRelationInput
+  }
+
+  export type MessageWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: MessageWhereInput | MessageWhereInput[]
+    OR?: MessageWhereInput[]
+    NOT?: MessageWhereInput | MessageWhereInput[]
+    content?: StringFilter<"Message"> | string
+    createdAt?: DateTimeFilter<"Message"> | Date | string
+    restaurantId?: IntFilter<"Message"> | number
+    authorId?: IntFilter<"Message"> | number
+    restaurant?: XOR<RestaurantScalarRelationFilter, RestaurantWhereInput>
+    author?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type MessageOrderByWithAggregationInput = {
+    id?: SortOrder
+    content?: SortOrder
+    createdAt?: SortOrder
+    restaurantId?: SortOrder
+    authorId?: SortOrder
+    _count?: MessageCountOrderByAggregateInput
+    _avg?: MessageAvgOrderByAggregateInput
+    _max?: MessageMaxOrderByAggregateInput
+    _min?: MessageMinOrderByAggregateInput
+    _sum?: MessageSumOrderByAggregateInput
+  }
+
+  export type MessageScalarWhereWithAggregatesInput = {
+    AND?: MessageScalarWhereWithAggregatesInput | MessageScalarWhereWithAggregatesInput[]
+    OR?: MessageScalarWhereWithAggregatesInput[]
+    NOT?: MessageScalarWhereWithAggregatesInput | MessageScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"Message"> | number
+    content?: StringWithAggregatesFilter<"Message"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Message"> | Date | string
+    restaurantId?: IntWithAggregatesFilter<"Message"> | number
+    authorId?: IntWithAggregatesFilter<"Message"> | number
   }
 
   export type RestaurantCreateInput = {
     name: string
+    code: string
     users?: UserCreateNestedManyWithoutRestaurantInput
     orders?: OrderCreateNestedManyWithoutRestaurantInput
+    messages?: MessageCreateNestedManyWithoutRestaurantInput
   }
 
   export type RestaurantUncheckedCreateInput = {
     id?: number
     name: string
+    code: string
     users?: UserUncheckedCreateNestedManyWithoutRestaurantInput
     orders?: OrderUncheckedCreateNestedManyWithoutRestaurantInput
+    messages?: MessageUncheckedCreateNestedManyWithoutRestaurantInput
   }
 
   export type RestaurantUpdateInput = {
     name?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     users?: UserUpdateManyWithoutRestaurantNestedInput
     orders?: OrderUpdateManyWithoutRestaurantNestedInput
+    messages?: MessageUpdateManyWithoutRestaurantNestedInput
   }
 
   export type RestaurantUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     users?: UserUncheckedUpdateManyWithoutRestaurantNestedInput
     orders?: OrderUncheckedUpdateManyWithoutRestaurantNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutRestaurantNestedInput
   }
 
   export type RestaurantCreateManyInput = {
     id?: number
     name: string
+    code: string
   }
 
   export type RestaurantUpdateManyMutationInput = {
     name?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
   }
 
   export type RestaurantUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
   }
 
   export type UserCreateInput = {
     role: $Enums.Role
     name: string
+    matricule: string
     password: string
     restaurant: RestaurantCreateNestedOneWithoutUsersInput
     orders?: OrderCreateNestedManyWithoutWaiterInput
+    messages?: MessageCreateNestedManyWithoutAuthorInput
   }
 
   export type UserUncheckedCreateInput = {
     id?: number
     role: $Enums.Role
     name: string
+    matricule: string
     password: string
     restaurantId: number
     orders?: OrderUncheckedCreateNestedManyWithoutWaiterInput
+    messages?: MessageUncheckedCreateNestedManyWithoutAuthorInput
   }
 
   export type UserUpdateInput = {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     name?: StringFieldUpdateOperationsInput | string
+    matricule?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     restaurant?: RestaurantUpdateOneRequiredWithoutUsersNestedInput
     orders?: OrderUpdateManyWithoutWaiterNestedInput
+    messages?: MessageUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     name?: StringFieldUpdateOperationsInput | string
+    matricule?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     restaurantId?: IntFieldUpdateOperationsInput | number
     orders?: OrderUncheckedUpdateManyWithoutWaiterNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserCreateManyInput = {
     id?: number
     role: $Enums.Role
     name: string
+    matricule: string
     password: string
     restaurantId: number
   }
@@ -6278,6 +7700,7 @@ export namespace Prisma {
   export type UserUpdateManyMutationInput = {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     name?: StringFieldUpdateOperationsInput | string
+    matricule?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
   }
 
@@ -6285,12 +7708,13 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     name?: StringFieldUpdateOperationsInput | string
+    matricule?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     restaurantId?: IntFieldUpdateOperationsInput | number
   }
 
   export type OrderCreateInput = {
-    table: number
+    tableNumber: number
     restaurant: RestaurantCreateNestedOneWithoutOrdersInput
     waiter: UserCreateNestedOneWithoutOrdersInput
     meals?: MealCreateNestedManyWithoutOrderInput
@@ -6298,14 +7722,14 @@ export namespace Prisma {
 
   export type OrderUncheckedCreateInput = {
     id?: number
-    table: number
+    tableNumber: number
     restaurantId: number
     waiterId: number
     meals?: MealUncheckedCreateNestedManyWithoutOrderInput
   }
 
   export type OrderUpdateInput = {
-    table?: IntFieldUpdateOperationsInput | number
+    tableNumber?: IntFieldUpdateOperationsInput | number
     restaurant?: RestaurantUpdateOneRequiredWithoutOrdersNestedInput
     waiter?: UserUpdateOneRequiredWithoutOrdersNestedInput
     meals?: MealUpdateManyWithoutOrderNestedInput
@@ -6313,7 +7737,7 @@ export namespace Prisma {
 
   export type OrderUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
-    table?: IntFieldUpdateOperationsInput | number
+    tableNumber?: IntFieldUpdateOperationsInput | number
     restaurantId?: IntFieldUpdateOperationsInput | number
     waiterId?: IntFieldUpdateOperationsInput | number
     meals?: MealUncheckedUpdateManyWithoutOrderNestedInput
@@ -6321,86 +7745,137 @@ export namespace Prisma {
 
   export type OrderCreateManyInput = {
     id?: number
-    table: number
+    tableNumber: number
     restaurantId: number
     waiterId: number
   }
 
   export type OrderUpdateManyMutationInput = {
-    table?: IntFieldUpdateOperationsInput | number
+    tableNumber?: IntFieldUpdateOperationsInput | number
   }
 
   export type OrderUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
-    table?: IntFieldUpdateOperationsInput | number
+    tableNumber?: IntFieldUpdateOperationsInput | number
     restaurantId?: IntFieldUpdateOperationsInput | number
     waiterId?: IntFieldUpdateOperationsInput | number
   }
 
   export type MealCreateInput = {
     status: $Enums.MealStatus
-    date: Date | string
+    createdAt?: Date | string
     quantity: number
     price: number
-    comment: string
+    comment?: string | null
     order: OrderCreateNestedOneWithoutMealsInput
   }
 
   export type MealUncheckedCreateInput = {
     id?: number
     status: $Enums.MealStatus
-    date: Date | string
+    createdAt?: Date | string
     quantity: number
     price: number
-    comment: string
+    comment?: string | null
     orderId: number
   }
 
   export type MealUpdateInput = {
     status?: EnumMealStatusFieldUpdateOperationsInput | $Enums.MealStatus
-    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     quantity?: IntFieldUpdateOperationsInput | number
     price?: FloatFieldUpdateOperationsInput | number
-    comment?: StringFieldUpdateOperationsInput | string
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
     order?: OrderUpdateOneRequiredWithoutMealsNestedInput
   }
 
   export type MealUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     status?: EnumMealStatusFieldUpdateOperationsInput | $Enums.MealStatus
-    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     quantity?: IntFieldUpdateOperationsInput | number
     price?: FloatFieldUpdateOperationsInput | number
-    comment?: StringFieldUpdateOperationsInput | string
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
     orderId?: IntFieldUpdateOperationsInput | number
   }
 
   export type MealCreateManyInput = {
     id?: number
     status: $Enums.MealStatus
-    date: Date | string
+    createdAt?: Date | string
     quantity: number
     price: number
-    comment: string
+    comment?: string | null
     orderId: number
   }
 
   export type MealUpdateManyMutationInput = {
     status?: EnumMealStatusFieldUpdateOperationsInput | $Enums.MealStatus
-    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     quantity?: IntFieldUpdateOperationsInput | number
     price?: FloatFieldUpdateOperationsInput | number
-    comment?: StringFieldUpdateOperationsInput | string
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type MealUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     status?: EnumMealStatusFieldUpdateOperationsInput | $Enums.MealStatus
-    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     quantity?: IntFieldUpdateOperationsInput | number
     price?: FloatFieldUpdateOperationsInput | number
-    comment?: StringFieldUpdateOperationsInput | string
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
     orderId?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type MessageCreateInput = {
+    content: string
+    createdAt?: Date | string
+    restaurant: RestaurantCreateNestedOneWithoutMessagesInput
+    author: UserCreateNestedOneWithoutMessagesInput
+  }
+
+  export type MessageUncheckedCreateInput = {
+    id?: number
+    content: string
+    createdAt?: Date | string
+    restaurantId: number
+    authorId: number
+  }
+
+  export type MessageUpdateInput = {
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    restaurant?: RestaurantUpdateOneRequiredWithoutMessagesNestedInput
+    author?: UserUpdateOneRequiredWithoutMessagesNestedInput
+  }
+
+  export type MessageUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    restaurantId?: IntFieldUpdateOperationsInput | number
+    authorId?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type MessageCreateManyInput = {
+    id?: number
+    content: string
+    createdAt?: Date | string
+    restaurantId: number
+    authorId: number
+  }
+
+  export type MessageUpdateManyMutationInput = {
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MessageUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    restaurantId?: IntFieldUpdateOperationsInput | number
+    authorId?: IntFieldUpdateOperationsInput | number
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -6441,6 +7916,12 @@ export namespace Prisma {
     none?: OrderWhereInput
   }
 
+  export type MessageListRelationFilter = {
+    every?: MessageWhereInput
+    some?: MessageWhereInput
+    none?: MessageWhereInput
+  }
+
   export type UserOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -6449,9 +7930,14 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type MessageOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type RestaurantCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    code?: SortOrder
   }
 
   export type RestaurantAvgOrderByAggregateInput = {
@@ -6461,11 +7947,13 @@ export namespace Prisma {
   export type RestaurantMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    code?: SortOrder
   }
 
   export type RestaurantMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    code?: SortOrder
   }
 
   export type RestaurantSumOrderByAggregateInput = {
@@ -6518,10 +8006,16 @@ export namespace Prisma {
     isNot?: RestaurantWhereInput
   }
 
+  export type UserMatriculeRestaurantIdCompoundUniqueInput = {
+    matricule: string
+    restaurantId: number
+  }
+
   export type UserCountOrderByAggregateInput = {
     id?: SortOrder
     role?: SortOrder
     name?: SortOrder
+    matricule?: SortOrder
     password?: SortOrder
     restaurantId?: SortOrder
   }
@@ -6535,6 +8029,7 @@ export namespace Prisma {
     id?: SortOrder
     role?: SortOrder
     name?: SortOrder
+    matricule?: SortOrder
     password?: SortOrder
     restaurantId?: SortOrder
   }
@@ -6543,6 +8038,7 @@ export namespace Prisma {
     id?: SortOrder
     role?: SortOrder
     name?: SortOrder
+    matricule?: SortOrder
     password?: SortOrder
     restaurantId?: SortOrder
   }
@@ -6579,35 +8075,35 @@ export namespace Prisma {
 
   export type OrderCountOrderByAggregateInput = {
     id?: SortOrder
-    table?: SortOrder
+    tableNumber?: SortOrder
     restaurantId?: SortOrder
     waiterId?: SortOrder
   }
 
   export type OrderAvgOrderByAggregateInput = {
     id?: SortOrder
-    table?: SortOrder
+    tableNumber?: SortOrder
     restaurantId?: SortOrder
     waiterId?: SortOrder
   }
 
   export type OrderMaxOrderByAggregateInput = {
     id?: SortOrder
-    table?: SortOrder
+    tableNumber?: SortOrder
     restaurantId?: SortOrder
     waiterId?: SortOrder
   }
 
   export type OrderMinOrderByAggregateInput = {
     id?: SortOrder
-    table?: SortOrder
+    tableNumber?: SortOrder
     restaurantId?: SortOrder
     waiterId?: SortOrder
   }
 
   export type OrderSumOrderByAggregateInput = {
     id?: SortOrder
-    table?: SortOrder
+    tableNumber?: SortOrder
     restaurantId?: SortOrder
     waiterId?: SortOrder
   }
@@ -6641,15 +8137,35 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
+  export type StringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
   export type OrderScalarRelationFilter = {
     is?: OrderWhereInput
     isNot?: OrderWhereInput
   }
 
+  export type SortOrderInput = {
+    sort: SortOrder
+    nulls?: NullsOrder
+  }
+
   export type MealCountOrderByAggregateInput = {
     id?: SortOrder
     status?: SortOrder
-    date?: SortOrder
+    createdAt?: SortOrder
     quantity?: SortOrder
     price?: SortOrder
     comment?: SortOrder
@@ -6666,7 +8182,7 @@ export namespace Prisma {
   export type MealMaxOrderByAggregateInput = {
     id?: SortOrder
     status?: SortOrder
-    date?: SortOrder
+    createdAt?: SortOrder
     quantity?: SortOrder
     price?: SortOrder
     comment?: SortOrder
@@ -6676,7 +8192,7 @@ export namespace Prisma {
   export type MealMinOrderByAggregateInput = {
     id?: SortOrder
     status?: SortOrder
-    date?: SortOrder
+    createdAt?: SortOrder
     quantity?: SortOrder
     price?: SortOrder
     comment?: SortOrder
@@ -6730,6 +8246,60 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
+  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type MessageCountOrderByAggregateInput = {
+    id?: SortOrder
+    content?: SortOrder
+    createdAt?: SortOrder
+    restaurantId?: SortOrder
+    authorId?: SortOrder
+  }
+
+  export type MessageAvgOrderByAggregateInput = {
+    id?: SortOrder
+    restaurantId?: SortOrder
+    authorId?: SortOrder
+  }
+
+  export type MessageMaxOrderByAggregateInput = {
+    id?: SortOrder
+    content?: SortOrder
+    createdAt?: SortOrder
+    restaurantId?: SortOrder
+    authorId?: SortOrder
+  }
+
+  export type MessageMinOrderByAggregateInput = {
+    id?: SortOrder
+    content?: SortOrder
+    createdAt?: SortOrder
+    restaurantId?: SortOrder
+    authorId?: SortOrder
+  }
+
+  export type MessageSumOrderByAggregateInput = {
+    id?: SortOrder
+    restaurantId?: SortOrder
+    authorId?: SortOrder
+  }
+
   export type UserCreateNestedManyWithoutRestaurantInput = {
     create?: XOR<UserCreateWithoutRestaurantInput, UserUncheckedCreateWithoutRestaurantInput> | UserCreateWithoutRestaurantInput[] | UserUncheckedCreateWithoutRestaurantInput[]
     connectOrCreate?: UserCreateOrConnectWithoutRestaurantInput | UserCreateOrConnectWithoutRestaurantInput[]
@@ -6744,6 +8314,13 @@ export namespace Prisma {
     connect?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
   }
 
+  export type MessageCreateNestedManyWithoutRestaurantInput = {
+    create?: XOR<MessageCreateWithoutRestaurantInput, MessageUncheckedCreateWithoutRestaurantInput> | MessageCreateWithoutRestaurantInput[] | MessageUncheckedCreateWithoutRestaurantInput[]
+    connectOrCreate?: MessageCreateOrConnectWithoutRestaurantInput | MessageCreateOrConnectWithoutRestaurantInput[]
+    createMany?: MessageCreateManyRestaurantInputEnvelope
+    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+  }
+
   export type UserUncheckedCreateNestedManyWithoutRestaurantInput = {
     create?: XOR<UserCreateWithoutRestaurantInput, UserUncheckedCreateWithoutRestaurantInput> | UserCreateWithoutRestaurantInput[] | UserUncheckedCreateWithoutRestaurantInput[]
     connectOrCreate?: UserCreateOrConnectWithoutRestaurantInput | UserCreateOrConnectWithoutRestaurantInput[]
@@ -6756,6 +8333,13 @@ export namespace Prisma {
     connectOrCreate?: OrderCreateOrConnectWithoutRestaurantInput | OrderCreateOrConnectWithoutRestaurantInput[]
     createMany?: OrderCreateManyRestaurantInputEnvelope
     connect?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
+  }
+
+  export type MessageUncheckedCreateNestedManyWithoutRestaurantInput = {
+    create?: XOR<MessageCreateWithoutRestaurantInput, MessageUncheckedCreateWithoutRestaurantInput> | MessageCreateWithoutRestaurantInput[] | MessageUncheckedCreateWithoutRestaurantInput[]
+    connectOrCreate?: MessageCreateOrConnectWithoutRestaurantInput | MessageCreateOrConnectWithoutRestaurantInput[]
+    createMany?: MessageCreateManyRestaurantInputEnvelope
+    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -6788,6 +8372,20 @@ export namespace Prisma {
     update?: OrderUpdateWithWhereUniqueWithoutRestaurantInput | OrderUpdateWithWhereUniqueWithoutRestaurantInput[]
     updateMany?: OrderUpdateManyWithWhereWithoutRestaurantInput | OrderUpdateManyWithWhereWithoutRestaurantInput[]
     deleteMany?: OrderScalarWhereInput | OrderScalarWhereInput[]
+  }
+
+  export type MessageUpdateManyWithoutRestaurantNestedInput = {
+    create?: XOR<MessageCreateWithoutRestaurantInput, MessageUncheckedCreateWithoutRestaurantInput> | MessageCreateWithoutRestaurantInput[] | MessageUncheckedCreateWithoutRestaurantInput[]
+    connectOrCreate?: MessageCreateOrConnectWithoutRestaurantInput | MessageCreateOrConnectWithoutRestaurantInput[]
+    upsert?: MessageUpsertWithWhereUniqueWithoutRestaurantInput | MessageUpsertWithWhereUniqueWithoutRestaurantInput[]
+    createMany?: MessageCreateManyRestaurantInputEnvelope
+    set?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    disconnect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    delete?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    update?: MessageUpdateWithWhereUniqueWithoutRestaurantInput | MessageUpdateWithWhereUniqueWithoutRestaurantInput[]
+    updateMany?: MessageUpdateManyWithWhereWithoutRestaurantInput | MessageUpdateManyWithWhereWithoutRestaurantInput[]
+    deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
   }
 
   export type IntFieldUpdateOperationsInput = {
@@ -6826,6 +8424,20 @@ export namespace Prisma {
     deleteMany?: OrderScalarWhereInput | OrderScalarWhereInput[]
   }
 
+  export type MessageUncheckedUpdateManyWithoutRestaurantNestedInput = {
+    create?: XOR<MessageCreateWithoutRestaurantInput, MessageUncheckedCreateWithoutRestaurantInput> | MessageCreateWithoutRestaurantInput[] | MessageUncheckedCreateWithoutRestaurantInput[]
+    connectOrCreate?: MessageCreateOrConnectWithoutRestaurantInput | MessageCreateOrConnectWithoutRestaurantInput[]
+    upsert?: MessageUpsertWithWhereUniqueWithoutRestaurantInput | MessageUpsertWithWhereUniqueWithoutRestaurantInput[]
+    createMany?: MessageCreateManyRestaurantInputEnvelope
+    set?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    disconnect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    delete?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    update?: MessageUpdateWithWhereUniqueWithoutRestaurantInput | MessageUpdateWithWhereUniqueWithoutRestaurantInput[]
+    updateMany?: MessageUpdateManyWithWhereWithoutRestaurantInput | MessageUpdateManyWithWhereWithoutRestaurantInput[]
+    deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
+  }
+
   export type RestaurantCreateNestedOneWithoutUsersInput = {
     create?: XOR<RestaurantCreateWithoutUsersInput, RestaurantUncheckedCreateWithoutUsersInput>
     connectOrCreate?: RestaurantCreateOrConnectWithoutUsersInput
@@ -6839,11 +8451,25 @@ export namespace Prisma {
     connect?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
   }
 
+  export type MessageCreateNestedManyWithoutAuthorInput = {
+    create?: XOR<MessageCreateWithoutAuthorInput, MessageUncheckedCreateWithoutAuthorInput> | MessageCreateWithoutAuthorInput[] | MessageUncheckedCreateWithoutAuthorInput[]
+    connectOrCreate?: MessageCreateOrConnectWithoutAuthorInput | MessageCreateOrConnectWithoutAuthorInput[]
+    createMany?: MessageCreateManyAuthorInputEnvelope
+    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+  }
+
   export type OrderUncheckedCreateNestedManyWithoutWaiterInput = {
     create?: XOR<OrderCreateWithoutWaiterInput, OrderUncheckedCreateWithoutWaiterInput> | OrderCreateWithoutWaiterInput[] | OrderUncheckedCreateWithoutWaiterInput[]
     connectOrCreate?: OrderCreateOrConnectWithoutWaiterInput | OrderCreateOrConnectWithoutWaiterInput[]
     createMany?: OrderCreateManyWaiterInputEnvelope
     connect?: OrderWhereUniqueInput | OrderWhereUniqueInput[]
+  }
+
+  export type MessageUncheckedCreateNestedManyWithoutAuthorInput = {
+    create?: XOR<MessageCreateWithoutAuthorInput, MessageUncheckedCreateWithoutAuthorInput> | MessageCreateWithoutAuthorInput[] | MessageUncheckedCreateWithoutAuthorInput[]
+    connectOrCreate?: MessageCreateOrConnectWithoutAuthorInput | MessageCreateOrConnectWithoutAuthorInput[]
+    createMany?: MessageCreateManyAuthorInputEnvelope
+    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
   }
 
   export type EnumRoleFieldUpdateOperationsInput = {
@@ -6872,6 +8498,20 @@ export namespace Prisma {
     deleteMany?: OrderScalarWhereInput | OrderScalarWhereInput[]
   }
 
+  export type MessageUpdateManyWithoutAuthorNestedInput = {
+    create?: XOR<MessageCreateWithoutAuthorInput, MessageUncheckedCreateWithoutAuthorInput> | MessageCreateWithoutAuthorInput[] | MessageUncheckedCreateWithoutAuthorInput[]
+    connectOrCreate?: MessageCreateOrConnectWithoutAuthorInput | MessageCreateOrConnectWithoutAuthorInput[]
+    upsert?: MessageUpsertWithWhereUniqueWithoutAuthorInput | MessageUpsertWithWhereUniqueWithoutAuthorInput[]
+    createMany?: MessageCreateManyAuthorInputEnvelope
+    set?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    disconnect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    delete?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    update?: MessageUpdateWithWhereUniqueWithoutAuthorInput | MessageUpdateWithWhereUniqueWithoutAuthorInput[]
+    updateMany?: MessageUpdateManyWithWhereWithoutAuthorInput | MessageUpdateManyWithWhereWithoutAuthorInput[]
+    deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
+  }
+
   export type OrderUncheckedUpdateManyWithoutWaiterNestedInput = {
     create?: XOR<OrderCreateWithoutWaiterInput, OrderUncheckedCreateWithoutWaiterInput> | OrderCreateWithoutWaiterInput[] | OrderUncheckedCreateWithoutWaiterInput[]
     connectOrCreate?: OrderCreateOrConnectWithoutWaiterInput | OrderCreateOrConnectWithoutWaiterInput[]
@@ -6884,6 +8524,20 @@ export namespace Prisma {
     update?: OrderUpdateWithWhereUniqueWithoutWaiterInput | OrderUpdateWithWhereUniqueWithoutWaiterInput[]
     updateMany?: OrderUpdateManyWithWhereWithoutWaiterInput | OrderUpdateManyWithWhereWithoutWaiterInput[]
     deleteMany?: OrderScalarWhereInput | OrderScalarWhereInput[]
+  }
+
+  export type MessageUncheckedUpdateManyWithoutAuthorNestedInput = {
+    create?: XOR<MessageCreateWithoutAuthorInput, MessageUncheckedCreateWithoutAuthorInput> | MessageCreateWithoutAuthorInput[] | MessageUncheckedCreateWithoutAuthorInput[]
+    connectOrCreate?: MessageCreateOrConnectWithoutAuthorInput | MessageCreateOrConnectWithoutAuthorInput[]
+    upsert?: MessageUpsertWithWhereUniqueWithoutAuthorInput | MessageUpsertWithWhereUniqueWithoutAuthorInput[]
+    createMany?: MessageCreateManyAuthorInputEnvelope
+    set?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    disconnect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    delete?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+    update?: MessageUpdateWithWhereUniqueWithoutAuthorInput | MessageUpdateWithWhereUniqueWithoutAuthorInput[]
+    updateMany?: MessageUpdateManyWithWhereWithoutAuthorInput | MessageUpdateManyWithWhereWithoutAuthorInput[]
+    deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
   }
 
   export type RestaurantCreateNestedOneWithoutOrdersInput = {
@@ -6978,12 +8632,44 @@ export namespace Prisma {
     divide?: number
   }
 
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
+  }
+
   export type OrderUpdateOneRequiredWithoutMealsNestedInput = {
     create?: XOR<OrderCreateWithoutMealsInput, OrderUncheckedCreateWithoutMealsInput>
     connectOrCreate?: OrderCreateOrConnectWithoutMealsInput
     upsert?: OrderUpsertWithoutMealsInput
     connect?: OrderWhereUniqueInput
     update?: XOR<XOR<OrderUpdateToOneWithWhereWithoutMealsInput, OrderUpdateWithoutMealsInput>, OrderUncheckedUpdateWithoutMealsInput>
+  }
+
+  export type RestaurantCreateNestedOneWithoutMessagesInput = {
+    create?: XOR<RestaurantCreateWithoutMessagesInput, RestaurantUncheckedCreateWithoutMessagesInput>
+    connectOrCreate?: RestaurantCreateOrConnectWithoutMessagesInput
+    connect?: RestaurantWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutMessagesInput = {
+    create?: XOR<UserCreateWithoutMessagesInput, UserUncheckedCreateWithoutMessagesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutMessagesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type RestaurantUpdateOneRequiredWithoutMessagesNestedInput = {
+    create?: XOR<RestaurantCreateWithoutMessagesInput, RestaurantUncheckedCreateWithoutMessagesInput>
+    connectOrCreate?: RestaurantCreateOrConnectWithoutMessagesInput
+    upsert?: RestaurantUpsertWithoutMessagesInput
+    connect?: RestaurantWhereUniqueInput
+    update?: XOR<XOR<RestaurantUpdateToOneWithWhereWithoutMessagesInput, RestaurantUpdateWithoutMessagesInput>, RestaurantUncheckedUpdateWithoutMessagesInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutMessagesNestedInput = {
+    create?: XOR<UserCreateWithoutMessagesInput, UserUncheckedCreateWithoutMessagesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutMessagesInput
+    upsert?: UserUpsertWithoutMessagesInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutMessagesInput, UserUpdateWithoutMessagesInput>, UserUncheckedUpdateWithoutMessagesInput>
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -7090,6 +8776,20 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type NestedStringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
   export type NestedEnumMealStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.MealStatus | EnumMealStatusFieldRefInput<$PrismaModel>
     in?: $Enums.MealStatus[] | ListEnumMealStatusFieldRefInput<$PrismaModel>
@@ -7130,19 +8830,51 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
+  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type NestedIntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
   export type UserCreateWithoutRestaurantInput = {
     role: $Enums.Role
     name: string
+    matricule: string
     password: string
     orders?: OrderCreateNestedManyWithoutWaiterInput
+    messages?: MessageCreateNestedManyWithoutAuthorInput
   }
 
   export type UserUncheckedCreateWithoutRestaurantInput = {
     id?: number
     role: $Enums.Role
     name: string
+    matricule: string
     password: string
     orders?: OrderUncheckedCreateNestedManyWithoutWaiterInput
+    messages?: MessageUncheckedCreateNestedManyWithoutAuthorInput
   }
 
   export type UserCreateOrConnectWithoutRestaurantInput = {
@@ -7156,14 +8888,14 @@ export namespace Prisma {
   }
 
   export type OrderCreateWithoutRestaurantInput = {
-    table: number
+    tableNumber: number
     waiter: UserCreateNestedOneWithoutOrdersInput
     meals?: MealCreateNestedManyWithoutOrderInput
   }
 
   export type OrderUncheckedCreateWithoutRestaurantInput = {
     id?: number
-    table: number
+    tableNumber: number
     waiterId: number
     meals?: MealUncheckedCreateNestedManyWithoutOrderInput
   }
@@ -7175,6 +8907,29 @@ export namespace Prisma {
 
   export type OrderCreateManyRestaurantInputEnvelope = {
     data: OrderCreateManyRestaurantInput | OrderCreateManyRestaurantInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type MessageCreateWithoutRestaurantInput = {
+    content: string
+    createdAt?: Date | string
+    author: UserCreateNestedOneWithoutMessagesInput
+  }
+
+  export type MessageUncheckedCreateWithoutRestaurantInput = {
+    id?: number
+    content: string
+    createdAt?: Date | string
+    authorId: number
+  }
+
+  export type MessageCreateOrConnectWithoutRestaurantInput = {
+    where: MessageWhereUniqueInput
+    create: XOR<MessageCreateWithoutRestaurantInput, MessageUncheckedCreateWithoutRestaurantInput>
+  }
+
+  export type MessageCreateManyRestaurantInputEnvelope = {
+    data: MessageCreateManyRestaurantInput | MessageCreateManyRestaurantInput[]
     skipDuplicates?: boolean
   }
 
@@ -7201,6 +8956,7 @@ export namespace Prisma {
     id?: IntFilter<"User"> | number
     role?: EnumRoleFilter<"User"> | $Enums.Role
     name?: StringFilter<"User"> | string
+    matricule?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
     restaurantId?: IntFilter<"User"> | number
   }
@@ -7226,20 +8982,51 @@ export namespace Prisma {
     OR?: OrderScalarWhereInput[]
     NOT?: OrderScalarWhereInput | OrderScalarWhereInput[]
     id?: IntFilter<"Order"> | number
-    table?: IntFilter<"Order"> | number
+    tableNumber?: IntFilter<"Order"> | number
     restaurantId?: IntFilter<"Order"> | number
     waiterId?: IntFilter<"Order"> | number
   }
 
+  export type MessageUpsertWithWhereUniqueWithoutRestaurantInput = {
+    where: MessageWhereUniqueInput
+    update: XOR<MessageUpdateWithoutRestaurantInput, MessageUncheckedUpdateWithoutRestaurantInput>
+    create: XOR<MessageCreateWithoutRestaurantInput, MessageUncheckedCreateWithoutRestaurantInput>
+  }
+
+  export type MessageUpdateWithWhereUniqueWithoutRestaurantInput = {
+    where: MessageWhereUniqueInput
+    data: XOR<MessageUpdateWithoutRestaurantInput, MessageUncheckedUpdateWithoutRestaurantInput>
+  }
+
+  export type MessageUpdateManyWithWhereWithoutRestaurantInput = {
+    where: MessageScalarWhereInput
+    data: XOR<MessageUpdateManyMutationInput, MessageUncheckedUpdateManyWithoutRestaurantInput>
+  }
+
+  export type MessageScalarWhereInput = {
+    AND?: MessageScalarWhereInput | MessageScalarWhereInput[]
+    OR?: MessageScalarWhereInput[]
+    NOT?: MessageScalarWhereInput | MessageScalarWhereInput[]
+    id?: IntFilter<"Message"> | number
+    content?: StringFilter<"Message"> | string
+    createdAt?: DateTimeFilter<"Message"> | Date | string
+    restaurantId?: IntFilter<"Message"> | number
+    authorId?: IntFilter<"Message"> | number
+  }
+
   export type RestaurantCreateWithoutUsersInput = {
     name: string
+    code: string
     orders?: OrderCreateNestedManyWithoutRestaurantInput
+    messages?: MessageCreateNestedManyWithoutRestaurantInput
   }
 
   export type RestaurantUncheckedCreateWithoutUsersInput = {
     id?: number
     name: string
+    code: string
     orders?: OrderUncheckedCreateNestedManyWithoutRestaurantInput
+    messages?: MessageUncheckedCreateNestedManyWithoutRestaurantInput
   }
 
   export type RestaurantCreateOrConnectWithoutUsersInput = {
@@ -7248,14 +9035,14 @@ export namespace Prisma {
   }
 
   export type OrderCreateWithoutWaiterInput = {
-    table: number
+    tableNumber: number
     restaurant: RestaurantCreateNestedOneWithoutOrdersInput
     meals?: MealCreateNestedManyWithoutOrderInput
   }
 
   export type OrderUncheckedCreateWithoutWaiterInput = {
     id?: number
-    table: number
+    tableNumber: number
     restaurantId: number
     meals?: MealUncheckedCreateNestedManyWithoutOrderInput
   }
@@ -7267,6 +9054,29 @@ export namespace Prisma {
 
   export type OrderCreateManyWaiterInputEnvelope = {
     data: OrderCreateManyWaiterInput | OrderCreateManyWaiterInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type MessageCreateWithoutAuthorInput = {
+    content: string
+    createdAt?: Date | string
+    restaurant: RestaurantCreateNestedOneWithoutMessagesInput
+  }
+
+  export type MessageUncheckedCreateWithoutAuthorInput = {
+    id?: number
+    content: string
+    createdAt?: Date | string
+    restaurantId: number
+  }
+
+  export type MessageCreateOrConnectWithoutAuthorInput = {
+    where: MessageWhereUniqueInput
+    create: XOR<MessageCreateWithoutAuthorInput, MessageUncheckedCreateWithoutAuthorInput>
+  }
+
+  export type MessageCreateManyAuthorInputEnvelope = {
+    data: MessageCreateManyAuthorInput | MessageCreateManyAuthorInput[]
     skipDuplicates?: boolean
   }
 
@@ -7283,13 +9093,17 @@ export namespace Prisma {
 
   export type RestaurantUpdateWithoutUsersInput = {
     name?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     orders?: OrderUpdateManyWithoutRestaurantNestedInput
+    messages?: MessageUpdateManyWithoutRestaurantNestedInput
   }
 
   export type RestaurantUncheckedUpdateWithoutUsersInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     orders?: OrderUncheckedUpdateManyWithoutRestaurantNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutRestaurantNestedInput
   }
 
   export type OrderUpsertWithWhereUniqueWithoutWaiterInput = {
@@ -7308,15 +9122,35 @@ export namespace Prisma {
     data: XOR<OrderUpdateManyMutationInput, OrderUncheckedUpdateManyWithoutWaiterInput>
   }
 
+  export type MessageUpsertWithWhereUniqueWithoutAuthorInput = {
+    where: MessageWhereUniqueInput
+    update: XOR<MessageUpdateWithoutAuthorInput, MessageUncheckedUpdateWithoutAuthorInput>
+    create: XOR<MessageCreateWithoutAuthorInput, MessageUncheckedCreateWithoutAuthorInput>
+  }
+
+  export type MessageUpdateWithWhereUniqueWithoutAuthorInput = {
+    where: MessageWhereUniqueInput
+    data: XOR<MessageUpdateWithoutAuthorInput, MessageUncheckedUpdateWithoutAuthorInput>
+  }
+
+  export type MessageUpdateManyWithWhereWithoutAuthorInput = {
+    where: MessageScalarWhereInput
+    data: XOR<MessageUpdateManyMutationInput, MessageUncheckedUpdateManyWithoutAuthorInput>
+  }
+
   export type RestaurantCreateWithoutOrdersInput = {
     name: string
+    code: string
     users?: UserCreateNestedManyWithoutRestaurantInput
+    messages?: MessageCreateNestedManyWithoutRestaurantInput
   }
 
   export type RestaurantUncheckedCreateWithoutOrdersInput = {
     id?: number
     name: string
+    code: string
     users?: UserUncheckedCreateNestedManyWithoutRestaurantInput
+    messages?: MessageUncheckedCreateNestedManyWithoutRestaurantInput
   }
 
   export type RestaurantCreateOrConnectWithoutOrdersInput = {
@@ -7327,16 +9161,20 @@ export namespace Prisma {
   export type UserCreateWithoutOrdersInput = {
     role: $Enums.Role
     name: string
+    matricule: string
     password: string
     restaurant: RestaurantCreateNestedOneWithoutUsersInput
+    messages?: MessageCreateNestedManyWithoutAuthorInput
   }
 
   export type UserUncheckedCreateWithoutOrdersInput = {
     id?: number
     role: $Enums.Role
     name: string
+    matricule: string
     password: string
     restaurantId: number
+    messages?: MessageUncheckedCreateNestedManyWithoutAuthorInput
   }
 
   export type UserCreateOrConnectWithoutOrdersInput = {
@@ -7346,19 +9184,19 @@ export namespace Prisma {
 
   export type MealCreateWithoutOrderInput = {
     status: $Enums.MealStatus
-    date: Date | string
+    createdAt?: Date | string
     quantity: number
     price: number
-    comment: string
+    comment?: string | null
   }
 
   export type MealUncheckedCreateWithoutOrderInput = {
     id?: number
     status: $Enums.MealStatus
-    date: Date | string
+    createdAt?: Date | string
     quantity: number
     price: number
-    comment: string
+    comment?: string | null
   }
 
   export type MealCreateOrConnectWithoutOrderInput = {
@@ -7384,13 +9222,17 @@ export namespace Prisma {
 
   export type RestaurantUpdateWithoutOrdersInput = {
     name?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     users?: UserUpdateManyWithoutRestaurantNestedInput
+    messages?: MessageUpdateManyWithoutRestaurantNestedInput
   }
 
   export type RestaurantUncheckedUpdateWithoutOrdersInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
     users?: UserUncheckedUpdateManyWithoutRestaurantNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutRestaurantNestedInput
   }
 
   export type UserUpsertWithoutOrdersInput = {
@@ -7407,16 +9249,20 @@ export namespace Prisma {
   export type UserUpdateWithoutOrdersInput = {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     name?: StringFieldUpdateOperationsInput | string
+    matricule?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     restaurant?: RestaurantUpdateOneRequiredWithoutUsersNestedInput
+    messages?: MessageUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutOrdersInput = {
     id?: IntFieldUpdateOperationsInput | number
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     name?: StringFieldUpdateOperationsInput | string
+    matricule?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     restaurantId?: IntFieldUpdateOperationsInput | number
+    messages?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
   }
 
   export type MealUpsertWithWhereUniqueWithoutOrderInput = {
@@ -7441,22 +9287,22 @@ export namespace Prisma {
     NOT?: MealScalarWhereInput | MealScalarWhereInput[]
     id?: IntFilter<"Meal"> | number
     status?: EnumMealStatusFilter<"Meal"> | $Enums.MealStatus
-    date?: DateTimeFilter<"Meal"> | Date | string
+    createdAt?: DateTimeFilter<"Meal"> | Date | string
     quantity?: IntFilter<"Meal"> | number
     price?: FloatFilter<"Meal"> | number
-    comment?: StringFilter<"Meal"> | string
+    comment?: StringNullableFilter<"Meal"> | string | null
     orderId?: IntFilter<"Meal"> | number
   }
 
   export type OrderCreateWithoutMealsInput = {
-    table: number
+    tableNumber: number
     restaurant: RestaurantCreateNestedOneWithoutOrdersInput
     waiter: UserCreateNestedOneWithoutOrdersInput
   }
 
   export type OrderUncheckedCreateWithoutMealsInput = {
     id?: number
-    table: number
+    tableNumber: number
     restaurantId: number
     waiterId: number
   }
@@ -7478,130 +9324,290 @@ export namespace Prisma {
   }
 
   export type OrderUpdateWithoutMealsInput = {
-    table?: IntFieldUpdateOperationsInput | number
+    tableNumber?: IntFieldUpdateOperationsInput | number
     restaurant?: RestaurantUpdateOneRequiredWithoutOrdersNestedInput
     waiter?: UserUpdateOneRequiredWithoutOrdersNestedInput
   }
 
   export type OrderUncheckedUpdateWithoutMealsInput = {
     id?: IntFieldUpdateOperationsInput | number
-    table?: IntFieldUpdateOperationsInput | number
+    tableNumber?: IntFieldUpdateOperationsInput | number
     restaurantId?: IntFieldUpdateOperationsInput | number
     waiterId?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type RestaurantCreateWithoutMessagesInput = {
+    name: string
+    code: string
+    users?: UserCreateNestedManyWithoutRestaurantInput
+    orders?: OrderCreateNestedManyWithoutRestaurantInput
+  }
+
+  export type RestaurantUncheckedCreateWithoutMessagesInput = {
+    id?: number
+    name: string
+    code: string
+    users?: UserUncheckedCreateNestedManyWithoutRestaurantInput
+    orders?: OrderUncheckedCreateNestedManyWithoutRestaurantInput
+  }
+
+  export type RestaurantCreateOrConnectWithoutMessagesInput = {
+    where: RestaurantWhereUniqueInput
+    create: XOR<RestaurantCreateWithoutMessagesInput, RestaurantUncheckedCreateWithoutMessagesInput>
+  }
+
+  export type UserCreateWithoutMessagesInput = {
+    role: $Enums.Role
+    name: string
+    matricule: string
+    password: string
+    restaurant: RestaurantCreateNestedOneWithoutUsersInput
+    orders?: OrderCreateNestedManyWithoutWaiterInput
+  }
+
+  export type UserUncheckedCreateWithoutMessagesInput = {
+    id?: number
+    role: $Enums.Role
+    name: string
+    matricule: string
+    password: string
+    restaurantId: number
+    orders?: OrderUncheckedCreateNestedManyWithoutWaiterInput
+  }
+
+  export type UserCreateOrConnectWithoutMessagesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutMessagesInput, UserUncheckedCreateWithoutMessagesInput>
+  }
+
+  export type RestaurantUpsertWithoutMessagesInput = {
+    update: XOR<RestaurantUpdateWithoutMessagesInput, RestaurantUncheckedUpdateWithoutMessagesInput>
+    create: XOR<RestaurantCreateWithoutMessagesInput, RestaurantUncheckedCreateWithoutMessagesInput>
+    where?: RestaurantWhereInput
+  }
+
+  export type RestaurantUpdateToOneWithWhereWithoutMessagesInput = {
+    where?: RestaurantWhereInput
+    data: XOR<RestaurantUpdateWithoutMessagesInput, RestaurantUncheckedUpdateWithoutMessagesInput>
+  }
+
+  export type RestaurantUpdateWithoutMessagesInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    users?: UserUpdateManyWithoutRestaurantNestedInput
+    orders?: OrderUpdateManyWithoutRestaurantNestedInput
+  }
+
+  export type RestaurantUncheckedUpdateWithoutMessagesInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    code?: StringFieldUpdateOperationsInput | string
+    users?: UserUncheckedUpdateManyWithoutRestaurantNestedInput
+    orders?: OrderUncheckedUpdateManyWithoutRestaurantNestedInput
+  }
+
+  export type UserUpsertWithoutMessagesInput = {
+    update: XOR<UserUpdateWithoutMessagesInput, UserUncheckedUpdateWithoutMessagesInput>
+    create: XOR<UserCreateWithoutMessagesInput, UserUncheckedCreateWithoutMessagesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutMessagesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutMessagesInput, UserUncheckedUpdateWithoutMessagesInput>
+  }
+
+  export type UserUpdateWithoutMessagesInput = {
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    name?: StringFieldUpdateOperationsInput | string
+    matricule?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    restaurant?: RestaurantUpdateOneRequiredWithoutUsersNestedInput
+    orders?: OrderUpdateManyWithoutWaiterNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutMessagesInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    name?: StringFieldUpdateOperationsInput | string
+    matricule?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    restaurantId?: IntFieldUpdateOperationsInput | number
+    orders?: OrderUncheckedUpdateManyWithoutWaiterNestedInput
   }
 
   export type UserCreateManyRestaurantInput = {
     id?: number
     role: $Enums.Role
     name: string
+    matricule: string
     password: string
   }
 
   export type OrderCreateManyRestaurantInput = {
     id?: number
-    table: number
+    tableNumber: number
     waiterId: number
+  }
+
+  export type MessageCreateManyRestaurantInput = {
+    id?: number
+    content: string
+    createdAt?: Date | string
+    authorId: number
   }
 
   export type UserUpdateWithoutRestaurantInput = {
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     name?: StringFieldUpdateOperationsInput | string
+    matricule?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     orders?: OrderUpdateManyWithoutWaiterNestedInput
+    messages?: MessageUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRestaurantInput = {
     id?: IntFieldUpdateOperationsInput | number
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     name?: StringFieldUpdateOperationsInput | string
+    matricule?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     orders?: OrderUncheckedUpdateManyWithoutWaiterNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutAuthorNestedInput
   }
 
   export type UserUncheckedUpdateManyWithoutRestaurantInput = {
     id?: IntFieldUpdateOperationsInput | number
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     name?: StringFieldUpdateOperationsInput | string
+    matricule?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
   }
 
   export type OrderUpdateWithoutRestaurantInput = {
-    table?: IntFieldUpdateOperationsInput | number
+    tableNumber?: IntFieldUpdateOperationsInput | number
     waiter?: UserUpdateOneRequiredWithoutOrdersNestedInput
     meals?: MealUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateWithoutRestaurantInput = {
     id?: IntFieldUpdateOperationsInput | number
-    table?: IntFieldUpdateOperationsInput | number
+    tableNumber?: IntFieldUpdateOperationsInput | number
     waiterId?: IntFieldUpdateOperationsInput | number
     meals?: MealUncheckedUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateManyWithoutRestaurantInput = {
     id?: IntFieldUpdateOperationsInput | number
-    table?: IntFieldUpdateOperationsInput | number
+    tableNumber?: IntFieldUpdateOperationsInput | number
     waiterId?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type MessageUpdateWithoutRestaurantInput = {
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    author?: UserUpdateOneRequiredWithoutMessagesNestedInput
+  }
+
+  export type MessageUncheckedUpdateWithoutRestaurantInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    authorId?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type MessageUncheckedUpdateManyWithoutRestaurantInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    authorId?: IntFieldUpdateOperationsInput | number
   }
 
   export type OrderCreateManyWaiterInput = {
     id?: number
-    table: number
+    tableNumber: number
+    restaurantId: number
+  }
+
+  export type MessageCreateManyAuthorInput = {
+    id?: number
+    content: string
+    createdAt?: Date | string
     restaurantId: number
   }
 
   export type OrderUpdateWithoutWaiterInput = {
-    table?: IntFieldUpdateOperationsInput | number
+    tableNumber?: IntFieldUpdateOperationsInput | number
     restaurant?: RestaurantUpdateOneRequiredWithoutOrdersNestedInput
     meals?: MealUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateWithoutWaiterInput = {
     id?: IntFieldUpdateOperationsInput | number
-    table?: IntFieldUpdateOperationsInput | number
+    tableNumber?: IntFieldUpdateOperationsInput | number
     restaurantId?: IntFieldUpdateOperationsInput | number
     meals?: MealUncheckedUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateManyWithoutWaiterInput = {
     id?: IntFieldUpdateOperationsInput | number
-    table?: IntFieldUpdateOperationsInput | number
+    tableNumber?: IntFieldUpdateOperationsInput | number
+    restaurantId?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type MessageUpdateWithoutAuthorInput = {
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    restaurant?: RestaurantUpdateOneRequiredWithoutMessagesNestedInput
+  }
+
+  export type MessageUncheckedUpdateWithoutAuthorInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    restaurantId?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type MessageUncheckedUpdateManyWithoutAuthorInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    content?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     restaurantId?: IntFieldUpdateOperationsInput | number
   }
 
   export type MealCreateManyOrderInput = {
     id?: number
     status: $Enums.MealStatus
-    date: Date | string
+    createdAt?: Date | string
     quantity: number
     price: number
-    comment: string
+    comment?: string | null
   }
 
   export type MealUpdateWithoutOrderInput = {
     status?: EnumMealStatusFieldUpdateOperationsInput | $Enums.MealStatus
-    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     quantity?: IntFieldUpdateOperationsInput | number
     price?: FloatFieldUpdateOperationsInput | number
-    comment?: StringFieldUpdateOperationsInput | string
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type MealUncheckedUpdateWithoutOrderInput = {
     id?: IntFieldUpdateOperationsInput | number
     status?: EnumMealStatusFieldUpdateOperationsInput | $Enums.MealStatus
-    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     quantity?: IntFieldUpdateOperationsInput | number
     price?: FloatFieldUpdateOperationsInput | number
-    comment?: StringFieldUpdateOperationsInput | string
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type MealUncheckedUpdateManyWithoutOrderInput = {
     id?: IntFieldUpdateOperationsInput | number
     status?: EnumMealStatusFieldUpdateOperationsInput | $Enums.MealStatus
-    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     quantity?: IntFieldUpdateOperationsInput | number
     price?: FloatFieldUpdateOperationsInput | number
-    comment?: StringFieldUpdateOperationsInput | string
+    comment?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
 

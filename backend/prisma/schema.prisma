@@ -23,27 +23,33 @@ enum MealStatus {
 
 model Restaurant {
   id     Int    @id @default(autoincrement())
-  name   String @unique
+  name   String
+  code   String @unique
 
   users  User[]
   orders Order[]
+  messages Message[]
 }
 
 model User {
   id           Int    @id @default(autoincrement())
   role         Role
-  name         String @unique
+  name         String
+  matricule    String
   password     String
 
   restaurantId Int
   restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
 
-  orders       Order[] // commandes créées par ce user (waiter)
+  orders       Order[]
+  messages Message[]
+
+  @@unique([matricule, restaurantId])
 }
 
 model Order {
   id           Int   @id @default(autoincrement())
-  table        Int
+  tableNumber  Int
 
   restaurantId Int
   restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
@@ -57,11 +63,25 @@ model Order {
 model Meal {
   id        Int        @id @default(autoincrement())
   status    MealStatus
-  date      DateTime
+  createdAt DateTime @default(now())
   quantity  Int
   price     Float
-  comment   String
+  comment   String?
 
   orderId   Int
   order     Order @relation(fields: [orderId], references: [id])
+}
+
+model Message {
+  id           Int      @id @default(autoincrement())
+  content      String
+  createdAt    DateTime @default(now())
+
+  restaurantId Int
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
+
+  authorId     Int
+  author       User @relation(fields: [authorId], references: [id])
+
+  @@index([restaurantId, id])
 }

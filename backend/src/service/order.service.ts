@@ -1,13 +1,34 @@
-import {Injectable} from "@nestjs/common";
-import {MealStatus, Order, Role} from "shared";
+import {ConflictException, ForbiddenException, Injectable, NotFoundException} from "@nestjs/common";
+import {MealStatus, type OrderInputType, type OrderOutputType, Role} from "shared";
 import {PrismaService} from "../../prisma/prisma.service.js";
 import {SseService} from "./sse.service.js";
+
+
+type Transition = {
+    from: MealStatus;
+    to: MealStatus;
+    notify: Role[];
+};
+
+const TRANSITIONS: Partial<Record<Role, Transition>> = {
+    [Role.MANAGER]: { from: MealStatus.VALIDATION,  to: MealStatus.IN_PROGRESS, notify: [Role.COOK, Role.MANAGER] },
+    [Role.COOK]:    { from: MealStatus.IN_PROGRESS, to: MealStatus.READY,       notify: [Role.WAITER, Role.MANAGER] },
+    [Role.WAITER]:  { from: MealStatus.READY,       to: MealStatus.SERVED,      notify: [Role.WAITER] },
+};
+
+const CANCEL_NOTIFY: Partial<Record<MealStatus, Role[]>> = {
+    [MealStatus.VALIDATION]:  [Role.MANAGER],
+    [MealStatus.IN_PROGRESS]: [Role.COOK, Role.MANAGER],
+    [MealStatus.READY]:       [Role.WAITER, Role.MANAGER],
+};
+
+const CANCELABLE = Object.keys(CANCEL_NOTIFY) as MealStatus[];
 
 @Injectable()
 export class OrderService {
     constructor(private readonly prisma: PrismaService, private readonly sseService : SseService){}
 
-    async findAll(role:Role, restaurantId:number): Promise<Order[]> {
+    async findAll(role:Role, restaurantCode:string): Promise<OrderOutputType[]> {
         let filterStatus: MealStatus | undefined
         switch (role) {
             case Role.WAITER:
@@ -21,161 +42,152 @@ export class OrderService {
                 break;
         }
         const orders = await this.prisma.order.findMany({
-            where: { restaurantId },
+            where: {
+                restaurant: { code: restaurantCode },
+                ...(filterStatus && { meals: { some: { status: filterStatus } } }),
+            },
             include: {
-                waiter: true,
-                restaurant: true,
-                meals: filterStatus
-                    ? { where: { status: filterStatus } }
-                    : true,
+                waiter: { select: { matricule: true, name: true } },
+                meals: filterStatus ? { where: { status: filterStatus } } : true,
             },
         });
 
         return orders.map(order => this.mapOrder(order));
     }
 
-    async create(order:Order, restaurantId:number){
-        order.meals.forEach(meal => {
-            if(meal.status !== MealStatus.VALIDATION){
-                meal.status = MealStatus.VALIDATION
-            }
-        })
-
+    async create(order:OrderInputType, userMatricule:string ,restaurantCode:string){
         const user = await this.prisma.user.findFirst({
             where: {
-                name: order.waiter,
-                restaurantId: restaurantId,
+                matricule: userMatricule,
+                restaurant: { code: restaurantCode },
             },
+            select: { id: true },
         });
 
         if (!user) {
-            throw new Error("User not found");
+            throw new NotFoundException("User not found");
         }
 
         const data = await this.prisma.order.create({
             data: {
-                table: order.table,
-                restaurantId,
-                waiterId: user.id,
-
+                tableNumber: order.table,
+                restaurant: { connect: { code: restaurantCode } },
+                waiter: { connect: { id: user.id } },
                 meals: {
-                    create: order.meals.map((meal) => ({
+                    create: order.meals.map(({ quantity, price, comment }) => ({
                         status: MealStatus.VALIDATION,
-                        date: meal.date,
-                        quantity: meal.quantity,
-                        price: meal.price,
-                        comment: meal.comment,
+                        quantity,
+                        price,
+                        comment,
                     })),
                 },
             },
-
             include: {
-                restaurant: true,
-                waiter: true,
+                waiter: { select: { matricule: true, name: true } },
                 meals: true,
             },
         });
 
-        const orderCreated:Order = this.mapOrder(data);
-        this.sseService.emitMany([Role.COOK, Role.MANAGER], restaurantId, orderCreated);
+        const orderCreated:OrderOutputType = this.mapOrder(data);
+        this.sseService.emitMany([Role.COOK, Role.MANAGER], restaurantCode, orderCreated);
     }
 
-    async advanceStatus(id:number, role: Role, restaurantId: number){
-        let nextStatus: MealStatus
-        let roles: Role[]
-        switch (role) {
-            case Role.WAITER:
-                nextStatus = MealStatus.SERVED
-                roles = [Role.WAITER]
-                break;
-            case Role.COOK:
-                nextStatus = MealStatus.READY
-                roles = [Role.WAITER, Role.MANAGER]
-                break;
-            case Role.MANAGER:
-                nextStatus = MealStatus.IN_PROGRESS
-                roles = [Role.COOK, Role.MANAGER]
-                break;
-            default:
-                throw new Error("Invalid role");
+    async advanceStatus(orderId:number, role: Role, restaurantCode: string){
+        const transition = TRANSITIONS[role];
+        if (!transition) {
+            throw new ForbiddenException("Role not allowed to advance a meal");
         }
 
-        const data = await this.prisma.meal.update({
-            where: { id },
-            data: { status: nextStatus },
+        const exists = await this.prisma.order.findFirst({
+            where: { id: orderId, restaurant: { code: restaurantCode } },
+            select: { id: true },
+        });
+        if (!exists) {
+            throw new NotFoundException("Order not found");
+        }
 
+        const { count } = await this.prisma.meal.updateMany({
+            where: { orderId, status: transition.from },
+            data: { status: transition.to },
+        });
+        if (count === 0) {
+            throw new ConflictException("No meal to advance in this order");
+        }
+
+        const order = await this.prisma.order.findUniqueOrThrow({
+            where: { id: orderId },
             include: {
-                order: {
-                    include: {
-                        waiter: true,
-                        restaurant: true,
-                        meals: true,
-                    },
+                waiter: { select: { matricule: true, name: true } },
+                meals: true,
+            },
+        });
+
+        const orderUpdate:OrderOutputType = this.mapOrder(order);
+
+        this.sseService.emitMany(transition.notify, restaurantCode, orderUpdate)
+    }
+
+    async cancelStatus(orderId:number, restaurantCode:string) {
+        const order = await this.prisma.order.findFirst({
+            where: { id: orderId, restaurant: { code: restaurantCode } },
+            select: {
+                meals: {
+                    where: { status: { in: CANCELABLE } },
+                    select: { id: true, status: true },
                 },
             },
         });
-        const orderUpdate:Order = this.mapOrder(data);
-
-        this.sseService.emitMany(roles, restaurantId, orderUpdate)
-    }
-
-    async cancelStatus(id:number, restaurantId:number) {
-        let data = await this.prisma.meal.findUnique({
-            where: {
-                id: id,
-            },
-        });
-
-        if(data == null){
-            throw new Error("Data not found");
+        if (!order) {
+            throw new NotFoundException("Order not found");
+        }
+        if (order.meals.length === 0) {
+            throw new ConflictException("No meal can be canceled in this order");
         }
 
-        const previousStatus = data.status;
+        const notify = [...new Set(order.meals.flatMap((m) => CANCEL_NOTIFY[m.status] ?? []))];
 
-        data = await this.prisma.meal.update({
-            where: { id },
+        const { count } = await this.prisma.meal.updateMany({
+            where: { orderId, status: { in: CANCELABLE } },
             data: { status: MealStatus.CANCELED },
-
-            include: {
-                order: {
-                    include: {
-                        waiter: true,
-                        restaurant: true,
-                        meals: true,
-                    },
-                },
-            },
         });
-        let roles:Role[];
-        switch (previousStatus) {
-            case MealStatus.READY:
-                roles = [Role.WAITER, Role.MANAGER]
-                break;
-            case MealStatus.IN_PROGRESS:
-                roles = [Role.COOK, Role.MANAGER]
-                break;
-            default:
-                roles = [Role.MANAGER]
-                break;
+        if (count === 0) {
+            throw new ConflictException("Order status changed, please retry");
         }
 
-        const orderUpdate:Order = this.mapOrder(data);
-        this.sseService.emitMany(roles, restaurantId ,orderUpdate)
+        const updated = await this.prisma.order.findUniqueOrThrow({
+            where: { id: orderId },
+            include: {
+                waiter: { select: { matricule: true, name: true } },
+                meals: true,
+            },
+        });
+        const orderUpdate:OrderOutputType = this.mapOrder(updated);
+        this.sseService.emitMany(notify, restaurantCode ,orderUpdate)
     }
 
-    private mapOrder(order: any) {
+    private mapOrder(order: {
+        id: number;
+        tableNumber: number;
+        waiter: { name: string; matricule: string };
+        meals: {
+            status: MealStatus;
+            createdAt: Date;
+            quantity: number;
+            price: number;
+            comment: string | null;
+        }[];
+    }): OrderOutputType {
         return {
-            table: order.table,
-
-            waiter: order.waiter.name,
-            restaurant: order.restaurant.name,
-
-            meals: order.meals.map((meal: any) => ({
-                status: meal.status,
-                date: meal.date,
-                quantity: meal.quantity,
-                price: meal.price,
-                comment: meal.comment,
+            id: order.id,
+            table: order.tableNumber,
+            waiterName: order.waiter.name,
+            waiterMatricule: order.waiter.matricule,
+            meals: order.meals.map(({ status, createdAt, quantity, price, comment }) => ({
+                status,
+                createdAt,
+                quantity,
+                price,
+                comment: comment ?? undefined,
             })),
         };
     }
