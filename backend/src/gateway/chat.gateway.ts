@@ -23,7 +23,7 @@ const room = (restaurantCode: string) => `restaurant:${restaurantCode}`;
 @UseGuards(WsJwtAuthGuard)
 @WebSocketGateway({
     namespace: "chat",
-    cors: { origin: process.env.FRONT_URL, credentials: true },
+    cors: { origin: process.env.FRONTEND_URL ?? "http://localhost:4200", credentials: true },
 })
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection {
     @WebSocketServer() server!: Namespace;

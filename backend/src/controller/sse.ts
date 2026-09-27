@@ -1,4 +1,4 @@
-import {Controller, Sse, UseGuards} from "@nestjs/common";
+import {Controller, Header, Sse, UseGuards} from "@nestjs/common";
 import { SseService } from "../service/sse.service.js";
 import {JwtAuthGuard} from "../common/guard/jwt-auth.guard.js";
 import {RolesGuard} from "../common/guard/role.guard.js";
@@ -13,6 +13,9 @@ export class SseController {
     constructor(private readonly sseService: SseService) {}
 
     @Sse()
+    @Header("Cache-Control", "no-cache")
+    @Header("Connection", "keep-alive")
+    @Header("X-Accel-Buffering", "no")
     stream(@CurrentUser() user: { role: Role, restaurantCode: string }) {
         return this.sseService.stream(user.role, user.restaurantCode);
     }

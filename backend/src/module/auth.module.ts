@@ -6,6 +6,7 @@ import { AuthService } from "../service/auth.service.js";
 import { UserModule } from "./user.module.js";
 import { JwtStrategy } from "../common/strategy/jwt.strategy.js";
 import { StringValue } from "ms";
+import { AuthController } from "../controller/auth.js";
 
 @Module({
     imports: [
@@ -18,6 +19,7 @@ import { StringValue } from "ms";
             },
         }),
     ],
+    controllers: [AuthController],
     providers: [AuthService, JwtStrategy],
     exports: [AuthService, JwtModule],
 })

@@ -1,0 +1,46 @@
+<main class="chat-page">
+  <section class="chat-card">
+    <div class="chat-card__heading">
+      <div>
+        <p class="chat-page__eyebrow">Temps réel</p>
+        <h2>Messages de l'équipe</h2>
+      </div>
+      <span class="chat-card__status">● En ligne</span>
+    </div>
+
+    <div class="chat-messages" #messagesContainer aria-live="polite">
+      @if (isLoading()) {
+        <p class="chat-card__empty">Chargement des messages...</p>
+      } @else if (messages().length === 0) {
+        <p class="chat-card__empty">Aucun message pour le moment.</p>
+      } @else {
+        @for (message of messages(); track message.id) {
+          <article class="chat-message" [class.chat-message--mine]="isMine(message)">
+            <div class="chat-message__meta">
+              <strong>{{ message.authorName }}</strong>
+              <time>{{ formatDate(message.createdAt) }}</time>
+            </div>
+            <p>{{ message.content }}</p>
+          </article>
+        }
+      }
+    </div>
+
+    <form class="chat-form" (ngSubmit)="sendMessage()">
+      <label class="sr-only" for="message">Votre message</label>
+      <textarea
+        id="message"
+        name="message"
+        rows="2"
+        maxlength="1000"
+        [ngModel]="content()"
+        (ngModelChange)="onContentChange($event)"
+        placeholder="Écrire un message..."
+        [disabled]="isSending()"
+      ></textarea>
+      <button type="submit" [disabled]="!content().trim() || isSending()">
+        {{ isSending() ? 'Envoi...' : 'Envoyer' }}
+      </button>
+    </form>
+  </section>
+</main>

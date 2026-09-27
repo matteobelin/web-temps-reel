@@ -1,0 +1,25 @@
+.order-action {
+  background: linear-gradient(135deg, #16806b, #0f6d5a);
+  border: 1px solid #0e624f;
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgb(22 128 107 / 18%);
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-size: .72rem;
+  font-weight: 800;
+  line-height: 1.2;
+  padding: 5px 8px;
+  transition: background .15s ease, box-shadow .15s ease, transform .15s ease;
+}
+
+.order-action:hover:not(:disabled) {
+  background: linear-gradient(135deg, #1b927a, #117763);
+  box-shadow: 0 4px 9px rgb(22 128 107 / 25%);
+  transform: translateY(-1px);
+}
+
+.order-action:disabled {
+  cursor: not-allowed;
+  opacity: .4;
+}

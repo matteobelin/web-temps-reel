@@ -3,6 +3,8 @@ import { PassportStrategy } from "@nestjs/passport";
 import { Strategy } from "passport-jwt";
 import type { Request } from "express";
 import type { Role } from "shared";
+import { parseCookie } from "cookie";
+import { ACCESS_TOKEN_COOKIE } from "../constants.js";
 
 export type JwtPayload = {
     matricule: string;
@@ -19,7 +21,7 @@ export const toAuthUser = (payload: JwtPayload) => ({
 export type AuthUser = ReturnType<typeof toAuthUser>;
 
 function cookieExtractor(req: Request): string | null {
-    return req?.cookies?.access_token ?? null;
+    return parseCookie(req.headers.cookie ?? "")[ACCESS_TOKEN_COOKIE] ?? null;
 }
 
 

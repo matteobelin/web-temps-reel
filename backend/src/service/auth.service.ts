@@ -11,13 +11,13 @@ export class AuthService {
 
     async register(user:UserInputRegistrationType){
         const userRegister = await this.userService.register(user);
-        const access_token = this.generateAccessToken(userRegister)
+        const access_token = await this.generateAccessToken(userRegister)
         return { access_token, userRegister };
     }
 
     async login(user:UserInputType){
         const userLogin = await this.userService.login(user);
-        const access_token = this.generateAccessToken(userLogin)
+        const access_token = await this.generateAccessToken(userLogin)
         return { access_token, userLogin };
     }
 

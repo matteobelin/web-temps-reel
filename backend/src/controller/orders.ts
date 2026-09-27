@@ -14,33 +14,33 @@ export class OrdersController{
 
     @Get()
     @Roles(Role.WAITER, Role.COOK, Role.MANAGER)
-    async getOrders(@CurrentUser() user: { role: Role, restaurant: string }): Promise<OrderOutputType[]> {
-        return await this.orderService.findAll(user.role, user.restaurant);
+    async getOrders(@CurrentUser() user: { role: Role, restaurantCode: string }): Promise<OrderOutputType[]> {
+        return await this.orderService.findAll(user.role, user.restaurantCode);
     }
 
     @UseGuards(RolesGuard)
     @Roles(Role.WAITER)
     @Post("create")
     async createOrder(@ZodBody(OrderSchemaInput) orderDto: OrderInputType,
-                      @CurrentUser() user: { matricule: string, restaurant: string }){
-        await this.orderService.create(orderDto, user.matricule, user.restaurant)
+                      @CurrentUser() user: { matricule: string, restaurantCode: string }) {
+        return this.orderService.create(orderDto, user.matricule, user.restaurantCode);
     }
 
     @Patch(":id/advance")
     @Roles(Role.WAITER, Role.COOK, Role.MANAGER)
     async advanceStatus(
         @Param("id", ParseIntPipe) id: number,
-        @CurrentUser() user: { role: Role, restaurant: string }
+        @CurrentUser() user: { role: Role, restaurantCode: string }
     ) {
-        return this.orderService.advanceStatus(id, user.role, user.restaurant);
+        return this.orderService.advanceStatus(id, user.role, user.restaurantCode);
     }
 
     @Patch(":id/cancel")
     @Roles(Role.WAITER, Role.COOK, Role.MANAGER)
     async canceledStatus(
         @Param("id", ParseIntPipe) id: number,
-        @CurrentUser() user: { restaurant: string }
+        @CurrentUser() user: { restaurantCode: string }
     ){
-        return this.orderService.cancelStatus(id, user.restaurant)
+        return this.orderService.cancelStatus(id, user.restaurantCode);
     }
 }

@@ -1,0 +1,8 @@
+<button
+  class="order-action"
+  type="button"
+  [disabled]="!order || !canAdvance(order)"
+  (click)="advance($event)"
+>
+  {{ label }}
+</button>

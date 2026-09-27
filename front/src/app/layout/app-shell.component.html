@@ -1,0 +1,25 @@
+<div class="app-shell">
+  <header class="app-shell__header">
+    <div class="app-shell__identity">
+      <p class="app-shell__eyebrow">Espace restaurant</p>
+      <h1>Bonjour {{ auth.currentUser()?.name }}.</h1>
+      <p class="app-shell__context">
+        {{ auth.currentUser()?.restaurantName }}
+        <span aria-hidden="true">·</span>
+        {{ auth.currentUser()?.role }}
+      </p>
+    </div>
+
+    <nav class="app-shell__navigation" aria-label="Navigation principale">
+      <a routerLink="/dashboard" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }">
+        Commandes
+      </a>
+      <a routerLink="/chat" routerLinkActive="is-active">Chat</a>
+      <button type="button" (click)="logout()">Se déconnecter</button>
+    </nav>
+  </header>
+
+  <div class="app-shell__content">
+    <router-outlet />
+  </div>
+</div>

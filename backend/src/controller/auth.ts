@@ -6,10 +6,12 @@ import {JwtAuthGuard} from "../common/guard/jwt-auth.guard.js";
 import {ZodBody} from "../common/decorator/zod.decorator.js";
 import {ACCESS_TOKEN_COOKIE} from "../common/constants.js";
 
+const secureCookies = process.env.COOKIE_SECURE === "true"
+    || (process.env.COOKIE_SECURE !== "false" && process.env.NODE_ENV === "production");
 
 const CLEAR_COOKIE_OPTIONS: CookieOptions = {
     httpOnly: true,
-    secure: true,
+    secure: secureCookies,
     sameSite: "strict",
 };
 

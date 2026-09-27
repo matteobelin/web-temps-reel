@@ -1,22 +1,38 @@
 services:
   db:
-    image: postgres:latest
-    container_name: postgres_db
+    image: postgres:17-alpine
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: app_db
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-app_db}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-app_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   backend:
     build:
       context: .
       dockerfile: ./backend/Dockerfile
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-app_db}
+      FRONTEND_URL: http://localhost
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-development}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-1d}
+      NODE_ENV: ${NODE_ENV:-production}
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      SEED_RESTAURANT_NAME: ${SEED_RESTAURANT_NAME:-Restaurant de demonstration}
+      SEED_RESTAURANT_CODE: ${SEED_RESTAURANT_CODE:-DEMO}
     ports:
       - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
 
   front:
     build:
@@ -24,6 +40,8 @@ services:
       dockerfile: ./front/Dockerfile
     ports:
       - "80:80"
+    depends_on:
+      - backend
 
 volumes:
   postgres_data:

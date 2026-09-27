@@ -1,0 +1,56 @@
+<main class="auth-page">
+  <section class="auth-card">
+    <div class="brand">TableFlow</div>
+    @if (mode === 'login') {
+      <p class="eyebrow">Bienvenue</p>
+      <h1>Se connecter</h1>
+      <p class="subtitle">Accédez à votre espace restaurant.</p>
+    } @else {
+      <p class="eyebrow">Nouveau compte</p>
+      <h1>Créer un compte</h1>
+      <p class="subtitle">Rejoignez votre équipe restaurant.</p>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      @if (mode === 'register') {
+        <label>
+          Nom complet
+          <input formControlName="name" type="text" autocomplete="name" />
+        </label>
+      }
+      <label>
+        Matricule
+        <input formControlName="matricule" type="text" autocomplete="username" />
+      </label>
+      <label>
+        Code restaurant
+        <input formControlName="restaurantCode" type="text" autocomplete="organization" />
+      </label>
+      @if (mode === 'register') {
+        <label>
+          Rôle
+          <select formControlName="role">
+            @for (role of roles; track role) {
+              <option [value]="role">{{ role }}</option>
+            }
+          </select>
+        </label>
+      }
+      <label>
+        Mot de passe
+        <input formControlName="password" type="password" autocomplete="current-password" />
+      </label>
+      <button type="submit" [disabled]="isSubmitting">
+        {{ isSubmitting ? 'Chargement...' : (mode === 'login' ? 'Se connecter' : 'S’inscrire') }}
+      </button>
+    </form>
+
+    <p class="switch">
+      @if (mode === 'login') {
+        Pas encore de compte ? <a routerLink="/register">Créer un compte</a>
+      } @else {
+        Déjà inscrit ? <a routerLink="/login">Se connecter</a>
+      }
+    </p>
+  </section>
+</main>

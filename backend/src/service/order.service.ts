@@ -13,7 +13,7 @@ type Transition = {
 const TRANSITIONS: Partial<Record<Role, Transition>> = {
     [Role.MANAGER]: { from: MealStatus.VALIDATION,  to: MealStatus.IN_PROGRESS, notify: [Role.COOK, Role.MANAGER] },
     [Role.COOK]:    { from: MealStatus.IN_PROGRESS, to: MealStatus.READY,       notify: [Role.WAITER, Role.MANAGER] },
-    [Role.WAITER]:  { from: MealStatus.READY,       to: MealStatus.SERVED,      notify: [Role.WAITER] },
+    [Role.WAITER]:  { from: MealStatus.READY,       to: MealStatus.SERVED,      notify: [Role.WAITER, Role.MANAGER] },
 };
 
 const CANCEL_NOTIFY: Partial<Record<MealStatus, Role[]>> = {
@@ -55,7 +55,7 @@ export class OrderService {
         return orders.map(order => this.mapOrder(order));
     }
 
-    async create(order:OrderInputType, userMatricule:string ,restaurantCode:string){
+    async create(order:OrderInputType, userMatricule:string ,restaurantCode:string): Promise<OrderOutputType>{
         const user = await this.prisma.user.findFirst({
             where: {
                 matricule: userMatricule,
@@ -90,6 +90,7 @@ export class OrderService {
 
         const orderCreated:OrderOutputType = this.mapOrder(data);
         this.sseService.emitMany([Role.COOK, Role.MANAGER], restaurantCode, orderCreated);
+        return orderCreated;
     }
 
     async advanceStatus(orderId:number, role: Role, restaurantCode: string){
@@ -124,7 +125,8 @@ export class OrderService {
 
         const orderUpdate:OrderOutputType = this.mapOrder(order);
 
-        this.sseService.emitMany(transition.notify, restaurantCode, orderUpdate)
+        this.sseService.emitMany(transition.notify, restaurantCode, orderUpdate);
+        return orderUpdate;
     }
 
     async cancelStatus(orderId:number, restaurantCode:string) {
@@ -162,7 +164,8 @@ export class OrderService {
             },
         });
         const orderUpdate:OrderOutputType = this.mapOrder(updated);
-        this.sseService.emitMany(notify, restaurantCode ,orderUpdate)
+        this.sseService.emitMany(notify, restaurantCode, orderUpdate);
+        return orderUpdate;
     }
 
     private mapOrder(order: {

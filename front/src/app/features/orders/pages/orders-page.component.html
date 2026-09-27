@@ -1,0 +1,161 @@
+<main class="board">
+  @if (auth.currentUser()?.role === 'WAITER') {
+    <section class="order-form" aria-labelledby="new-order-title">
+      <div class="order-form__heading">
+        <div>
+          <p class="board__eyebrow">Prise de commande</p>
+          <h2 id="new-order-title">Nouvelle commande</h2>
+        </div>
+        <span class="order-form__hint">Elle sera envoyée en validation.</span>
+      </div>
+      <form (ngSubmit)="createOrder()">
+        <label>
+          Table
+          <input
+            type="number"
+            min="1"
+            name="table"
+            [ngModel]="newTable()"
+            (ngModelChange)="newTable.set($event)"
+            required
+          />
+        </label>
+        <label>
+          Quantité
+          <input
+            type="number"
+            min="1"
+            name="quantity"
+            [ngModel]="newQuantity()"
+            (ngModelChange)="newQuantity.set($event)"
+            required
+          />
+        </label>
+        <label>
+          Prix (€)
+          <input
+            type="number"
+            min="0.01"
+            step="0.01"
+            name="price"
+            [ngModel]="newPrice()"
+            (ngModelChange)="newPrice.set($event)"
+            required
+          />
+        </label>
+        <label class="order-form__comment">
+          Plat / commentaire
+          <textarea
+            name="comment"
+            rows="2"
+            maxlength="500"
+            [ngModel]="newComment()"
+            (ngModelChange)="newComment.set($event)"
+            placeholder="Ex. steak-frites, sans oignons"
+          ></textarea>
+        </label>
+        <button type="submit" [disabled]="isCreating()">
+          {{ isCreating() ? 'Création...' : 'Créer la commande' }}
+        </button>
+      </form>
+    </section>
+  }
+
+  <section class="board__content">
+    <div class="board__toolbar">
+      <div class="board__filters" role="group" aria-label="Filtrer les commandes">
+        @if (auth.currentUser()?.role === 'MANAGER') {
+          <button
+            type="button"
+            [class.is-active]="activeFilter() === 'validation'"
+            (click)="setFilter('validation')"
+          >
+            À valider
+          </button>
+        }
+        <button
+          type="button"
+          [class.is-active]="activeFilter() === 'all'"
+          (click)="setFilter('all')"
+        >
+          Toutes les commandes
+        </button>
+        @if (auth.currentUser()?.role === 'MANAGER') {
+          <button
+            type="button"
+            [class.is-active]="activeFilter() === 'canceled'"
+            (click)="setFilter('canceled')"
+          >
+            Commandes annulées
+          </button>
+        }
+      </div>
+    </div>
+
+    @if (errorMessage()) {
+      <p class="board__error" role="alert">{{ errorMessage() }}</p>
+    } @if (isLoading()) {
+      <p class="board__empty">Chargement des commandes...</p>
+    } @else if (!errorMessage()) {
+      <div class="board__grid">
+        <ag-grid-angular
+          [rowData]="visibleOrders()"
+          [columnDefs]="columnDefs"
+          [defaultColDef]="defaultColDef"
+          [localeText]="gridLocaleText"
+          [theme]="gridTheme"
+          [animateRows]="true"
+          (rowClicked)="onRowClicked($event)"
+        />
+      </div>
+    }
+
+    @if (selectedOrder(); as order) {
+      <div class="order-modal__backdrop" (click)="selectedOrder.set(null)">
+        <aside
+          class="order-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="order-detail-title"
+          (click)="$event.stopPropagation()"
+        >
+          <div class="order-detail__header">
+            <div>
+              <p class="board__eyebrow">Détail de la commande</p>
+              <h2 id="order-detail-title">Table {{ order.table }}</h2>
+            </div>
+            <button type="button" aria-label="Fermer le détail" (click)="selectedOrder.set(null)">×</button>
+          </div>
+          <p class="order-detail__waiter">
+            Serveur : {{ order.waiterName }} ({{ order.waiterMatricule }})
+          </p>
+          <div class="order-detail__meals">
+            @for (meal of order.meals; track $index) {
+              <article class="meal">
+                <div>
+                  <strong>{{ meal.quantity }} × plat</strong>
+                  <p>{{ meal.comment || 'Aucun commentaire' }}</p>
+                </div>
+                <span class="meal__status">{{ mealStatusLabel(meal.status) }}</span>
+                <strong>{{ (meal.quantity * meal.price).toFixed(2) }} €</strong>
+              </article>
+            }
+          </div>
+          <div class="order-detail__actions">
+            @if (canAdvance(order)) {
+              <button type="button" [disabled]="isUpdating()" (click)="advanceOrder()">
+                {{ isUpdating() ? 'Mise à jour...' : advanceLabel() + ' la commande' }}
+              </button>
+            }
+            @if (order.status !== 'SERVED' && order.status !== 'CANCELED') {
+              <button type="button" class="order-detail__cancel" [disabled]="isUpdating()" (click)="cancelOrder()">
+                Annuler la commande
+              </button>
+            }
+          </div>
+        </aside>
+      </div>
+    }
+  </section>
+
+</main>

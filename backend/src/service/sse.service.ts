@@ -1,4 +1,4 @@
-import { Subject } from "rxjs";
+import { interval, map, merge, Subject } from "rxjs";
 import { Role } from "shared";
 import {Injectable} from "@nestjs/common";
 
@@ -26,7 +26,8 @@ export class SseService {
     }
 
     stream(role: Role, restaurantCode: string) {
-        return this.getOrCreate(restaurantCode)[role].asObservable();
+        const heartbeat = interval(15000).pipe(map(() => ({ comment: "keep-alive" })));
+        return merge(this.getOrCreate(restaurantCode)[role].asObservable(), heartbeat);
     }
 
     emit(role: Role, restaurantCode: string, data: any) {

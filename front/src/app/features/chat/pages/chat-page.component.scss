@@ -1,0 +1,157 @@
+.chat-page {
+  min-height: 0;
+}
+
+.chat-card {
+  margin: 0 auto;
+  max-width: 1000px;
+}
+
+.chat-page__eyebrow {
+  color: #16806b;
+  font-size: .78rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+  margin: 0 0 10px;
+  text-transform: uppercase;
+}
+
+h1, h2 {
+  color: #17352f;
+  margin: 0;
+}
+
+h1 {
+  font-size: clamp(2rem, 4vw, 3rem);
+}
+
+.chat-form button {
+  background: #17352f;
+  border: 0;
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  padding: 11px 16px;
+}
+
+.chat-card {
+  background: #fff;
+  border: 1px solid #e1ebe7;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgb(27 57 50 / 7%);
+  padding: 24px;
+}
+
+.chat-card__heading {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.chat-card__status {
+  color: #16806b;
+  font-size: .85rem;
+  font-weight: 700;
+}
+
+.chat-messages {
+  background: #f7faf9;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 500px;
+  margin: 24px 0 16px;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.chat-card__empty {
+  margin: auto;
+  text-align: center;
+}
+
+.chat-message {
+  align-self: flex-start;
+  background: #fff;
+  border: 1px solid #e1ebe7;
+  border-radius: 12px 12px 12px 3px;
+  max-width: min(75%, 600px);
+  padding: 10px 14px;
+}
+
+.chat-message--mine {
+  align-self: flex-end;
+  background: #e2f3ed;
+  border-radius: 12px 12px 3px;
+}
+
+.chat-message__meta {
+  align-items: baseline;
+  color: #16806b;
+  display: flex;
+  gap: 10px;
+}
+
+.chat-message__meta time {
+  color: #6c7c78;
+  font-size: .75rem;
+}
+
+.chat-message p {
+  color: #27453e;
+  margin: 6px 0 0;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.chat-form {
+  display: flex;
+  gap: 12px;
+}
+
+.chat-form textarea {
+  border: 1px solid #cbded7;
+  border-radius: 8px;
+  flex: 1;
+  font: inherit;
+  padding: 12px;
+  resize: vertical;
+}
+
+.chat-form textarea:focus {
+  border-color: #16806b;
+  outline: 2px solid rgb(22 128 107 / 18%);
+}
+
+.chat-form button {
+  align-self: flex-end;
+  background: #16806b;
+}
+
+.chat-form button:disabled {
+  cursor: not-allowed;
+  opacity: .6;
+}
+
+.sr-only {
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  position: absolute;
+  width: 1px;
+  clip: rect(0, 0, 0, 0);
+}
+
+@media (max-width: 700px) {
+  .chat-form {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .chat-message {
+    max-width: 90%;
+  }
+}

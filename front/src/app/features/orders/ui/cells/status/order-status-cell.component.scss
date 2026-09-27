@@ -1,0 +1,18 @@
+.order-status {
+  border-radius: 999px;
+  display: inline-block;
+  font-size: .62rem;
+  font-weight: 800;
+  letter-spacing: .01em;
+  line-height: 1;
+  padding: 4px 8px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.order-status--validation { background: #fff3cd; border: 1px solid #f1d77a; color: #8a5a00; }
+.order-status--in_progress { background: #e3edff; border: 1px solid #b5cdf7; color: #2557a7; }
+.order-status--ready { background: #fff0d9; border: 1px solid #f2c27b; color: #9a5a00; }
+.order-status--served { background: #dff6eb; border: 1px solid #a9dfc6; color: #16704f; }
+.order-status--canceled { background: #ffe5e2; border: 1px solid #f0b9b3; color: #a52d24; }
+.order-status--mixed { background: #eee8ff; border: 1px solid #d0c0f4; color: #6543a5; }
