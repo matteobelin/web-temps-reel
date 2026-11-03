@@ -146,6 +146,7 @@ exports.Prisma.MealScalarFieldEnum = {
   id: 'id',
   status: 'status',
   createdAt: 'createdAt',
+  name: 'name',
   quantity: 'quantity',
   price: 'price',
   comment: 'comment',

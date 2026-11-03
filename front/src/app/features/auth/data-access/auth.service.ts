@@ -6,7 +6,7 @@ import {
   type UserInputType,
   type UserOutputType,
 } from 'shared';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Observable, tap } from 'rxjs';
 
 import { API_URL } from '../../../core/config/api.config';
 const USER_STORAGE_KEY = 'current-user';
@@ -32,16 +32,29 @@ export class AuthService {
     });
   }
 
+  restoreSession(): Observable<UserOutputType> {
+    return this.http.get<UserOutputType>(`${API_URL}/auth/me`, {
+      withCredentials: true,
+    }).pipe(tap((user) => this.setUser(user)));
+  }
+
   setUser(user: UserOutputType): void {
     sessionStorage.setItem(USER_STORAGE_KEY, JSON.stringify(user));
     this.currentUser.set(user);
   }
 
-  async logout(): Promise<void> {
-    await firstValueFrom(this.http.post(`${API_URL}/auth/logout`, {}, { withCredentials: true }));
+  clearSession(): void {
     sessionStorage.removeItem(USER_STORAGE_KEY);
     this.currentUser.set(null);
-    await this.router.navigate(['/login']);
+  }
+
+  async logout(): Promise<void> {
+    try {
+      await firstValueFrom(this.http.post(`${API_URL}/auth/logout`, {}, { withCredentials: true }));
+    } finally {
+      this.clearSession();
+      await this.router.navigate(['/login']);
+    }
   }
 
   private readStoredUser(): UserOutputType | null {

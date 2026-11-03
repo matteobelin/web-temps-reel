@@ -37,21 +37,22 @@ h1 {
 }
 
 .order-form {
-  background: #17352f;
+  background: #fff;
+  border: 1px solid #e1ebe7;
   border-radius: 16px;
   box-shadow: 0 10px 30px rgb(27 57 50 / 12%);
-  color: #fff;
+  box-sizing: border-box;
   margin: 0 auto 20px;
   max-width: 1440px;
-  padding: 22px 24px;
+  padding: 24px;
 }
 
 .order-form .board__eyebrow {
-  color: #9de0ca;
+  color: #16806b;
 }
 
 .order-form h2 {
-  color: #fff;
+  color: #17352f;
   font-size: 1.3rem;
 }
 
@@ -63,19 +64,26 @@ h1 {
 }
 
 .order-form__hint {
-  color: #b8d2ca;
+  color: #6c7c78;
   font-size: .9rem;
 }
 
-.order-form form {
-  align-items: end;
+.order-form__body {
   display: grid;
-  gap: 12px;
-  grid-template-columns: 120px 120px 140px minmax(180px, 1fr) auto;
+  gap: 20px;
+  min-width: 0;
+}
+
+.order-form__table {
+  background: #f7faf9;
+  border: 1px solid #e1ebe7;
+  border-radius: 10px;
+  max-width: 220px;
+  padding: 12px;
 }
 
 .order-form label {
-  color: #d5e8e1;
+  color: #27453e;
   display: grid;
   font-size: .8rem;
   font-weight: 700;
@@ -85,8 +93,8 @@ h1 {
 .order-form input,
 .order-form textarea {
   background: #fff;
-  border: 1px solid transparent;
-  border-radius: 8px;
+  border: 1px solid #cbded7;
+  border-radius: 9px;
   color: #27453e;
   font: inherit;
   font-weight: 400;
@@ -97,29 +105,126 @@ h1 {
 
 .order-form input:focus,
 .order-form textarea:focus {
-  border-color: #75c9ad;
-  outline: 2px solid rgb(117 201 173 / 25%);
+  border-color: #16806b;
+  outline: 2px solid rgb(22 128 107 / 15%);
 }
 
 .order-form button {
-  background: #5bc39e;
-  border: 0;
-  border-radius: 8px;
-  color: #17352f;
   cursor: pointer;
   font: inherit;
   font-weight: 800;
-  padding: 11px 16px;
   white-space: nowrap;
 }
 
-.order-form button:disabled {
+.order-form__meals {
+  display: grid;
+  gap: 12px;
+}
+
+.order-form__section-heading {
+  align-items: baseline;
+  display: flex;
+  justify-content: space-between;
+}
+
+.order-form__section-heading > div {
+  align-items: baseline;
+  display: flex;
+  gap: 10px;
+}
+
+.order-form__section-title {
+  color: #17352f;
+  font-size: .95rem;
+  font-weight: 800;
+}
+
+.order-form__section-count,
+.order-form__section-hint {
+  color: #6c7c78;
+  font-size: .8rem;
+}
+
+.order-form__meal {
+  background: #f7faf9;
+  border: 1px solid #e1ebe7;
+  border-radius: 12px;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: minmax(220px, 1.8fr) minmax(90px, .55fr) minmax(110px, .7fr) auto;
+  margin: 0;
+  min-width: 0;
+  padding: 14px 16px 16px;
+}
+
+.order-form__meal legend {
+  color: #16806b;
+  font-size: .75rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  padding: 0 6px;
+  text-transform: uppercase;
+}
+
+.order-form__comment span {
+  color: #6c7c78;
+  font-weight: 400;
+}
+
+.order-form__comment {
+  grid-column: 1 / -1;
+}
+
+.order-form__comment textarea {
+  min-height: 42px;
+}
+
+.order-form__remove {
+  align-self: end;
+  background: transparent;
+  border: 0;
+  color: #b42318;
+  font-size: .8rem;
+  grid-column: 4;
+  grid-row: 1;
+  padding: 10px 0;
+}
+
+.order-form__add {
+  background: #e2f3ed;
+  border: 1px dashed #7ac9b0;
+  border-radius: 9px;
+  color: #176450;
+  justify-self: start;
+  padding: 10px 14px;
+}
+
+.order-form__actions {
+  align-items: center;
+  border-top: 1px solid #e1ebe7;
+  color: #6c7c78;
+  display: flex;
+  font-size: .82rem;
+  gap: 16px;
+  justify-content: space-between;
+  padding-top: 18px;
+}
+
+.order-form__actions button {
+  background: #16806b;
+  border: 0;
+  border-radius: 9px;
+  color: #fff;
+  padding: 11px 18px;
+}
+
+.order-form__actions button:disabled {
   cursor: wait;
   opacity: .65;
 }
 
 .order-form__message {
-  color: #b8f0dc;
+  color: #16806b;
   margin: 14px 0 0;
 }
 
@@ -368,15 +473,41 @@ h1 {
     margin-top: 10px;
   }
 
-  .order-form form {
+  .order-form {
+    padding: 20px;
+  }
+
+  .order-form__table {
+    max-width: none;
+  }
+
+  .order-form__section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .order-form__meal {
     grid-template-columns: 1fr 1fr;
   }
 
+  .order-form__meal-name,
   .order-form__comment {
     grid-column: 1 / -1;
   }
 
-  .order-form button {
+  .order-form__remove {
+    grid-column: 1;
+    grid-row: auto;
+    justify-self: start;
+  }
+
+  .order-form__actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .order-form__actions button {
     grid-column: 1 / -1;
   }
 

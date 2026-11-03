@@ -5,17 +5,25 @@ import type { Request } from "express";
 import type { Role } from "shared";
 import { parseCookie } from "cookie";
 import { ACCESS_TOKEN_COOKIE } from "../constants.js";
+import { PrismaService } from "../../../prisma/prisma.service.js";
 
 export type JwtPayload = {
-    matricule: string;
-    role: Role;
-    restaurantCode: string;
+    sub: number;
 };
 
-export const toAuthUser = (payload: JwtPayload) => ({
-    matricule: payload.matricule,
-    role: payload.role,
-    restaurantCode: payload.restaurantCode,
+export const toAuthUser = (user: {
+    id: number;
+    matricule: string;
+    name: string;
+    role: Role;
+    restaurant: { code: string; name: string };
+}) => ({
+    id: user.id,
+    matricule: user.matricule,
+    name: user.name,
+    role: user.role,
+    restaurantCode: user.restaurant.code,
+    restaurantName: user.restaurant.name,
 });
 
 export type AuthUser = ReturnType<typeof toAuthUser>;
@@ -27,7 +35,7 @@ function cookieExtractor(req: Request): string | null {
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-    constructor() {
+    constructor(private readonly prisma: PrismaService) {
         const jwtSecret = process.env.JWT_SECRET;
         if (!jwtSecret) {
             throw new Error("JWT_SECRET is not defined in environment variables");
@@ -41,9 +49,22 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     async validate(payload: JwtPayload): Promise<AuthUser> {
-        if (!payload.matricule || !payload.role || !payload.restaurantCode) {
+        if (!Number.isInteger(payload.sub) || payload.sub <= 0) {
             throw new UnauthorizedException("Invalid token");
         }
-        return toAuthUser(payload);
+        const user = await this.prisma.user.findUnique({
+            where: { id: payload.sub },
+            select: {
+                id: true,
+                matricule: true,
+                name: true,
+                role: true,
+                restaurant: { select: { code: true, name: true } },
+            },
+        });
+        if (!user) {
+            throw new UnauthorizedException("Invalid token");
+        }
+        return toAuthUser(user);
     }
 }

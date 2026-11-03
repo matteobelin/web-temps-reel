@@ -2,6 +2,7 @@ import { z } from "zod";
 import { MealStatus } from "../enums/mealStatus.enum.js";
 
 const MealFields = z.object({
+    name: z.string().trim().min(1).max(150),
     quantity: z.number().int().positive(),
     price: z.number().positive(),
     comment: z.string().trim().optional(),

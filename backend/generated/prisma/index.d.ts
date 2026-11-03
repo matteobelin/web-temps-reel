@@ -4870,14 +4870,14 @@ export namespace Prisma {
   export type MealAvgAggregateOutputType = {
     id: number | null
     quantity: number | null
-    price: number | null
+    price: Decimal | null
     orderId: number | null
   }
 
   export type MealSumAggregateOutputType = {
     id: number | null
     quantity: number | null
-    price: number | null
+    price: Decimal | null
     orderId: number | null
   }
 
@@ -4885,8 +4885,9 @@ export namespace Prisma {
     id: number | null
     status: $Enums.MealStatus | null
     createdAt: Date | null
+    name: string | null
     quantity: number | null
-    price: number | null
+    price: Decimal | null
     comment: string | null
     orderId: number | null
   }
@@ -4895,8 +4896,9 @@ export namespace Prisma {
     id: number | null
     status: $Enums.MealStatus | null
     createdAt: Date | null
+    name: string | null
     quantity: number | null
-    price: number | null
+    price: Decimal | null
     comment: string | null
     orderId: number | null
   }
@@ -4905,6 +4907,7 @@ export namespace Prisma {
     id: number
     status: number
     createdAt: number
+    name: number
     quantity: number
     price: number
     comment: number
@@ -4931,6 +4934,7 @@ export namespace Prisma {
     id?: true
     status?: true
     createdAt?: true
+    name?: true
     quantity?: true
     price?: true
     comment?: true
@@ -4941,6 +4945,7 @@ export namespace Prisma {
     id?: true
     status?: true
     createdAt?: true
+    name?: true
     quantity?: true
     price?: true
     comment?: true
@@ -4951,6 +4956,7 @@ export namespace Prisma {
     id?: true
     status?: true
     createdAt?: true
+    name?: true
     quantity?: true
     price?: true
     comment?: true
@@ -5048,8 +5054,9 @@ export namespace Prisma {
     id: number
     status: $Enums.MealStatus
     createdAt: Date
+    name: string
     quantity: number
-    price: number
+    price: Decimal
     comment: string | null
     orderId: number
     _count: MealCountAggregateOutputType | null
@@ -5077,6 +5084,7 @@ export namespace Prisma {
     id?: boolean
     status?: boolean
     createdAt?: boolean
+    name?: boolean
     quantity?: boolean
     price?: boolean
     comment?: boolean
@@ -5088,6 +5096,7 @@ export namespace Prisma {
     id?: boolean
     status?: boolean
     createdAt?: boolean
+    name?: boolean
     quantity?: boolean
     price?: boolean
     comment?: boolean
@@ -5099,6 +5108,7 @@ export namespace Prisma {
     id?: boolean
     status?: boolean
     createdAt?: boolean
+    name?: boolean
     quantity?: boolean
     price?: boolean
     comment?: boolean
@@ -5110,13 +5120,14 @@ export namespace Prisma {
     id?: boolean
     status?: boolean
     createdAt?: boolean
+    name?: boolean
     quantity?: boolean
     price?: boolean
     comment?: boolean
     orderId?: boolean
   }
 
-  export type MealOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "status" | "createdAt" | "quantity" | "price" | "comment" | "orderId", ExtArgs["result"]["meal"]>
+  export type MealOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "status" | "createdAt" | "name" | "quantity" | "price" | "comment" | "orderId", ExtArgs["result"]["meal"]>
   export type MealInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     order?: boolean | OrderDefaultArgs<ExtArgs>
   }
@@ -5136,8 +5147,9 @@ export namespace Prisma {
       id: number
       status: $Enums.MealStatus
       createdAt: Date
+      name: string
       quantity: number
-      price: number
+      price: Prisma.Decimal
       comment: string | null
       orderId: number
     }, ExtArgs["result"]["meal"]>
@@ -5567,8 +5579,9 @@ export namespace Prisma {
     readonly id: FieldRef<"Meal", 'Int'>
     readonly status: FieldRef<"Meal", 'MealStatus'>
     readonly createdAt: FieldRef<"Meal", 'DateTime'>
+    readonly name: FieldRef<"Meal", 'String'>
     readonly quantity: FieldRef<"Meal", 'Int'>
-    readonly price: FieldRef<"Meal", 'Float'>
+    readonly price: FieldRef<"Meal", 'Decimal'>
     readonly comment: FieldRef<"Meal", 'String'>
     readonly orderId: FieldRef<"Meal", 'Int'>
   }
@@ -7152,6 +7165,7 @@ export namespace Prisma {
     id: 'id',
     status: 'status',
     createdAt: 'createdAt',
+    name: 'name',
     quantity: 'quantity',
     price: 'price',
     comment: 'comment',
@@ -7268,6 +7282,20 @@ export namespace Prisma {
    * Reference to a field of type 'DateTime[]'
    */
   export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Decimal'
+   */
+  export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
+    
+
+
+  /**
+   * Reference to a field of type 'Decimal[]'
+   */
+  export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
     
 
 
@@ -7475,8 +7503,9 @@ export namespace Prisma {
     id?: IntFilter<"Meal"> | number
     status?: EnumMealStatusFilter<"Meal"> | $Enums.MealStatus
     createdAt?: DateTimeFilter<"Meal"> | Date | string
+    name?: StringFilter<"Meal"> | string
     quantity?: IntFilter<"Meal"> | number
-    price?: FloatFilter<"Meal"> | number
+    price?: DecimalFilter<"Meal"> | Decimal | DecimalJsLike | number | string
     comment?: StringNullableFilter<"Meal"> | string | null
     orderId?: IntFilter<"Meal"> | number
     order?: XOR<OrderScalarRelationFilter, OrderWhereInput>
@@ -7486,6 +7515,7 @@ export namespace Prisma {
     id?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
+    name?: SortOrder
     quantity?: SortOrder
     price?: SortOrder
     comment?: SortOrderInput | SortOrder
@@ -7500,8 +7530,9 @@ export namespace Prisma {
     NOT?: MealWhereInput | MealWhereInput[]
     status?: EnumMealStatusFilter<"Meal"> | $Enums.MealStatus
     createdAt?: DateTimeFilter<"Meal"> | Date | string
+    name?: StringFilter<"Meal"> | string
     quantity?: IntFilter<"Meal"> | number
-    price?: FloatFilter<"Meal"> | number
+    price?: DecimalFilter<"Meal"> | Decimal | DecimalJsLike | number | string
     comment?: StringNullableFilter<"Meal"> | string | null
     orderId?: IntFilter<"Meal"> | number
     order?: XOR<OrderScalarRelationFilter, OrderWhereInput>
@@ -7511,6 +7542,7 @@ export namespace Prisma {
     id?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
+    name?: SortOrder
     quantity?: SortOrder
     price?: SortOrder
     comment?: SortOrderInput | SortOrder
@@ -7529,8 +7561,9 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"Meal"> | number
     status?: EnumMealStatusWithAggregatesFilter<"Meal"> | $Enums.MealStatus
     createdAt?: DateTimeWithAggregatesFilter<"Meal"> | Date | string
+    name?: StringWithAggregatesFilter<"Meal"> | string
     quantity?: IntWithAggregatesFilter<"Meal"> | number
-    price?: FloatWithAggregatesFilter<"Meal"> | number
+    price?: DecimalWithAggregatesFilter<"Meal"> | Decimal | DecimalJsLike | number | string
     comment?: StringNullableWithAggregatesFilter<"Meal"> | string | null
     orderId?: IntWithAggregatesFilter<"Meal"> | number
   }
@@ -7764,8 +7797,9 @@ export namespace Prisma {
   export type MealCreateInput = {
     status: $Enums.MealStatus
     createdAt?: Date | string
+    name: string
     quantity: number
-    price: number
+    price: Decimal | DecimalJsLike | number | string
     comment?: string | null
     order: OrderCreateNestedOneWithoutMealsInput
   }
@@ -7774,8 +7808,9 @@ export namespace Prisma {
     id?: number
     status: $Enums.MealStatus
     createdAt?: Date | string
+    name: string
     quantity: number
-    price: number
+    price: Decimal | DecimalJsLike | number | string
     comment?: string | null
     orderId: number
   }
@@ -7783,8 +7818,9 @@ export namespace Prisma {
   export type MealUpdateInput = {
     status?: EnumMealStatusFieldUpdateOperationsInput | $Enums.MealStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
-    price?: FloatFieldUpdateOperationsInput | number
+    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     comment?: NullableStringFieldUpdateOperationsInput | string | null
     order?: OrderUpdateOneRequiredWithoutMealsNestedInput
   }
@@ -7793,8 +7829,9 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     status?: EnumMealStatusFieldUpdateOperationsInput | $Enums.MealStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
-    price?: FloatFieldUpdateOperationsInput | number
+    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     comment?: NullableStringFieldUpdateOperationsInput | string | null
     orderId?: IntFieldUpdateOperationsInput | number
   }
@@ -7803,8 +7840,9 @@ export namespace Prisma {
     id?: number
     status: $Enums.MealStatus
     createdAt?: Date | string
+    name: string
     quantity: number
-    price: number
+    price: Decimal | DecimalJsLike | number | string
     comment?: string | null
     orderId: number
   }
@@ -7812,8 +7850,9 @@ export namespace Prisma {
   export type MealUpdateManyMutationInput = {
     status?: EnumMealStatusFieldUpdateOperationsInput | $Enums.MealStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
-    price?: FloatFieldUpdateOperationsInput | number
+    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     comment?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -7821,8 +7860,9 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     status?: EnumMealStatusFieldUpdateOperationsInput | $Enums.MealStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
-    price?: FloatFieldUpdateOperationsInput | number
+    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     comment?: NullableStringFieldUpdateOperationsInput | string | null
     orderId?: IntFieldUpdateOperationsInput | number
   }
@@ -8126,15 +8166,15 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
-  export type FloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
+  export type DecimalFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
   }
 
   export type StringNullableFilter<$PrismaModel = never> = {
@@ -8166,6 +8206,7 @@ export namespace Prisma {
     id?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
+    name?: SortOrder
     quantity?: SortOrder
     price?: SortOrder
     comment?: SortOrder
@@ -8183,6 +8224,7 @@ export namespace Prisma {
     id?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
+    name?: SortOrder
     quantity?: SortOrder
     price?: SortOrder
     comment?: SortOrder
@@ -8193,6 +8235,7 @@ export namespace Prisma {
     id?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
+    name?: SortOrder
     quantity?: SortOrder
     price?: SortOrder
     comment?: SortOrder
@@ -8230,20 +8273,20 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
-  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+  export type DecimalWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
     _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedFloatFilter<$PrismaModel>
-    _min?: NestedFloatFilter<$PrismaModel>
-    _max?: NestedFloatFilter<$PrismaModel>
+    _avg?: NestedDecimalFilter<$PrismaModel>
+    _sum?: NestedDecimalFilter<$PrismaModel>
+    _min?: NestedDecimalFilter<$PrismaModel>
+    _max?: NestedDecimalFilter<$PrismaModel>
   }
 
   export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -8624,12 +8667,12 @@ export namespace Prisma {
     set?: Date | string
   }
 
-  export type FloatFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
+  export type DecimalFieldUpdateOperationsInput = {
+    set?: Decimal | DecimalJsLike | number | string
+    increment?: Decimal | DecimalJsLike | number | string
+    decrement?: Decimal | DecimalJsLike | number | string
+    multiply?: Decimal | DecimalJsLike | number | string
+    divide?: Decimal | DecimalJsLike | number | string
   }
 
   export type NullableStringFieldUpdateOperationsInput = {
@@ -8776,6 +8819,17 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type NestedDecimalFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+  }
+
   export type NestedStringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -8814,20 +8868,20 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
-  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+  export type NestedDecimalWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
     _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedFloatFilter<$PrismaModel>
-    _min?: NestedFloatFilter<$PrismaModel>
-    _max?: NestedFloatFilter<$PrismaModel>
+    _avg?: NestedDecimalFilter<$PrismaModel>
+    _sum?: NestedDecimalFilter<$PrismaModel>
+    _min?: NestedDecimalFilter<$PrismaModel>
+    _max?: NestedDecimalFilter<$PrismaModel>
   }
 
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -9185,8 +9239,9 @@ export namespace Prisma {
   export type MealCreateWithoutOrderInput = {
     status: $Enums.MealStatus
     createdAt?: Date | string
+    name: string
     quantity: number
-    price: number
+    price: Decimal | DecimalJsLike | number | string
     comment?: string | null
   }
 
@@ -9194,8 +9249,9 @@ export namespace Prisma {
     id?: number
     status: $Enums.MealStatus
     createdAt?: Date | string
+    name: string
     quantity: number
-    price: number
+    price: Decimal | DecimalJsLike | number | string
     comment?: string | null
   }
 
@@ -9288,8 +9344,9 @@ export namespace Prisma {
     id?: IntFilter<"Meal"> | number
     status?: EnumMealStatusFilter<"Meal"> | $Enums.MealStatus
     createdAt?: DateTimeFilter<"Meal"> | Date | string
+    name?: StringFilter<"Meal"> | string
     quantity?: IntFilter<"Meal"> | number
-    price?: FloatFilter<"Meal"> | number
+    price?: DecimalFilter<"Meal"> | Decimal | DecimalJsLike | number | string
     comment?: StringNullableFilter<"Meal"> | string | null
     orderId?: IntFilter<"Meal"> | number
   }
@@ -9579,16 +9636,18 @@ export namespace Prisma {
     id?: number
     status: $Enums.MealStatus
     createdAt?: Date | string
+    name: string
     quantity: number
-    price: number
+    price: Decimal | DecimalJsLike | number | string
     comment?: string | null
   }
 
   export type MealUpdateWithoutOrderInput = {
     status?: EnumMealStatusFieldUpdateOperationsInput | $Enums.MealStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
-    price?: FloatFieldUpdateOperationsInput | number
+    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     comment?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -9596,8 +9655,9 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     status?: EnumMealStatusFieldUpdateOperationsInput | $Enums.MealStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
-    price?: FloatFieldUpdateOperationsInput | number
+    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     comment?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
@@ -9605,8 +9665,9 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     status?: EnumMealStatusFieldUpdateOperationsInput | $Enums.MealStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    name?: StringFieldUpdateOperationsInput | string
     quantity?: IntFieldUpdateOperationsInput | number
-    price?: FloatFieldUpdateOperationsInput | number
+    price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     comment?: NullableStringFieldUpdateOperationsInput | string | null
   }
 

@@ -4,6 +4,8 @@ import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from './../src/app.module.js';
 
+process.env.JWT_SECRET ??= 'e2e-test-secret';
+
 describe('AppController (e2e)', () => {
   let app: INestApplication<App>;
 
@@ -16,14 +18,32 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/ (GET)', () => {
+  it('rejects unauthenticated access to orders', () => {
     return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
+      .get('/orders')
+      .expect(401);
+  });
+
+  it('rejects unauthenticated chat history access', () => {
+    return request(app.getHttpServer())
+      .get('/chat/messages')
+      .expect(401);
+  });
+
+  it('rejects an invalid login payload', () => {
+    return request(app.getHttpServer())
+      .post('/auth/login')
+      .send({
+        matricule: '',
+        password: 'short',
+        restaurantCode: '',
+      })
+      .expect(400);
   });
 
   afterEach(async () => {
-    await app.close();
+    if (app) {
+      await app.close();
+    }
   });
 });

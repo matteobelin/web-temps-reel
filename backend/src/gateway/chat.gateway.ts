@@ -9,6 +9,7 @@ import {
 } from "@nestjs/websockets";
 import { UseGuards } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
+import { PrismaService } from "../../prisma/prisma.service.js";
 import type { Namespace, Socket } from "socket.io";
 import { z } from "zod";
 import { ChatMessageInput } from "shared";
@@ -30,11 +31,12 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection {
 
     constructor(
         private readonly jwt: JwtService,
+        private readonly prisma: PrismaService,
         private readonly chat: ChatService,
     ) {}
 
     afterInit(server: Namespace) {
-        server.use(wsAuthMiddleware(this.jwt));
+        server.use(wsAuthMiddleware(this.jwt, this.prisma));
     }
 
     async handleConnection(client: Socket) {
@@ -50,5 +52,6 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection {
 
         const message = await this.chat.create(parsed.data.content, user.matricule, user.restaurantCode);
         this.server.to(room(user.restaurantCode)).emit("message:new", message);
+        return { ok: true, message };
     }
 }

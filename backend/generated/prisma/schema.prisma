@@ -64,8 +64,9 @@ model Meal {
   id        Int        @id @default(autoincrement())
   status    MealStatus
   createdAt DateTime   @default(now())
+  name      String
   quantity  Int
-  price     Float
+  price     Decimal    @db.Decimal(10, 2)
   comment   String?
 
   orderId Int

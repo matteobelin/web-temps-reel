@@ -1,10 +1,13 @@
-import {Controller, Post, Res, UseGuards} from "@nestjs/common";
+import {Controller, Get, Post, Res, UseGuards} from "@nestjs/common";
 import {UserInput, UserInputRegistration, type UserInputRegistrationType, type UserInputType} from "shared";
 import {AuthService} from "../service/auth.service.js";
 import express, {CookieOptions} from "express";
 import {JwtAuthGuard} from "../common/guard/jwt-auth.guard.js";
 import {ZodBody} from "../common/decorator/zod.decorator.js";
 import {ACCESS_TOKEN_COOKIE} from "../common/constants.js";
+import {RateLimitGuard} from "../common/guard/rate-limit.guard.js";
+import type { AuthUser } from "../common/strategy/jwt.strategy.js";
+import {CurrentUser} from "../common/decorator/currentUser.decorator.js";
 
 const secureCookies = process.env.COOKIE_SECURE === "true"
     || (process.env.COOKIE_SECURE !== "false" && process.env.NODE_ENV === "production");
@@ -20,6 +23,7 @@ const COOKIE_OPTIONS: CookieOptions = {
     maxAge: 24 * 60 * 60 * 1000,
 };
 
+@UseGuards(RateLimitGuard)
 @Controller("auth")
 export class AuthController {
     constructor(private readonly authService: AuthService) {
@@ -37,6 +41,19 @@ export class AuthController {
         const { access_token, userLogin } = await this.authService.login(userDto);
         res.cookie(ACCESS_TOKEN_COOKIE, access_token, COOKIE_OPTIONS);
         return userLogin;
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Get("me")
+    me(@CurrentUser() user: AuthUser) {
+        return {
+            id: user.id,
+            matricule: user.matricule,
+            name: user.name,
+            role: user.role,
+            restaurantCode: user.restaurantCode,
+            restaurantName: user.restaurantName,
+        };
     }
 
     @UseGuards(JwtAuthGuard)

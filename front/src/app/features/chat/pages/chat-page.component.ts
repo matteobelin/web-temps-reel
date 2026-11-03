@@ -25,6 +25,7 @@ export class ChatPageComponent {
   readonly content = signal('');
   readonly isLoading = signal(true);
   readonly isSending = signal(false);
+  readonly isConnected = signal(false);
 
   constructor() {
     this.loadHistory();
@@ -54,9 +55,18 @@ export class ChatPageComponent {
     }
 
     this.isSending.set(true);
-    this.socket.emit('message:send', { content: value });
-    this.content.set('');
-    this.isSending.set(false);
+    this.socket.emit(
+      'message:send',
+      { content: value },
+      (response: { ok?: boolean; error?: string }) => {
+        this.isSending.set(false);
+        if (response?.ok) {
+          this.content.set('');
+          return;
+        }
+        this.toast.error(response?.error ?? "Impossible d'envoyer le message.");
+      },
+    );
   }
 
   onContentChange(value: string): void {
@@ -76,7 +86,15 @@ export class ChatPageComponent {
 
   private connect(): void {
     this.socket = this.chatService.connect();
+    this.socket.on('connect', () => {
+      this.isConnected.set(true);
+    });
+    this.socket.on('disconnect', () => {
+      this.isConnected.set(false);
+      this.isSending.set(false);
+    });
     this.socket.on('connect_error', () => {
+      this.isConnected.set(false);
       this.toast.error('Connexion au chat impossible.');
     });
     this.socket.on('message:new', (message: ChatMessageOutputType) => {

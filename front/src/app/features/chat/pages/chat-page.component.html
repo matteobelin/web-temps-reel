@@ -5,7 +5,9 @@
         <p class="chat-page__eyebrow">Temps réel</p>
         <h2>Messages de l'équipe</h2>
       </div>
-      <span class="chat-card__status">● En ligne</span>
+      <span class="chat-card__status">
+        ● {{ isConnected() ? 'En ligne' : 'Hors ligne' }}
+      </span>
     </div>
 
     <div class="chat-messages" #messagesContainer aria-live="polite">

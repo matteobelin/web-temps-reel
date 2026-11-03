@@ -2,6 +2,7 @@ import {ConflictException, ForbiddenException, Injectable, NotFoundException} fr
 import {MealStatus, type OrderInputType, type OrderOutputType, Role} from "shared";
 import {PrismaService} from "../../prisma/prisma.service.js";
 import {SseService} from "./sse.service.js";
+import { Prisma } from "../../generated/prisma/client.js";
 
 
 type Transition = {
@@ -74,8 +75,9 @@ export class OrderService {
                 restaurant: { connect: { code: restaurantCode } },
                 waiter: { connect: { id: user.id } },
                 meals: {
-                    create: order.meals.map(({ quantity, price, comment }) => ({
+                    create: order.meals.map(({ name, quantity, price, comment }) => ({
                         status: MealStatus.VALIDATION,
+                        name,
                         quantity,
                         price,
                         comment,
@@ -107,20 +109,21 @@ export class OrderService {
             throw new NotFoundException("Order not found");
         }
 
-        const { count } = await this.prisma.meal.updateMany({
-            where: { orderId, status: transition.from },
-            data: { status: transition.to },
-        });
-        if (count === 0) {
-            throw new ConflictException("No meal to advance in this order");
-        }
-
-        const order = await this.prisma.order.findUniqueOrThrow({
-            where: { id: orderId },
-            include: {
-                waiter: { select: { matricule: true, name: true } },
-                meals: true,
-            },
+        const order = await this.prisma.$transaction(async (tx) => {
+            const { count } = await tx.meal.updateMany({
+                where: { orderId, status: transition.from },
+                data: { status: transition.to },
+            });
+            if (count === 0) {
+                throw new ConflictException("No meal to advance in this order");
+            }
+            return tx.order.findUniqueOrThrow({
+                where: { id: orderId },
+                include: {
+                    waiter: { select: { matricule: true, name: true } },
+                    meals: true,
+                },
+            });
         });
 
         const orderUpdate:OrderOutputType = this.mapOrder(order);
@@ -148,20 +151,21 @@ export class OrderService {
 
         const notify = [...new Set(order.meals.flatMap((m) => CANCEL_NOTIFY[m.status] ?? []))];
 
-        const { count } = await this.prisma.meal.updateMany({
-            where: { orderId, status: { in: CANCELABLE } },
-            data: { status: MealStatus.CANCELED },
-        });
-        if (count === 0) {
-            throw new ConflictException("Order status changed, please retry");
-        }
-
-        const updated = await this.prisma.order.findUniqueOrThrow({
-            where: { id: orderId },
-            include: {
-                waiter: { select: { matricule: true, name: true } },
-                meals: true,
-            },
+        const updated = await this.prisma.$transaction(async (tx) => {
+            const { count } = await tx.meal.updateMany({
+                where: { orderId, status: { in: CANCELABLE } },
+                data: { status: MealStatus.CANCELED },
+            });
+            if (count === 0) {
+                throw new ConflictException("Order status changed, please retry");
+            }
+            return tx.order.findUniqueOrThrow({
+                where: { id: orderId },
+                include: {
+                    waiter: { select: { matricule: true, name: true } },
+                    meals: true,
+                },
+            });
         });
         const orderUpdate:OrderOutputType = this.mapOrder(updated);
         this.sseService.emitMany(notify, restaurantCode, orderUpdate);
@@ -176,7 +180,8 @@ export class OrderService {
             status: MealStatus;
             createdAt: Date;
             quantity: number;
-            price: number;
+            price: number | Prisma.Decimal;
+            name: string;
             comment: string | null;
         }[];
     }): OrderOutputType {
@@ -185,11 +190,12 @@ export class OrderService {
             table: order.tableNumber,
             waiterName: order.waiter.name,
             waiterMatricule: order.waiter.matricule,
-            meals: order.meals.map(({ status, createdAt, quantity, price, comment }) => ({
+            meals: order.meals.map(({ status, createdAt, name, quantity, price, comment }) => ({
                 status,
                 createdAt,
+                name,
                 quantity,
-                price,
+                price: Number(price),
                 comment: comment ?? undefined,
             })),
         };

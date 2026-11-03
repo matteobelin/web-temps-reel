@@ -6,11 +6,11 @@ COPY shared ./shared
 COPY backend ./backend
 
 WORKDIR /app/shared
-RUN npm install --no-package-lock
+RUN npm install
 RUN npm run build
 
 WORKDIR /app/backend
-RUN npm install --no-package-lock
+RUN npm install
 
 RUN npx prisma generate
 RUN npm run build

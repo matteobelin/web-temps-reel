@@ -8,13 +8,13 @@ COPY front ./front
 
 
 WORKDIR /app/shared
-RUN npm install --no-package-lock
+RUN npm ci
 RUN npm run build
 
 
 WORKDIR /app/front
-RUN npm install --no-package-lock
-RUN npm run build -- --configuration production
+RUN npm ci
+RUN npm run build
 
 
 FROM nginx:alpine

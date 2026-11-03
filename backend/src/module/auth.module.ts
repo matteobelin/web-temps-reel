@@ -11,7 +11,7 @@ import { AuthController } from "../controller/auth.js";
 @Module({
     imports: [
         UserModule,
-        PassportModule,
+        PassportModule.register({}),
         JwtModule.register({
             secret: process.env.JWT_SECRET,
             signOptions: {
@@ -21,6 +21,6 @@ import { AuthController } from "../controller/auth.js";
     ],
     controllers: [AuthController],
     providers: [AuthService, JwtStrategy],
-    exports: [AuthService, JwtModule],
+    exports: [AuthService, JwtModule, PassportModule],
 })
 export class AuthModule {}

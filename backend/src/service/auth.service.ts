@@ -23,9 +23,7 @@ export class AuthService {
 
     async generateAccessToken(user: UserOutputType){
         return await this.jwtService.signAsync({
-            matricule: user.matricule,
-            role: user.role,
-            restaurantCode: user.restaurantCode,
+            sub: user.id,
         });
     }
 }

@@ -75,11 +75,10 @@ export class OrdersPageComponent {
   readonly errorMessage = signal('');
   readonly isUpdating = signal(false);
   readonly newTable = signal('');
-  readonly newQuantity = signal('1');
-  readonly newPrice = signal('');
-  readonly newComment = signal('');
+  readonly newMeals = signal([{ name: '', quantity: '1', price: '', comment: '' }]);
   readonly isCreating = signal(false);
   private readonly destroyRef = inject(DestroyRef);
+  private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
   readonly visibleOrders = computed(() => {
     const orders = this.orders();
     const filteredOrders = (() => {
@@ -121,6 +120,11 @@ export class OrdersPageComponent {
   constructor() {
     this.loadOrders();
     this.connectToOrderEvents();
+    this.destroyRef.onDestroy(() => {
+      if (this.reconnectTimer) {
+        clearTimeout(this.reconnectTimer);
+      }
+    });
   }
 
   advanceOrder(order = this.selectedOrder()): void {
@@ -164,24 +168,28 @@ export class OrdersPageComponent {
 
   createOrder(): void {
     const table = Number(this.newTable());
-    const quantity = Number(this.newQuantity());
-    const price = Number(this.newPrice());
-    if (!Number.isInteger(table) || table <= 0 || !Number.isInteger(quantity) || quantity <= 0 || !Number.isFinite(price) || price <= 0 || this.isCreating()) {
+    const meals = this.newMeals().map((meal) => ({
+      name: meal.name.trim(),
+      quantity: Number(meal.quantity),
+      price: Number(meal.price),
+      comment: meal.comment.trim() || undefined,
+    }));
+    if (!Number.isInteger(table) || table <= 0 || this.isCreating() || meals.some((meal) =>
+      !meal.name || !Number.isInteger(meal.quantity) || meal.quantity <= 0 || !Number.isFinite(meal.price) || meal.price <= 0
+    )) {
       this.toast.error('Indiquez une table, une quantité et un prix valides.');
       return;
     }
 
     const order: OrderInputType = {
       table,
-      meals: [{ quantity, price, comment: this.newComment().trim() || undefined }],
+      meals,
     };
     this.isCreating.set(true);
     this.ordersService.createOrder(order).subscribe({
       next: () => {
         this.newTable.set('');
-        this.newQuantity.set('1');
-        this.newPrice.set('');
-        this.newComment.set('');
+        this.newMeals.set([{ name: '', quantity: '1', price: '', comment: '' }]);
         this.toast.success('Commande créée et envoyée en cuisine.');
         this.isCreating.set(false);
       },
@@ -190,6 +198,14 @@ export class OrdersPageComponent {
         this.isCreating.set(false);
       },
     });
+  }
+
+  addMeal(): void {
+    this.newMeals.update((meals) => [...meals, { name: '', quantity: '1', price: '', comment: '' }]);
+  }
+
+  removeMeal(index: number): void {
+    this.newMeals.update((meals) => meals.length === 1 ? meals : meals.filter((_, mealIndex) => mealIndex !== index));
   }
 
   canAdvance(order: OrderRow): boolean {
@@ -282,7 +298,7 @@ export class OrdersPageComponent {
         next: (order) => this.applyOrderUpdate(order),
         error: () => {
           this.loadOrders();
-          setTimeout(() => this.connectToOrderEvents(), 5000);
+          this.reconnectTimer = setTimeout(() => this.connectToOrderEvents(), 5000);
         },
       });
   }

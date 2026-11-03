@@ -7,7 +7,7 @@ import {RolesGuard} from "../common/guard/role.guard.js";
 import {CurrentUser} from "../common/decorator/currentUser.decorator.js";
 import {ZodBody} from "../common/decorator/zod.decorator.js";
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller("orders")
 export class OrdersController{
     constructor(private readonly orderService:OrderService) {}
@@ -18,7 +18,6 @@ export class OrdersController{
         return await this.orderService.findAll(user.role, user.restaurantCode);
     }
 
-    @UseGuards(RolesGuard)
     @Roles(Role.WAITER)
     @Post("create")
     async createOrder(@ZodBody(OrderSchemaInput) orderDto: OrderInputType,

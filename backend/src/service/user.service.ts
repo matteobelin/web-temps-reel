@@ -12,7 +12,7 @@ export class UserService {
 
     async register(user: UserInputRegistrationType): Promise<UserOutputType> {
         const restaurant = await this.prisma.restaurant.findUnique({
-            where: { code: user.restaurantCode },
+            where: { code: user.restaurantCode.trim().toUpperCase() },
         });
         if (!restaurant) {
             throw new NotFoundException("Restaurant not found");
@@ -23,13 +23,13 @@ export class UserService {
         try {
             const created = await this.prisma.user.create({
                 data: {
-                    name: user.name,
-                    matricule: user.matricule,
+                    name: user.name.trim(),
+                    matricule: user.matricule.trim(),
                     role: user.role,
                     password,
                     restaurantId: restaurant.id,
                 },
-                select: { matricule: true, name: true, role: true },
+                select: { id: true, matricule: true, name: true, role: true },
             });
 
             return {
@@ -48,8 +48,8 @@ export class UserService {
     async login({ matricule, password, restaurantCode }: UserInputType): Promise<UserOutputType> {
         const foundUser = await this.prisma.user.findFirst({
             where: {
-                matricule,
-                restaurant: { code: restaurantCode },
+                matricule: matricule.trim(),
+                restaurant: { code: restaurantCode.trim().toUpperCase() },
             },
             include: { restaurant: true },
         });
@@ -60,6 +60,7 @@ export class UserService {
         }
 
         return {
+            id: foundUser.id,
             matricule: foundUser.matricule,
             name: foundUser.name,
             role: foundUser.role,

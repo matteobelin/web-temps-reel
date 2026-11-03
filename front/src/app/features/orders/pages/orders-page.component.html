@@ -8,8 +8,8 @@
         </div>
         <span class="order-form__hint">Elle sera envoyée en validation.</span>
       </div>
-      <form (ngSubmit)="createOrder()">
-        <label>
+      <form class="order-form__body" (ngSubmit)="createOrder()">
+        <label class="order-form__table">
           Table
           <input
             type="number"
@@ -20,43 +20,77 @@
             required
           />
         </label>
-        <label>
-          Quantité
-          <input
-            type="number"
-            min="1"
-            name="quantity"
-            [ngModel]="newQuantity()"
-            (ngModelChange)="newQuantity.set($event)"
-            required
-          />
-        </label>
-        <label>
-          Prix (€)
-          <input
-            type="number"
-            min="0.01"
-            step="0.01"
-            name="price"
-            [ngModel]="newPrice()"
-            (ngModelChange)="newPrice.set($event)"
-            required
-          />
-        </label>
-        <label class="order-form__comment">
-          Plat / commentaire
-          <textarea
-            name="comment"
-            rows="2"
-            maxlength="500"
-            [ngModel]="newComment()"
-            (ngModelChange)="newComment.set($event)"
-            placeholder="Ex. steak-frites, sans oignons"
-          ></textarea>
-        </label>
-        <button type="submit" [disabled]="isCreating()">
-          {{ isCreating() ? 'Création...' : 'Créer la commande' }}
-        </button>
+        <div class="order-form__meals">
+          <div class="order-form__section-heading">
+            <div>
+              <span class="order-form__section-title">Plats commandés</span>
+              <span class="order-form__section-count">{{ newMeals().length }} plat{{ newMeals().length > 1 ? 's' : '' }}</span>
+            </div>
+            <span class="order-form__section-hint">Ajoutez les détails de chaque plat</span>
+          </div>
+          @for (meal of newMeals(); track $index) {
+            <fieldset class="order-form__meal">
+              <legend>Plat {{ $index + 1 }}</legend>
+              <label class="order-form__meal-name">
+                Nom du plat
+                <input
+                  type="text"
+                  maxlength="150"
+                  [name]="'meal-name-' + $index"
+                  [ngModel]="meal.name"
+                  (ngModelChange)="newMeals.update((meals) => meals.map((item, index) => index === $index ? { ...item, name: $event } : item))"
+                  placeholder="Ex. Salade César"
+                  required
+                />
+              </label>
+              <label>
+                Quantité
+                <input
+                  type="number"
+                  min="1"
+                  [name]="'meal-quantity-' + $index"
+                  [ngModel]="meal.quantity"
+                  (ngModelChange)="newMeals.update((meals) => meals.map((item, index) => index === $index ? { ...item, quantity: $event } : item))"
+                  required
+                />
+              </label>
+              <label>
+                Prix (€)
+                <input
+                  type="number"
+                  min="0.01"
+                  step="0.01"
+                  [name]="'meal-price-' + $index"
+                  [ngModel]="meal.price"
+                  (ngModelChange)="newMeals.update((meals) => meals.map((item, index) => index === $index ? { ...item, price: $event } : item))"
+                  placeholder="0,00"
+                  required
+                />
+              </label>
+              <label class="order-form__comment">
+                Commentaire <span>(facultatif)</span>
+                <textarea
+                  rows="1"
+                  maxlength="500"
+                  [name]="'meal-comment-' + $index"
+                  [ngModel]="meal.comment"
+                  (ngModelChange)="newMeals.update((meals) => meals.map((item, index) => index === $index ? { ...item, comment: $event } : item))"
+                  placeholder="Ex. sans oignons"
+                ></textarea>
+              </label>
+              @if (newMeals().length > 1) {
+                <button type="button" class="order-form__remove" (click)="removeMeal($index)">Retirer</button>
+              }
+            </fieldset>
+          }
+          <button type="button" class="order-form__add" (click)="addMeal()">+ Ajouter un plat</button>
+        </div>
+        <div class="order-form__actions">
+          <span>La commande sera envoyée en validation.</span>
+          <button type="submit" [disabled]="isCreating()">
+            {{ isCreating() ? 'Création...' : 'Créer la commande' }}
+          </button>
+        </div>
       </form>
     </section>
   }
@@ -133,7 +167,7 @@
             @for (meal of order.meals; track $index) {
               <article class="meal">
                 <div>
-                  <strong>{{ meal.quantity }} × plat</strong>
+                  <strong>{{ meal.quantity }} × {{ meal.name }}</strong>
                   <p>{{ meal.comment || 'Aucun commentaire' }}</p>
                 </div>
                 <span class="meal__status">{{ mealStatusLabel(meal.status) }}</span>

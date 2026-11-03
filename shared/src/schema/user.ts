@@ -1,10 +1,10 @@
 import { z } from "zod";
 import { Role } from "../enums/role.enum.js";
 
-const matricule = z.string().min(1);
+const matricule = z.string().trim().min(1).max(50);
 const password = z.string().min(8);
-const restaurantCode = z.string().min(1);
-const name = z.string().min(1);
+const restaurantCode = z.string().trim().toUpperCase().min(1).max(20);
+const name = z.string().trim().min(2).max(100);
 const role = z.enum(Role);
 
 
@@ -20,6 +20,7 @@ export const UserInputRegistration = UserInput.extend({
 });
 
 export const UserOutput = z.object({
+    id: z.number().int().positive(),
     matricule,
     name,
     role,
