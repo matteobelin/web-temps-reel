@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title>TableFlow</title>
+  <rect width="64" height="64" rx="16" fill="#27453e"/>
+  <circle cx="31" cy="33" r="15" fill="none" stroke="#edf3f0" stroke-width="4"/>
+  <circle cx="31" cy="33" r="5" fill="#f2a65a"/>
+  <path d="M47 18v12M42 24h10" fill="none" stroke="#f2a65a" stroke-linecap="round" stroke-width="4"/>
+  <path d="M15 16v12M11 16v7a4 4 0 0 0 8 0v-7M15 27v21" fill="none" stroke="#edf3f0" stroke-linecap="round" stroke-width="3"/>
+</svg>
