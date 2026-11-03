@@ -1,5 +1,6 @@
 import { ForbiddenException, Injectable, type NestMiddleware } from "@nestjs/common";
 import type { NextFunction, Request, Response } from "express";
+import { configuredOrigins } from "../security/origin.js";
 
 const MUTATING_METHODS = new Set(["POST", "PUT", "PATCH", "DELETE"]);
 
@@ -10,14 +11,10 @@ function originOf(request: Request): string | undefined {
 }
 
 function isAllowedOrigin(request: Request, origin: string): boolean {
-    const configured = (process.env.FRONTEND_URL ?? "http://localhost:4200")
-        .split(",")
-        .map((value) => value.trim().replace(/\/$/, ""))
-        .filter(Boolean);
     const sameOrigin = originOf(request);
     const localDevelopment = /^(https?:\/\/)(localhost|127\.0\.0\.1)(?::\d+)?$/i.test(origin);
 
-    return configured.includes(origin) || origin === sameOrigin || localDevelopment;
+    return configuredOrigins().includes(origin) || origin === sameOrigin || localDevelopment;
 }
 
 /**

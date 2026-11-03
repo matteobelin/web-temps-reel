@@ -5,6 +5,7 @@ import { RedisService } from "./redis.service.js";
 import { SseService } from "./sse.service.js";
 
 const CHANNEL = "orders:events";
+const OUTBOX_RETENTION_MS = 30 * 24 * 60 * 60 * 1000;
 
 type PublishedEvent = {
     id: number;
@@ -85,6 +86,12 @@ export class OutboxWorker implements OnModuleInit, OnModuleDestroy {
                     data: { publishedAt: new Date(), claimedAt: null, lastError: null },
                 });
             }
+
+            await this.prisma.outboxEvent.deleteMany({
+                where: {
+                    publishedAt: { lt: new Date(Date.now() - OUTBOX_RETENTION_MS) },
+                },
+            });
         } catch (error) {
             console.error(JSON.stringify({
                 level: "error",

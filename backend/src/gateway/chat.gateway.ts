@@ -22,6 +22,7 @@ import { WsJwtAuthGuard } from "../common/guard/ws-jwt-auth.guard.js";
 import { ChatService } from "../service/chat.service.js";
 import {wsAuthMiddleware} from "../middleware/ws.middleware.js";
 import { RedisService } from "../service/redis.service.js";
+import { isAllowedFrontendOrigin } from "../common/security/origin.js";
 
 const room = (restaurantCode: string) => `restaurant:${restaurantCode}`;
 const MESSAGE_WINDOW_MS = 10_000;
@@ -30,7 +31,7 @@ const MAX_MESSAGES_PER_WINDOW = 30;
 @UseGuards(WsJwtAuthGuard)
 @WebSocketGateway({
     namespace: "chat",
-    cors: { origin: process.env.FRONTEND_URL ?? "http://localhost:4200", credentials: true },
+    cors: { origin: (origin, callback) => callback(null, isAllowedFrontendOrigin(origin)), credentials: true },
 })
 export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnModuleDestroy {
     @WebSocketServer() server!: Namespace;

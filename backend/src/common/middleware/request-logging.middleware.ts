@@ -22,7 +22,7 @@ export class RequestLoggingMiddleware implements NestMiddleware {
                 event: "http.request",
                 requestId,
                 method: request.method,
-                path: request.originalUrl,
+                path: request.route?.path ?? request.path,
                 status: response.statusCode,
                 durationMs: Date.now() - startedAt,
                 ip: request.ip,

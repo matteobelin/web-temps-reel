@@ -5,7 +5,7 @@ export class MetricsService {
     private readonly requests = new Map<string, number>();
 
     recordRequest(method: string, route: string, status: number) {
-        const key = `${method}|${route}|${status}`;
+        const key = `${method}|${normalizeRoute(route)}|${status}`;
         this.requests.set(key, (this.requests.get(key) ?? 0) + 1);
     }
 
@@ -25,6 +25,12 @@ export class MetricsService {
         ];
         return `${lines.join("\n")}\n`;
     }
+}
+
+function normalizeRoute(route: string) {
+    return route
+        .replace(/\/\d+(?=\/|$)/g, "/:id")
+        .replace(/\/[a-f0-9-]{16,}(?=\/|$)/gi, "/:id");
 }
 
 function escapeLabel(value: string) {

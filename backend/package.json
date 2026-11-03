@@ -6,16 +6,19 @@
   "private": true,
   "license": "UNLICENSED",
   "type": "module",
+  "overrides": {
+    "minimatch": "^11.0.1"
+  },
   "scripts": {
     "build": "nest build",
     "deploy": "nest deploy",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "nest start",
-    "start:dev": "nest start --watch",
-    "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
+    "start": "node --env-file-if-exists=../.env ./node_modules/@nestjs/cli/bin/nest.js start",
+    "start:dev": "node --env-file-if-exists=../.env ./node_modules/@nestjs/cli/bin/nest.js start --watch",
+    "start:debug": "node --env-file-if-exists=../.env ./node_modules/@nestjs/cli/bin/nest.js start --debug --watch",
+    "start:prod": "node --env-file-if-exists=../.env dist/main",
     "db:migrate": "prisma migrate deploy",
-    "db:seed": "tsx prisma/seed.ts",
+    "db:seed": "node --env-file-if-exists=../.env ./node_modules/tsx/dist/cli.mjs prisma/seed.ts",
     "lint": "oxlint src/ test/",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -48,8 +51,7 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
-    "@nestjs/cli": "^12.0.0",
-    "@nestjs/mau": "^0.2.6",
+    "@nestjs/cli": "^12.0.11",
     "@nestjs/schematics": "^12.0.0",
     "@nestjs/testing": "^12.0.1",
     "@types/bcrypt": "^6.0.0",
@@ -58,7 +60,8 @@
     "@types/node": "^24.0.0",
     "@types/passport-jwt": "^4.0.1",
     "@types/supertest": "^7.0.0",
-    "@vitest/coverage-v8": "^4.1.2",
+    "@vitest/coverage-v8": "^4.1.12",
+    "dotenv": "^18.0.9",
     "oxlint": "^1.58.0",
     "prettier": "^3.4.2",
     "prisma": "^7.10.0",
@@ -67,6 +70,6 @@
     "tsx": "^4.23.15",
     "typescript": "^6.0.2",
     "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^4.1.2"
+    "vitest": "^4.1.12"
   }
 }

@@ -5,7 +5,7 @@ const MealFields = z.object({
     name: z.string().trim().min(1).max(150),
     quantity: z.number().int().positive(),
     price: z.number().positive(),
-    comment: z.string().trim().optional(),
+    comment: z.string().trim().max(500).optional(),
 });
 
 export const MealInput = MealFields;
@@ -17,7 +17,7 @@ export const MealOutput = MealFields.extend({
 });
 
 export const OrderSchemaInput = z.object({
-    meals: z.array(MealInput).min(1),
+    meals: z.array(MealInput).min(1).max(50),
     table: z.number().int().positive(),
 });
 

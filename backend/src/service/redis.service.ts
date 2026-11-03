@@ -7,6 +7,7 @@ type LocalEntry = { count: number; resetAt: number };
 export class RedisService implements OnModuleDestroy {
     private readonly client?: Redis;
     private readonly local = new Map<string, LocalEntry>();
+    private localFallbackLogged = false;
 
     constructor() {
         const url = process.env.REDIS_URL;
@@ -29,7 +30,10 @@ export class RedisService implements OnModuleDestroy {
             1,
             `ratelimit:${key}`,
             windowMs,
-        ).then((count: unknown) => Number(count) <= limit).catch(() => this.consumeLocally(key, limit, windowMs));
+        ).then((count: unknown) => Number(count) <= limit).catch((error) => {
+            this.logLocalFallback(error);
+            return this.consumeLocally(key, limit, windowMs);
+        });
     }
 
     async publish(channel: string, message: string): Promise<boolean> {
@@ -37,7 +41,8 @@ export class RedisService implements OnModuleDestroy {
         try {
             const receivers = await this.client.publish(channel, message);
             return receivers > 0;
-        } catch {
+        } catch (error) {
+            this.logLocalFallback(error);
             return false;
         }
     }
@@ -82,5 +87,16 @@ export class RedisService implements OnModuleDestroy {
             }
         }
         return entry.count <= limit;
+    }
+
+    private logLocalFallback(error: unknown) {
+        if (this.localFallbackLogged) return;
+        this.localFallbackLogged = true;
+        console.error(JSON.stringify({
+            level: "error",
+            event: "redis.degraded",
+            message: "Redis unavailable; using process-local fallback",
+            error: error instanceof Error ? error.message : String(error),
+        }));
     }
 }
