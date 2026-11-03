@@ -60,13 +60,15 @@ export function toOrderRow(order: OrderOutputType): OrderRow {
     : statuses.size > 1
       ? 'MIXED'
       : 'CANCELED';
-  const createdAt = order.meals.reduce(
-    (earliest, meal) => {
-      const mealCreatedAt = new Date(meal.createdAt);
-      return mealCreatedAt < earliest ? mealCreatedAt : earliest;
-    },
-    new Date(order.meals[0].createdAt),
-  );
+  const createdAt = order.meals.length === 0
+    ? new Date(0)
+    : order.meals.reduce(
+      (earliest, meal) => {
+        const mealCreatedAt = new Date(meal.createdAt);
+        return mealCreatedAt < earliest ? mealCreatedAt : earliest;
+      },
+      new Date(order.meals[0].createdAt),
+    );
 
   return {
     ...order,
