@@ -41,6 +41,142 @@ L'application expose une API REST versionnée sous `/api/v1`. Les mises à jour
 des commandes sont transmises avec des **Server-Sent Events (SSE)** et le chat
 utilise **WebSocket** avec Socket.IO.
 
+### 2.1. Organisation en couches
+
+Le backend suit une organisation en couches adaptée à un monolithe modulaire :
+
+- **la couche présentation**, composée des contrôleurs REST et du gateway
+  Socket.IO ;
+- **la couche métier**, composée des services qui portent les règles de
+  gestion des commandes, des utilisateurs et du chat ;
+- **la couche d'accès aux données**, centralisée dans Prisma et PostgreSQL ;
+- **la couche infrastructure**, qui regroupe Redis, l'outbox, les métriques,
+  les middlewares et les mécanismes de santé de l'application.
+
+Les contrôleurs reçoivent les requêtes et délèguent le traitement aux services.
+Les services ne dépendent pas directement des composants Angular et peuvent
+donc être testés indépendamment de l'interface.
+
+### 2.2. Modules fonctionnels
+
+Le backend est découpé en modules correspondant aux fonctionnalités
+principales :
+
+- **AuthModule** : inscription, connexion, déconnexion, JWT et stratégie
+  d'authentification ;
+- **OrderModule** : création des commandes, transitions d'état, annulation,
+  SSE et publication des événements ;
+- **ChatModule** : historique des messages et communication WebSocket ;
+- **RedisModule** : service partagé pour le rate limiting et les échanges
+  distribués ;
+- **PrismaModule** : accès global à la base de données.
+
+Ce découpage conserve un déploiement simple sous la forme d'un seul backend,
+tout en isolant les responsabilités. Il est donc possible de faire évoluer
+les modules sans introduire la complexité opérationnelle de plusieurs
+microservices.
+
+### 2.3. Flux d'une commande
+
+Lorsqu'un serveur crée une commande, le flux est le suivant :
+
+1. Angular envoie la commande à l'API REST avec le cookie d'authentification ;
+2. NestJS valide le contenu avec les schémas partagés ;
+3. les guards vérifient l'identité et le rôle de l'utilisateur ;
+4. `OrderService` crée la commande et ses repas dans PostgreSQL ;
+5. un événement est ajouté à la table d'outbox dans la même transaction ;
+6. le worker outbox publie l'événement sur Redis ;
+7. les clients SSE concernés reçoivent la mise à jour ;
+8. l'interface Angular met à jour son tableau sans rechargement de page.
+
+L'utilisation d'une outbox transactionnelle évite de modifier la commande sans
+publier la notification correspondante. La commande et l'événement sont
+persistés ensemble, ce qui permet de rejouer les événements après une
+reconnexion.
+
+### 2.4. Authentification et autorisation
+
+L'authentification repose sur un JWT placé dans un cookie `HttpOnly`. Le
+frontend ne manipule donc pas directement le token dans le stockage local du
+navigateur.
+
+À chaque requête protégée :
+
+1. la stratégie JWT extrait le token depuis le cookie ;
+2. l'utilisateur est recherché en base ;
+3. son restaurant et son rôle sont ajoutés au contexte de la requête ;
+4. les guards vérifient que le rôle peut exécuter l'action demandée.
+
+Les requêtes métier utilisent également le code du restaurant dans leurs
+filtres. Un utilisateur ne doit donc pas pouvoir consulter les commandes ou
+les messages d'un autre restaurant uniquement en modifiant un identifiant.
+
+Les requêtes qui modifient des données sont contrôlées par un middleware
+d'origine afin de limiter les requêtes inter-sites utilisant les cookies
+d'authentification. Helmet est également activé pour ajouter des protections
+HTTP courantes.
+
+### 2.5. Modèle de données
+
+Les principales entités persistées sont :
+
+```text
+Restaurant
+  ├── User
+  ├── Order
+  └── Message
+
+Order
+  ├── Meal
+  └── OutboxEvent
+```
+
+Un restaurant possède plusieurs utilisateurs, commandes et messages. Une
+commande appartient à un serveur et contient plusieurs repas. Chaque repas
+possède son propre état, ce qui permet de représenter les commandes composées
+de plusieurs éléments.
+
+Les migrations Prisma versionnent l'évolution du schéma. Des index sont
+également définis pour les recherches fréquentes par restaurant, commande et
+état du repas.
+
+### 2.6. Communication entre les composants
+
+Nginx sert les fichiers Angular et joue le rôle de reverse proxy :
+
+```text
+Client web
+   │
+   ▼
+Nginx
+   ├── /api/v1/*       ──> API NestJS
+   ├── /api/v1/events  ──> flux SSE NestJS
+   └── /socket.io      ──> gateway Socket.IO NestJS
+                                │
+                                ├── PostgreSQL
+                                └── Redis
+```
+
+En développement, le proxy Angular fournit le même chemin `/api` et redirige
+les requêtes vers le backend local. Cette configuration évite de coder des
+URLs différentes entre le développement et l'exécution derrière Nginx.
+
+### 2.7. Déploiement
+
+Docker Compose orchestre les composants nécessaires :
+
+- PostgreSQL pour les données ;
+- Redis pour les fonctionnalités distribuées ;
+- un conteneur ponctuel pour appliquer les migrations ;
+- un conteneur ponctuel pour charger les données de démonstration ;
+- le backend NestJS ;
+- le frontend Angular servi par Nginx.
+
+Les migrations et le seeding sont séparés du processus principal du backend.
+Le backend ne démarre qu'après la réussite des étapes nécessaires et la
+disponibilité de Redis. Des endpoints de liveness et de readiness permettent
+de vérifier l'état du service.
+
 ## 3. Pourquoi ces technologies ?
 
 ### 3.1 NestJS
