@@ -25,7 +25,7 @@ ModuleRegistry.registerModules([AllCommunityModule]);
 
 @Component({
   selector: 'app-orders-page',
-  imports: [AgGridAngular, FormsModule, OrderActionCellComponent],
+  imports: [AgGridAngular, FormsModule],
   templateUrl: './orders-page.component.html',
   styleUrl: './orders-page.component.scss',
 })
