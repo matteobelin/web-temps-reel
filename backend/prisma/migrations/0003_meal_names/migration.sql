@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "Meal" ADD COLUMN "name" TEXT NOT NULL DEFAULT 'Plat';
+
+-- AlterTable
+ALTER TABLE "Meal" ALTER COLUMN "name" DROP DEFAULT;

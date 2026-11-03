@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Meal"
+  ALTER COLUMN "price" SET DATA TYPE DECIMAL(10,2)
+  USING "price"::DECIMAL(10,2);
