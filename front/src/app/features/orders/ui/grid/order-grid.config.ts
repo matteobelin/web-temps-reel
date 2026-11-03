@@ -74,7 +74,7 @@ export function toOrderRow(order: OrderOutputType): OrderRow {
     ...order,
     status,
     mealCount: order.meals.reduce((count, meal) => count + meal.quantity, 0),
-    total: order.meals.reduce((total, meal) => total + meal.price * meal.quantity, 0),
+    total: order.meals.reduce((total, meal) => total + Number(meal.price) * meal.quantity, 0),
     createdAt,
   };
 }

@@ -4,7 +4,7 @@ import { toOrderRow } from './order-grid.config';
 const meal = (status: 'VALIDATION' | 'READY', quantity: number, price: number, createdAt: string) => ({
   status,
   quantity,
-  price,
+  price: price.toFixed(2),
   name: 'Plat',
   comment: undefined,
   createdAt: new Date(createdAt),

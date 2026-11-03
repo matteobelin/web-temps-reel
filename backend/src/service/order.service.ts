@@ -29,7 +29,7 @@ const CANCELABLE = Object.keys(CANCEL_NOTIFY) as MealStatus[];
 export class OrderService {
     constructor(private readonly prisma: PrismaService, private readonly sseService : SseService){}
 
-    async findAll(role:Role, restaurantCode:string): Promise<OrderOutputType[]> {
+    async findAll(role:Role, restaurantCode:string, before?: number, limit = 100): Promise<OrderOutputType[]> {
         let filterStatus: MealStatus | undefined
         switch (role) {
             case Role.WAITER:
@@ -45,8 +45,11 @@ export class OrderService {
         const orders = await this.prisma.order.findMany({
             where: {
                 restaurant: { code: restaurantCode },
+                ...(before && { id: { lt: before } }),
                 ...(filterStatus && { meals: { some: { status: filterStatus } } }),
             },
+            orderBy: { id: "desc" },
+            take: limit,
             include: {
                 waiter: { select: { matricule: true, name: true } },
                 meals: filterStatus ? { where: { status: filterStatus } } : true,
@@ -56,7 +59,7 @@ export class OrderService {
         return orders.map(order => this.mapOrder(order));
     }
 
-    async create(order:OrderInputType, userMatricule:string ,restaurantCode:string): Promise<OrderOutputType>{
+    async create(order:OrderInputType, userMatricule:string ,restaurantCode:string, idempotencyKey?: string): Promise<OrderOutputType>{
         const user = await this.prisma.user.findFirst({
             where: {
                 matricule: userMatricule,
@@ -69,30 +72,56 @@ export class OrderService {
             throw new NotFoundException("User not found");
         }
 
-        const data = await this.prisma.order.create({
-            data: {
-                tableNumber: order.table,
-                restaurant: { connect: { code: restaurantCode } },
-                waiter: { connect: { id: user.id } },
-                meals: {
-                    create: order.meals.map(({ name, quantity, price, comment }) => ({
-                        status: MealStatus.VALIDATION,
-                        name,
-                        quantity,
-                        price,
-                        comment,
-                    })),
-                },
-            },
-            include: {
-                waiter: { select: { matricule: true, name: true } },
-                meals: true,
-            },
-        });
+        const key = idempotencyKey?.trim();
+        if (key) {
+            if (key.length > 255) throw new ConflictException("Idempotency-Key is too long");
+            const existing = await this.prisma.order.findFirst({
+                where: { idempotencyKey: key, waiterId: user.id, restaurant: { code: restaurantCode } },
+                include: { waiter: { select: { matricule: true, name: true } }, meals: true },
+            });
+            if (existing) return this.mapOrder(existing);
+        }
 
-        const orderCreated:OrderOutputType = this.mapOrder(data);
-        this.sseService.emitMany([Role.COOK, Role.MANAGER], restaurantCode, orderCreated);
-        return orderCreated;
+        try {
+            return await this.prisma.$transaction(async (tx) => {
+                const data = await tx.order.create({
+                    data: {
+                        tableNumber: order.table,
+                        ...(key ? { idempotencyKey: key } : {}),
+                        restaurant: { connect: { code: restaurantCode } },
+                        waiter: { connect: { id: user.id } },
+                        meals: {
+                            create: order.meals.map(({ name, quantity, price, comment }) => ({
+                                status: MealStatus.VALIDATION,
+                                name,
+                                quantity,
+                                price,
+                                comment,
+                            })),
+                        },
+                    },
+                    include: {
+                        waiter: { select: { matricule: true, name: true } },
+                        meals: true,
+                    },
+                });
+                const orderCreated = this.mapOrder(data);
+                await tx.outboxEvent.create({
+                    data: this.outboxData(orderCreated, restaurantCode, [Role.COOK, Role.MANAGER], data.id),
+                });
+                return orderCreated;
+            });
+        } catch (error) {
+            if (key && error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+                const existing = await this.prisma.order.findFirst({
+                    where: { idempotencyKey: key, waiterId: user.id, restaurant: { code: restaurantCode } },
+                    include: { waiter: { select: { matricule: true, name: true } }, meals: true },
+                });
+                if (existing) return this.mapOrder(existing);
+                throw new ConflictException("Idempotency-Key is already in use");
+            }
+            throw error;
+        }
     }
 
     async advanceStatus(orderId:number, role: Role, restaurantCode: string){
@@ -117,18 +146,25 @@ export class OrderService {
             if (count === 0) {
                 throw new ConflictException("No meal to advance in this order");
             }
-            return tx.order.findUniqueOrThrow({
+            const updated = await tx.order.findUniqueOrThrow({
                 where: { id: orderId },
                 include: {
                     waiter: { select: { matricule: true, name: true } },
                     meals: true,
                 },
             });
+            if (tx.outboxEvent?.create) {
+                await tx.outboxEvent.create({
+                    data: this.outboxData(this.mapOrder(updated), restaurantCode, transition.notify, orderId),
+                });
+            } else {
+                this.sseService.emitMany(transition.notify, restaurantCode, this.mapOrder(updated));
+            }
+            return updated;
         });
 
         const orderUpdate:OrderOutputType = this.mapOrder(order);
 
-        this.sseService.emitMany(transition.notify, restaurantCode, orderUpdate);
         return orderUpdate;
     }
 
@@ -159,17 +195,34 @@ export class OrderService {
             if (count === 0) {
                 throw new ConflictException("Order status changed, please retry");
             }
-            return tx.order.findUniqueOrThrow({
+            const updated = await tx.order.findUniqueOrThrow({
                 where: { id: orderId },
                 include: {
                     waiter: { select: { matricule: true, name: true } },
                     meals: true,
                 },
             });
+            if (tx.outboxEvent?.create) {
+                await tx.outboxEvent.create({
+                    data: this.outboxData(this.mapOrder(updated), restaurantCode, notify, orderId),
+                });
+            } else {
+                this.sseService.emitMany(notify, restaurantCode, this.mapOrder(updated));
+            }
+            return updated;
         });
         const orderUpdate:OrderOutputType = this.mapOrder(updated);
-        this.sseService.emitMany(notify, restaurantCode, orderUpdate);
         return orderUpdate;
+    }
+
+    private outboxData(order: OrderOutputType, restaurantCode: string, roles: Role[], orderId: number) {
+        return {
+            type: "order.updated",
+            restaurantCode,
+            roles,
+            payload: JSON.parse(JSON.stringify(order)) as Prisma.InputJsonValue,
+            orderId,
+        };
     }
 
     private mapOrder(order: {
@@ -195,7 +248,7 @@ export class OrderService {
                 createdAt,
                 name,
                 quantity,
-                price: Number(price),
+                price: typeof price === "number" ? price.toFixed(2) : price.toFixed(2),
                 comment: comment ?? undefined,
             })),
         };

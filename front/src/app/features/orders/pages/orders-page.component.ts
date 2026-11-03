@@ -258,6 +258,10 @@ export class OrdersPageComponent {
     return status.replace('_', ' ');
   }
 
+  mealTotal(quantity: number, price: string): string {
+    return (quantity * Number.parseFloat(price)).toFixed(2);
+  }
+
   advanceLabel(): string {
     switch (this.auth.currentUser()?.role) {
       case 'MANAGER':

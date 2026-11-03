@@ -22,6 +22,51 @@ const order = {
 };
 
 describe("OrderService", () => {
+    it("filters and paginates orders for the requested role", async () => {
+        const findMany = vi.fn().mockResolvedValue([]);
+        const prisma = { order: { findMany } } as unknown as PrismaService;
+        const service = new OrderService(prisma, { emitMany: vi.fn() } as unknown as SseService);
+
+        await service.findAll(Role.WAITER, "PARIS", 42, 25);
+
+        expect(findMany).toHaveBeenCalledWith({
+            where: {
+                restaurant: { code: "PARIS" },
+                id: { lt: 42 },
+                meals: { some: { status: MealStatus.READY } },
+            },
+            orderBy: { id: "desc" },
+            take: 25,
+            include: {
+                waiter: { select: { matricule: true, name: true } },
+                meals: { where: { status: MealStatus.READY } },
+            },
+        });
+    });
+
+    it("returns an existing order for a repeated idempotency key", async () => {
+        const prisma = {
+            user: { findFirst: vi.fn().mockResolvedValue({ id: 7 }) },
+            order: { findFirst: vi.fn().mockResolvedValue(order) },
+            $transaction: vi.fn(),
+        } as unknown as PrismaService;
+        const service = new OrderService(prisma, { emitMany: vi.fn() } as unknown as SseService);
+
+        const result = await service.create(
+            { table: 4, meals: [] },
+            "A001",
+            "PARIS",
+            "  request-123  ",
+        );
+
+        expect(result).toMatchObject({ id: 12, table: 4 });
+        expect(prisma.order.findFirst).toHaveBeenCalledWith({
+            where: { idempotencyKey: "request-123", waiterId: 7, restaurant: { code: "PARIS" } },
+            include: { waiter: { select: { matricule: true, name: true } }, meals: true },
+        });
+        expect(prisma.$transaction).not.toHaveBeenCalled();
+    });
+
     it("rejects an unknown role before querying the order", async () => {
         const prisma = { order: { findFirst: vi.fn() } } as unknown as PrismaService;
         const sseService = { emitMany: vi.fn() } as unknown as SseService;
@@ -52,7 +97,7 @@ describe("OrderService", () => {
         await expect(service.advanceStatus(12, Role.COOK, "PARIS")).resolves.toMatchObject({
             id: 12,
             table: 4,
-            meals: [{ status: MealStatus.READY, price: 12.5 }],
+            meals: [{ status: MealStatus.READY, price: "12.50" }],
         });
         expect(tx.meal.updateMany).toHaveBeenCalledWith({
             where: { orderId: 12, status: MealStatus.IN_PROGRESS },

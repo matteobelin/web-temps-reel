@@ -48,10 +48,28 @@ describe('AuthService', () => {
     expect(sessionStorage.getItem('current-user')).toBeNull();
   });
 
+  it('sends login and registration credentials with cookies', () => {
+    const credentials = { matricule: 'A001', password: 'secret', restaurantCode: 'PARIS' };
+    service.login(credentials).subscribe();
+    const login = http.expectOne('/api/v1/auth/login');
+    expect(login.request.method).toBe('POST');
+    expect(login.request.body).toEqual(credentials);
+    expect(login.request.withCredentials).toBe(true);
+    login.flush(user);
+
+    const registration = { ...credentials, name: 'Alice', role: 'WAITER' as const };
+    service.register(registration).subscribe();
+    const register = http.expectOne('/api/v1/auth/register');
+    expect(register.request.method).toBe('POST');
+    expect(register.request.body).toEqual(registration);
+    expect(register.request.withCredentials).toBe(true);
+    register.flush(user);
+  });
+
   it('restores a session from the API and stores the user', () => {
     service.restoreSession().subscribe((result) => expect(result).toEqual(user));
 
-    const request = http.expectOne('/api/auth/me');
+    const request = http.expectOne('/api/v1/auth/me');
     expect(request.request.withCredentials).toBe(true);
     request.flush(user);
 
@@ -62,7 +80,7 @@ describe('AuthService', () => {
     service.setUser(user);
 
     const logout = service.logout();
-    const request = http.expectOne('/api/auth/logout');
+    const request = http.expectOne('/api/v1/auth/logout');
     expect(request.request.method).toBe('POST');
     request.flush({});
     await logout;

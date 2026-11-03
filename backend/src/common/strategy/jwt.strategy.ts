@@ -37,8 +37,8 @@ function cookieExtractor(req: Request): string | null {
 export class JwtStrategy extends PassportStrategy(Strategy) {
     constructor(private readonly prisma: PrismaService) {
         const jwtSecret = process.env.JWT_SECRET;
-        if (!jwtSecret) {
-            throw new Error("JWT_SECRET is not defined in environment variables");
+        if (!jwtSecret || jwtSecret.length < 32) {
+            throw new Error("JWT_SECRET must be at least 32 characters");
         }
 
         super({

@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { describe, expect, it, beforeEach, vi } from 'vitest';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { LoginComponent } from './login.component';
 import { AuthService } from '../../data-access/auth.service';
 import { ToastService } from '../../../../core/ui/toast/toast.service';
@@ -53,5 +53,21 @@ describe('LoginComponent', () => {
     });
     expect(auth.setUser).toHaveBeenCalledWith({ id: 1, matricule: 'A001' });
     expect(router.navigate).toHaveBeenCalledWith(['/dashboard']);
+  });
+
+  it('displays the API error and resets submitting state', async () => {
+    auth.login.mockReturnValue(throwError(() => ({ error: { message: 'Identifiants invalides.' } })));
+    const fixture = TestBed.createComponent(LoginComponent);
+    fixture.componentInstance.form.setValue({
+      matricule: 'A001',
+      password: 'password123',
+      restaurantCode: 'PARIS',
+    });
+
+    await fixture.componentInstance.submit();
+
+    expect(toast.error).toHaveBeenCalledWith('Identifiants invalides.');
+    expect(fixture.componentInstance.isSubmitting).toBe(false);
+    expect(router.navigate).not.toHaveBeenCalled();
   });
 });

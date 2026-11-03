@@ -29,6 +29,11 @@ export type User = $Result.DefaultSelection<Prisma.$UserPayload>
  */
 export type Order = $Result.DefaultSelection<Prisma.$OrderPayload>
 /**
+ * Model OutboxEvent
+ * 
+ */
+export type OutboxEvent = $Result.DefaultSelection<Prisma.$OutboxEventPayload>
+/**
  * Model Meal
  * 
  */
@@ -224,6 +229,16 @@ export class PrismaClient<
   get order(): Prisma.OrderDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.outboxEvent`: Exposes CRUD operations for the **OutboxEvent** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more OutboxEvents
+    * const outboxEvents = await prisma.outboxEvent.findMany()
+    * ```
+    */
+  get outboxEvent(): Prisma.OutboxEventDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.meal`: Exposes CRUD operations for the **Meal** model.
     * Example usage:
     * ```ts
@@ -292,8 +307,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 7.10.0
-   * Query Engine version: 0edf323efd1d98336f3f0a68684b56f689b900d3
+   * Prisma Client JS version: 7.10.1
+   * Query Engine version: d1b3f377ca835d73fd50954a5e22128b9ebdd6b8
    */
   export type PrismaVersion = {
     client: string
@@ -692,6 +707,7 @@ export namespace Prisma {
     Restaurant: 'Restaurant',
     User: 'User',
     Order: 'Order',
+    OutboxEvent: 'OutboxEvent',
     Meal: 'Meal',
     Message: 'Message'
   };
@@ -709,7 +725,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "restaurant" | "user" | "order" | "meal" | "message"
+      modelProps: "restaurant" | "user" | "order" | "outboxEvent" | "meal" | "message"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -932,6 +948,80 @@ export namespace Prisma {
           count: {
             args: Prisma.OrderCountArgs<ExtArgs>
             result: $Utils.Optional<OrderCountAggregateOutputType> | number
+          }
+        }
+      }
+      OutboxEvent: {
+        payload: Prisma.$OutboxEventPayload<ExtArgs>
+        fields: Prisma.OutboxEventFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.OutboxEventFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OutboxEventPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.OutboxEventFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OutboxEventPayload>
+          }
+          findFirst: {
+            args: Prisma.OutboxEventFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OutboxEventPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.OutboxEventFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OutboxEventPayload>
+          }
+          findMany: {
+            args: Prisma.OutboxEventFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OutboxEventPayload>[]
+          }
+          create: {
+            args: Prisma.OutboxEventCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OutboxEventPayload>
+          }
+          createMany: {
+            args: Prisma.OutboxEventCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.OutboxEventCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OutboxEventPayload>[]
+          }
+          delete: {
+            args: Prisma.OutboxEventDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OutboxEventPayload>
+          }
+          update: {
+            args: Prisma.OutboxEventUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OutboxEventPayload>
+          }
+          deleteMany: {
+            args: Prisma.OutboxEventDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.OutboxEventUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.OutboxEventUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OutboxEventPayload>[]
+          }
+          upsert: {
+            args: Prisma.OutboxEventUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$OutboxEventPayload>
+          }
+          aggregate: {
+            args: Prisma.OutboxEventAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateOutboxEvent>
+          }
+          groupBy: {
+            args: Prisma.OutboxEventGroupByArgs<ExtArgs>
+            result: $Utils.Optional<OutboxEventGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.OutboxEventCountArgs<ExtArgs>
+            result: $Utils.Optional<OutboxEventCountAggregateOutputType> | number
           }
         }
       }
@@ -1209,6 +1299,7 @@ export namespace Prisma {
     restaurant?: RestaurantOmit
     user?: UserOmit
     order?: OrderOmit
+    outboxEvent?: OutboxEventOmit
     meal?: MealOmit
     message?: MessageOmit
   }
@@ -1381,10 +1472,12 @@ export namespace Prisma {
 
   export type OrderCountOutputType = {
     meals: number
+    outboxEvents: number
   }
 
   export type OrderCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     meals?: boolean | OrderCountOutputTypeCountMealsArgs
+    outboxEvents?: boolean | OrderCountOutputTypeCountOutboxEventsArgs
   }
 
   // Custom InputTypes
@@ -1403,6 +1496,13 @@ export namespace Prisma {
    */
   export type OrderCountOutputTypeCountMealsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: MealWhereInput
+  }
+
+  /**
+   * OrderCountOutputType without action
+   */
+  export type OrderCountOutputTypeCountOutboxEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OutboxEventWhereInput
   }
 
 
@@ -3750,6 +3850,7 @@ export namespace Prisma {
   export type OrderMinAggregateOutputType = {
     id: number | null
     tableNumber: number | null
+    idempotencyKey: string | null
     restaurantId: number | null
     waiterId: number | null
   }
@@ -3757,6 +3858,7 @@ export namespace Prisma {
   export type OrderMaxAggregateOutputType = {
     id: number | null
     tableNumber: number | null
+    idempotencyKey: string | null
     restaurantId: number | null
     waiterId: number | null
   }
@@ -3764,6 +3866,7 @@ export namespace Prisma {
   export type OrderCountAggregateOutputType = {
     id: number
     tableNumber: number
+    idempotencyKey: number
     restaurantId: number
     waiterId: number
     _all: number
@@ -3787,6 +3890,7 @@ export namespace Prisma {
   export type OrderMinAggregateInputType = {
     id?: true
     tableNumber?: true
+    idempotencyKey?: true
     restaurantId?: true
     waiterId?: true
   }
@@ -3794,6 +3898,7 @@ export namespace Prisma {
   export type OrderMaxAggregateInputType = {
     id?: true
     tableNumber?: true
+    idempotencyKey?: true
     restaurantId?: true
     waiterId?: true
   }
@@ -3801,6 +3906,7 @@ export namespace Prisma {
   export type OrderCountAggregateInputType = {
     id?: true
     tableNumber?: true
+    idempotencyKey?: true
     restaurantId?: true
     waiterId?: true
     _all?: true
@@ -3895,6 +4001,7 @@ export namespace Prisma {
   export type OrderGroupByOutputType = {
     id: number
     tableNumber: number
+    idempotencyKey: string | null
     restaurantId: number
     waiterId: number
     _count: OrderCountAggregateOutputType | null
@@ -3921,17 +4028,20 @@ export namespace Prisma {
   export type OrderSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     tableNumber?: boolean
+    idempotencyKey?: boolean
     restaurantId?: boolean
     waiterId?: boolean
     restaurant?: boolean | RestaurantDefaultArgs<ExtArgs>
     waiter?: boolean | UserDefaultArgs<ExtArgs>
     meals?: boolean | Order$mealsArgs<ExtArgs>
+    outboxEvents?: boolean | Order$outboxEventsArgs<ExtArgs>
     _count?: boolean | OrderCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["order"]>
 
   export type OrderSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     tableNumber?: boolean
+    idempotencyKey?: boolean
     restaurantId?: boolean
     waiterId?: boolean
     restaurant?: boolean | RestaurantDefaultArgs<ExtArgs>
@@ -3941,6 +4051,7 @@ export namespace Prisma {
   export type OrderSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     tableNumber?: boolean
+    idempotencyKey?: boolean
     restaurantId?: boolean
     waiterId?: boolean
     restaurant?: boolean | RestaurantDefaultArgs<ExtArgs>
@@ -3950,15 +4061,17 @@ export namespace Prisma {
   export type OrderSelectScalar = {
     id?: boolean
     tableNumber?: boolean
+    idempotencyKey?: boolean
     restaurantId?: boolean
     waiterId?: boolean
   }
 
-  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "tableNumber" | "restaurantId" | "waiterId", ExtArgs["result"]["order"]>
+  export type OrderOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "tableNumber" | "idempotencyKey" | "restaurantId" | "waiterId", ExtArgs["result"]["order"]>
   export type OrderInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     restaurant?: boolean | RestaurantDefaultArgs<ExtArgs>
     waiter?: boolean | UserDefaultArgs<ExtArgs>
     meals?: boolean | Order$mealsArgs<ExtArgs>
+    outboxEvents?: boolean | Order$outboxEventsArgs<ExtArgs>
     _count?: boolean | OrderCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type OrderIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3976,10 +4089,12 @@ export namespace Prisma {
       restaurant: Prisma.$RestaurantPayload<ExtArgs>
       waiter: Prisma.$UserPayload<ExtArgs>
       meals: Prisma.$MealPayload<ExtArgs>[]
+      outboxEvents: Prisma.$OutboxEventPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
       tableNumber: number
+      idempotencyKey: string | null
       restaurantId: number
       waiterId: number
     }, ExtArgs["result"]["order"]>
@@ -4379,6 +4494,7 @@ export namespace Prisma {
     restaurant<T extends RestaurantDefaultArgs<ExtArgs> = {}>(args?: Subset<T, RestaurantDefaultArgs<ExtArgs>>): Prisma__RestaurantClient<$Result.GetResult<Prisma.$RestaurantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     waiter<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     meals<T extends Order$mealsArgs<ExtArgs> = {}>(args?: Subset<T, Order$mealsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MealPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    outboxEvents<T extends Order$outboxEventsArgs<ExtArgs> = {}>(args?: Subset<T, Order$outboxEventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OutboxEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4410,6 +4526,7 @@ export namespace Prisma {
   interface OrderFieldRefs {
     readonly id: FieldRef<"Order", 'Int'>
     readonly tableNumber: FieldRef<"Order", 'Int'>
+    readonly idempotencyKey: FieldRef<"Order", 'String'>
     readonly restaurantId: FieldRef<"Order", 'Int'>
     readonly waiterId: FieldRef<"Order", 'Int'>
   }
@@ -4837,6 +4954,30 @@ export namespace Prisma {
   }
 
   /**
+   * Order.outboxEvents
+   */
+  export type Order$outboxEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OutboxEvent
+     */
+    select?: OutboxEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OutboxEvent
+     */
+    omit?: OutboxEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OutboxEventInclude<ExtArgs> | null
+    where?: OutboxEventWhereInput
+    orderBy?: OutboxEventOrderByWithRelationInput | OutboxEventOrderByWithRelationInput[]
+    cursor?: OutboxEventWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: OutboxEventScalarFieldEnum | OutboxEventScalarFieldEnum[]
+  }
+
+  /**
    * Order without action
    */
   export type OrderDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4852,6 +4993,1200 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: OrderInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model OutboxEvent
+   */
+
+  export type AggregateOutboxEvent = {
+    _count: OutboxEventCountAggregateOutputType | null
+    _avg: OutboxEventAvgAggregateOutputType | null
+    _sum: OutboxEventSumAggregateOutputType | null
+    _min: OutboxEventMinAggregateOutputType | null
+    _max: OutboxEventMaxAggregateOutputType | null
+  }
+
+  export type OutboxEventAvgAggregateOutputType = {
+    id: number | null
+    orderId: number | null
+    attempts: number | null
+  }
+
+  export type OutboxEventSumAggregateOutputType = {
+    id: number | null
+    orderId: number | null
+    attempts: number | null
+  }
+
+  export type OutboxEventMinAggregateOutputType = {
+    id: number | null
+    type: string | null
+    restaurantCode: string | null
+    orderId: number | null
+    attempts: number | null
+    claimedAt: Date | null
+    lastError: string | null
+    createdAt: Date | null
+    publishedAt: Date | null
+  }
+
+  export type OutboxEventMaxAggregateOutputType = {
+    id: number | null
+    type: string | null
+    restaurantCode: string | null
+    orderId: number | null
+    attempts: number | null
+    claimedAt: Date | null
+    lastError: string | null
+    createdAt: Date | null
+    publishedAt: Date | null
+  }
+
+  export type OutboxEventCountAggregateOutputType = {
+    id: number
+    type: number
+    restaurantCode: number
+    roles: number
+    payload: number
+    orderId: number
+    attempts: number
+    claimedAt: number
+    lastError: number
+    createdAt: number
+    publishedAt: number
+    _all: number
+  }
+
+
+  export type OutboxEventAvgAggregateInputType = {
+    id?: true
+    orderId?: true
+    attempts?: true
+  }
+
+  export type OutboxEventSumAggregateInputType = {
+    id?: true
+    orderId?: true
+    attempts?: true
+  }
+
+  export type OutboxEventMinAggregateInputType = {
+    id?: true
+    type?: true
+    restaurantCode?: true
+    orderId?: true
+    attempts?: true
+    claimedAt?: true
+    lastError?: true
+    createdAt?: true
+    publishedAt?: true
+  }
+
+  export type OutboxEventMaxAggregateInputType = {
+    id?: true
+    type?: true
+    restaurantCode?: true
+    orderId?: true
+    attempts?: true
+    claimedAt?: true
+    lastError?: true
+    createdAt?: true
+    publishedAt?: true
+  }
+
+  export type OutboxEventCountAggregateInputType = {
+    id?: true
+    type?: true
+    restaurantCode?: true
+    roles?: true
+    payload?: true
+    orderId?: true
+    attempts?: true
+    claimedAt?: true
+    lastError?: true
+    createdAt?: true
+    publishedAt?: true
+    _all?: true
+  }
+
+  export type OutboxEventAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which OutboxEvent to aggregate.
+     */
+    where?: OutboxEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OutboxEvents to fetch.
+     */
+    orderBy?: OutboxEventOrderByWithRelationInput | OutboxEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: OutboxEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OutboxEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OutboxEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned OutboxEvents
+    **/
+    _count?: true | OutboxEventCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: OutboxEventAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: OutboxEventSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: OutboxEventMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: OutboxEventMaxAggregateInputType
+  }
+
+  export type GetOutboxEventAggregateType<T extends OutboxEventAggregateArgs> = {
+        [P in keyof T & keyof AggregateOutboxEvent]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateOutboxEvent[P]>
+      : GetScalarType<T[P], AggregateOutboxEvent[P]>
+  }
+
+
+
+
+  export type OutboxEventGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: OutboxEventWhereInput
+    orderBy?: OutboxEventOrderByWithAggregationInput | OutboxEventOrderByWithAggregationInput[]
+    by: OutboxEventScalarFieldEnum[] | OutboxEventScalarFieldEnum
+    having?: OutboxEventScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: OutboxEventCountAggregateInputType | true
+    _avg?: OutboxEventAvgAggregateInputType
+    _sum?: OutboxEventSumAggregateInputType
+    _min?: OutboxEventMinAggregateInputType
+    _max?: OutboxEventMaxAggregateInputType
+  }
+
+  export type OutboxEventGroupByOutputType = {
+    id: number
+    type: string
+    restaurantCode: string
+    roles: JsonValue
+    payload: JsonValue
+    orderId: number | null
+    attempts: number
+    claimedAt: Date | null
+    lastError: string | null
+    createdAt: Date
+    publishedAt: Date | null
+    _count: OutboxEventCountAggregateOutputType | null
+    _avg: OutboxEventAvgAggregateOutputType | null
+    _sum: OutboxEventSumAggregateOutputType | null
+    _min: OutboxEventMinAggregateOutputType | null
+    _max: OutboxEventMaxAggregateOutputType | null
+  }
+
+  type GetOutboxEventGroupByPayload<T extends OutboxEventGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<OutboxEventGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof OutboxEventGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], OutboxEventGroupByOutputType[P]>
+            : GetScalarType<T[P], OutboxEventGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type OutboxEventSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    type?: boolean
+    restaurantCode?: boolean
+    roles?: boolean
+    payload?: boolean
+    orderId?: boolean
+    attempts?: boolean
+    claimedAt?: boolean
+    lastError?: boolean
+    createdAt?: boolean
+    publishedAt?: boolean
+    order?: boolean | OutboxEvent$orderArgs<ExtArgs>
+  }, ExtArgs["result"]["outboxEvent"]>
+
+  export type OutboxEventSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    type?: boolean
+    restaurantCode?: boolean
+    roles?: boolean
+    payload?: boolean
+    orderId?: boolean
+    attempts?: boolean
+    claimedAt?: boolean
+    lastError?: boolean
+    createdAt?: boolean
+    publishedAt?: boolean
+    order?: boolean | OutboxEvent$orderArgs<ExtArgs>
+  }, ExtArgs["result"]["outboxEvent"]>
+
+  export type OutboxEventSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    type?: boolean
+    restaurantCode?: boolean
+    roles?: boolean
+    payload?: boolean
+    orderId?: boolean
+    attempts?: boolean
+    claimedAt?: boolean
+    lastError?: boolean
+    createdAt?: boolean
+    publishedAt?: boolean
+    order?: boolean | OutboxEvent$orderArgs<ExtArgs>
+  }, ExtArgs["result"]["outboxEvent"]>
+
+  export type OutboxEventSelectScalar = {
+    id?: boolean
+    type?: boolean
+    restaurantCode?: boolean
+    roles?: boolean
+    payload?: boolean
+    orderId?: boolean
+    attempts?: boolean
+    claimedAt?: boolean
+    lastError?: boolean
+    createdAt?: boolean
+    publishedAt?: boolean
+  }
+
+  export type OutboxEventOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "type" | "restaurantCode" | "roles" | "payload" | "orderId" | "attempts" | "claimedAt" | "lastError" | "createdAt" | "publishedAt", ExtArgs["result"]["outboxEvent"]>
+  export type OutboxEventInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    order?: boolean | OutboxEvent$orderArgs<ExtArgs>
+  }
+  export type OutboxEventIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    order?: boolean | OutboxEvent$orderArgs<ExtArgs>
+  }
+  export type OutboxEventIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    order?: boolean | OutboxEvent$orderArgs<ExtArgs>
+  }
+
+  export type $OutboxEventPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "OutboxEvent"
+    objects: {
+      order: Prisma.$OrderPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      type: string
+      restaurantCode: string
+      roles: Prisma.JsonValue
+      payload: Prisma.JsonValue
+      orderId: number | null
+      attempts: number
+      claimedAt: Date | null
+      lastError: string | null
+      createdAt: Date
+      publishedAt: Date | null
+    }, ExtArgs["result"]["outboxEvent"]>
+    composites: {}
+  }
+
+  type OutboxEventGetPayload<S extends boolean | null | undefined | OutboxEventDefaultArgs> = $Result.GetResult<Prisma.$OutboxEventPayload, S>
+
+  type OutboxEventCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<OutboxEventFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: OutboxEventCountAggregateInputType | true
+    }
+
+  export interface OutboxEventDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['OutboxEvent'], meta: { name: 'OutboxEvent' } }
+    /**
+     * Find zero or one OutboxEvent that matches the filter.
+     * @param {OutboxEventFindUniqueArgs} args - Arguments to find a OutboxEvent
+     * @example
+     * // Get one OutboxEvent
+     * const outboxEvent = await prisma.outboxEvent.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends OutboxEventFindUniqueArgs>(args: SelectSubset<T, OutboxEventFindUniqueArgs<ExtArgs>>): Prisma__OutboxEventClient<$Result.GetResult<Prisma.$OutboxEventPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one OutboxEvent that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {OutboxEventFindUniqueOrThrowArgs} args - Arguments to find a OutboxEvent
+     * @example
+     * // Get one OutboxEvent
+     * const outboxEvent = await prisma.outboxEvent.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends OutboxEventFindUniqueOrThrowArgs>(args: SelectSubset<T, OutboxEventFindUniqueOrThrowArgs<ExtArgs>>): Prisma__OutboxEventClient<$Result.GetResult<Prisma.$OutboxEventPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first OutboxEvent that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OutboxEventFindFirstArgs} args - Arguments to find a OutboxEvent
+     * @example
+     * // Get one OutboxEvent
+     * const outboxEvent = await prisma.outboxEvent.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends OutboxEventFindFirstArgs>(args?: SelectSubset<T, OutboxEventFindFirstArgs<ExtArgs>>): Prisma__OutboxEventClient<$Result.GetResult<Prisma.$OutboxEventPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first OutboxEvent that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OutboxEventFindFirstOrThrowArgs} args - Arguments to find a OutboxEvent
+     * @example
+     * // Get one OutboxEvent
+     * const outboxEvent = await prisma.outboxEvent.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends OutboxEventFindFirstOrThrowArgs>(args?: SelectSubset<T, OutboxEventFindFirstOrThrowArgs<ExtArgs>>): Prisma__OutboxEventClient<$Result.GetResult<Prisma.$OutboxEventPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more OutboxEvents that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OutboxEventFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all OutboxEvents
+     * const outboxEvents = await prisma.outboxEvent.findMany()
+     * 
+     * // Get first 10 OutboxEvents
+     * const outboxEvents = await prisma.outboxEvent.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const outboxEventWithIdOnly = await prisma.outboxEvent.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends OutboxEventFindManyArgs>(args?: SelectSubset<T, OutboxEventFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OutboxEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a OutboxEvent.
+     * @param {OutboxEventCreateArgs} args - Arguments to create a OutboxEvent.
+     * @example
+     * // Create one OutboxEvent
+     * const OutboxEvent = await prisma.outboxEvent.create({
+     *   data: {
+     *     // ... data to create a OutboxEvent
+     *   }
+     * })
+     * 
+     */
+    create<T extends OutboxEventCreateArgs>(args: SelectSubset<T, OutboxEventCreateArgs<ExtArgs>>): Prisma__OutboxEventClient<$Result.GetResult<Prisma.$OutboxEventPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many OutboxEvents.
+     * @param {OutboxEventCreateManyArgs} args - Arguments to create many OutboxEvents.
+     * @example
+     * // Create many OutboxEvents
+     * const outboxEvent = await prisma.outboxEvent.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends OutboxEventCreateManyArgs>(args?: SelectSubset<T, OutboxEventCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many OutboxEvents and returns the data saved in the database.
+     * @param {OutboxEventCreateManyAndReturnArgs} args - Arguments to create many OutboxEvents.
+     * @example
+     * // Create many OutboxEvents
+     * const outboxEvent = await prisma.outboxEvent.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many OutboxEvents and only return the `id`
+     * const outboxEventWithIdOnly = await prisma.outboxEvent.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends OutboxEventCreateManyAndReturnArgs>(args?: SelectSubset<T, OutboxEventCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OutboxEventPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a OutboxEvent.
+     * @param {OutboxEventDeleteArgs} args - Arguments to delete one OutboxEvent.
+     * @example
+     * // Delete one OutboxEvent
+     * const OutboxEvent = await prisma.outboxEvent.delete({
+     *   where: {
+     *     // ... filter to delete one OutboxEvent
+     *   }
+     * })
+     * 
+     */
+    delete<T extends OutboxEventDeleteArgs>(args: SelectSubset<T, OutboxEventDeleteArgs<ExtArgs>>): Prisma__OutboxEventClient<$Result.GetResult<Prisma.$OutboxEventPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one OutboxEvent.
+     * @param {OutboxEventUpdateArgs} args - Arguments to update one OutboxEvent.
+     * @example
+     * // Update one OutboxEvent
+     * const outboxEvent = await prisma.outboxEvent.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends OutboxEventUpdateArgs>(args: SelectSubset<T, OutboxEventUpdateArgs<ExtArgs>>): Prisma__OutboxEventClient<$Result.GetResult<Prisma.$OutboxEventPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more OutboxEvents.
+     * @param {OutboxEventDeleteManyArgs} args - Arguments to filter OutboxEvents to delete.
+     * @example
+     * // Delete a few OutboxEvents
+     * const { count } = await prisma.outboxEvent.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends OutboxEventDeleteManyArgs>(args?: SelectSubset<T, OutboxEventDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more OutboxEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OutboxEventUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many OutboxEvents
+     * const outboxEvent = await prisma.outboxEvent.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends OutboxEventUpdateManyArgs>(args: SelectSubset<T, OutboxEventUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more OutboxEvents and returns the data updated in the database.
+     * @param {OutboxEventUpdateManyAndReturnArgs} args - Arguments to update many OutboxEvents.
+     * @example
+     * // Update many OutboxEvents
+     * const outboxEvent = await prisma.outboxEvent.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more OutboxEvents and only return the `id`
+     * const outboxEventWithIdOnly = await prisma.outboxEvent.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends OutboxEventUpdateManyAndReturnArgs>(args: SelectSubset<T, OutboxEventUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OutboxEventPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one OutboxEvent.
+     * @param {OutboxEventUpsertArgs} args - Arguments to update or create a OutboxEvent.
+     * @example
+     * // Update or create a OutboxEvent
+     * const outboxEvent = await prisma.outboxEvent.upsert({
+     *   create: {
+     *     // ... data to create a OutboxEvent
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the OutboxEvent we want to update
+     *   }
+     * })
+     */
+    upsert<T extends OutboxEventUpsertArgs>(args: SelectSubset<T, OutboxEventUpsertArgs<ExtArgs>>): Prisma__OutboxEventClient<$Result.GetResult<Prisma.$OutboxEventPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of OutboxEvents.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OutboxEventCountArgs} args - Arguments to filter OutboxEvents to count.
+     * @example
+     * // Count the number of OutboxEvents
+     * const count = await prisma.outboxEvent.count({
+     *   where: {
+     *     // ... the filter for the OutboxEvents we want to count
+     *   }
+     * })
+    **/
+    count<T extends OutboxEventCountArgs>(
+      args?: Subset<T, OutboxEventCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], OutboxEventCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a OutboxEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OutboxEventAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends OutboxEventAggregateArgs>(args: Subset<T, OutboxEventAggregateArgs>): Prisma.PrismaPromise<GetOutboxEventAggregateType<T>>
+
+    /**
+     * Group by OutboxEvent.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {OutboxEventGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends OutboxEventGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: OutboxEventGroupByArgs['orderBy'] }
+        : { orderBy?: OutboxEventGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, OutboxEventGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetOutboxEventGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the OutboxEvent model
+   */
+  readonly fields: OutboxEventFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for OutboxEvent.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__OutboxEventClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    order<T extends OutboxEvent$orderArgs<ExtArgs> = {}>(args?: Subset<T, OutboxEvent$orderArgs<ExtArgs>>): Prisma__OrderClient<$Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the OutboxEvent model
+   */
+  interface OutboxEventFieldRefs {
+    readonly id: FieldRef<"OutboxEvent", 'Int'>
+    readonly type: FieldRef<"OutboxEvent", 'String'>
+    readonly restaurantCode: FieldRef<"OutboxEvent", 'String'>
+    readonly roles: FieldRef<"OutboxEvent", 'Json'>
+    readonly payload: FieldRef<"OutboxEvent", 'Json'>
+    readonly orderId: FieldRef<"OutboxEvent", 'Int'>
+    readonly attempts: FieldRef<"OutboxEvent", 'Int'>
+    readonly claimedAt: FieldRef<"OutboxEvent", 'DateTime'>
+    readonly lastError: FieldRef<"OutboxEvent", 'String'>
+    readonly createdAt: FieldRef<"OutboxEvent", 'DateTime'>
+    readonly publishedAt: FieldRef<"OutboxEvent", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * OutboxEvent findUnique
+   */
+  export type OutboxEventFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OutboxEvent
+     */
+    select?: OutboxEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OutboxEvent
+     */
+    omit?: OutboxEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OutboxEventInclude<ExtArgs> | null
+    /**
+     * Filter, which OutboxEvent to fetch.
+     */
+    where: OutboxEventWhereUniqueInput
+  }
+
+  /**
+   * OutboxEvent findUniqueOrThrow
+   */
+  export type OutboxEventFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OutboxEvent
+     */
+    select?: OutboxEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OutboxEvent
+     */
+    omit?: OutboxEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OutboxEventInclude<ExtArgs> | null
+    /**
+     * Filter, which OutboxEvent to fetch.
+     */
+    where: OutboxEventWhereUniqueInput
+  }
+
+  /**
+   * OutboxEvent findFirst
+   */
+  export type OutboxEventFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OutboxEvent
+     */
+    select?: OutboxEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OutboxEvent
+     */
+    omit?: OutboxEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OutboxEventInclude<ExtArgs> | null
+    /**
+     * Filter, which OutboxEvent to fetch.
+     */
+    where?: OutboxEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OutboxEvents to fetch.
+     */
+    orderBy?: OutboxEventOrderByWithRelationInput | OutboxEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for OutboxEvents.
+     */
+    cursor?: OutboxEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OutboxEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OutboxEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of OutboxEvents.
+     */
+    distinct?: OutboxEventScalarFieldEnum | OutboxEventScalarFieldEnum[]
+  }
+
+  /**
+   * OutboxEvent findFirstOrThrow
+   */
+  export type OutboxEventFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OutboxEvent
+     */
+    select?: OutboxEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OutboxEvent
+     */
+    omit?: OutboxEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OutboxEventInclude<ExtArgs> | null
+    /**
+     * Filter, which OutboxEvent to fetch.
+     */
+    where?: OutboxEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OutboxEvents to fetch.
+     */
+    orderBy?: OutboxEventOrderByWithRelationInput | OutboxEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for OutboxEvents.
+     */
+    cursor?: OutboxEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OutboxEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OutboxEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of OutboxEvents.
+     */
+    distinct?: OutboxEventScalarFieldEnum | OutboxEventScalarFieldEnum[]
+  }
+
+  /**
+   * OutboxEvent findMany
+   */
+  export type OutboxEventFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OutboxEvent
+     */
+    select?: OutboxEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OutboxEvent
+     */
+    omit?: OutboxEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OutboxEventInclude<ExtArgs> | null
+    /**
+     * Filter, which OutboxEvents to fetch.
+     */
+    where?: OutboxEventWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of OutboxEvents to fetch.
+     */
+    orderBy?: OutboxEventOrderByWithRelationInput | OutboxEventOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing OutboxEvents.
+     */
+    cursor?: OutboxEventWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` OutboxEvents from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` OutboxEvents.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of OutboxEvents.
+     */
+    distinct?: OutboxEventScalarFieldEnum | OutboxEventScalarFieldEnum[]
+  }
+
+  /**
+   * OutboxEvent create
+   */
+  export type OutboxEventCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OutboxEvent
+     */
+    select?: OutboxEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OutboxEvent
+     */
+    omit?: OutboxEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OutboxEventInclude<ExtArgs> | null
+    /**
+     * The data needed to create a OutboxEvent.
+     */
+    data: XOR<OutboxEventCreateInput, OutboxEventUncheckedCreateInput>
+  }
+
+  /**
+   * OutboxEvent createMany
+   */
+  export type OutboxEventCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many OutboxEvents.
+     */
+    data: OutboxEventCreateManyInput | OutboxEventCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * OutboxEvent createManyAndReturn
+   */
+  export type OutboxEventCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OutboxEvent
+     */
+    select?: OutboxEventSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the OutboxEvent
+     */
+    omit?: OutboxEventOmit<ExtArgs> | null
+    /**
+     * The data used to create many OutboxEvents.
+     */
+    data: OutboxEventCreateManyInput | OutboxEventCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OutboxEventIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * OutboxEvent update
+   */
+  export type OutboxEventUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OutboxEvent
+     */
+    select?: OutboxEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OutboxEvent
+     */
+    omit?: OutboxEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OutboxEventInclude<ExtArgs> | null
+    /**
+     * The data needed to update a OutboxEvent.
+     */
+    data: XOR<OutboxEventUpdateInput, OutboxEventUncheckedUpdateInput>
+    /**
+     * Choose, which OutboxEvent to update.
+     */
+    where: OutboxEventWhereUniqueInput
+  }
+
+  /**
+   * OutboxEvent updateMany
+   */
+  export type OutboxEventUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update OutboxEvents.
+     */
+    data: XOR<OutboxEventUpdateManyMutationInput, OutboxEventUncheckedUpdateManyInput>
+    /**
+     * Filter which OutboxEvents to update
+     */
+    where?: OutboxEventWhereInput
+    /**
+     * Limit how many OutboxEvents to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * OutboxEvent updateManyAndReturn
+   */
+  export type OutboxEventUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OutboxEvent
+     */
+    select?: OutboxEventSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the OutboxEvent
+     */
+    omit?: OutboxEventOmit<ExtArgs> | null
+    /**
+     * The data used to update OutboxEvents.
+     */
+    data: XOR<OutboxEventUpdateManyMutationInput, OutboxEventUncheckedUpdateManyInput>
+    /**
+     * Filter which OutboxEvents to update
+     */
+    where?: OutboxEventWhereInput
+    /**
+     * Limit how many OutboxEvents to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OutboxEventIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * OutboxEvent upsert
+   */
+  export type OutboxEventUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OutboxEvent
+     */
+    select?: OutboxEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OutboxEvent
+     */
+    omit?: OutboxEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OutboxEventInclude<ExtArgs> | null
+    /**
+     * The filter to search for the OutboxEvent to update in case it exists.
+     */
+    where: OutboxEventWhereUniqueInput
+    /**
+     * In case the OutboxEvent found by the `where` argument doesn't exist, create a new OutboxEvent with this data.
+     */
+    create: XOR<OutboxEventCreateInput, OutboxEventUncheckedCreateInput>
+    /**
+     * In case the OutboxEvent was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<OutboxEventUpdateInput, OutboxEventUncheckedUpdateInput>
+  }
+
+  /**
+   * OutboxEvent delete
+   */
+  export type OutboxEventDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OutboxEvent
+     */
+    select?: OutboxEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OutboxEvent
+     */
+    omit?: OutboxEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OutboxEventInclude<ExtArgs> | null
+    /**
+     * Filter which OutboxEvent to delete.
+     */
+    where: OutboxEventWhereUniqueInput
+  }
+
+  /**
+   * OutboxEvent deleteMany
+   */
+  export type OutboxEventDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which OutboxEvents to delete
+     */
+    where?: OutboxEventWhereInput
+    /**
+     * Limit how many OutboxEvents to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * OutboxEvent.order
+   */
+  export type OutboxEvent$orderArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Order
+     */
+    select?: OrderSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Order
+     */
+    omit?: OrderOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OrderInclude<ExtArgs> | null
+    where?: OrderWhereInput
+  }
+
+  /**
+   * OutboxEvent without action
+   */
+  export type OutboxEventDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the OutboxEvent
+     */
+    select?: OutboxEventSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the OutboxEvent
+     */
+    omit?: OutboxEventOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: OutboxEventInclude<ExtArgs> | null
   }
 
 
@@ -7154,11 +8489,29 @@ export namespace Prisma {
   export const OrderScalarFieldEnum: {
     id: 'id',
     tableNumber: 'tableNumber',
+    idempotencyKey: 'idempotencyKey',
     restaurantId: 'restaurantId',
     waiterId: 'waiterId'
   };
 
   export type OrderScalarFieldEnum = (typeof OrderScalarFieldEnum)[keyof typeof OrderScalarFieldEnum]
+
+
+  export const OutboxEventScalarFieldEnum: {
+    id: 'id',
+    type: 'type',
+    restaurantCode: 'restaurantCode',
+    roles: 'roles',
+    payload: 'payload',
+    orderId: 'orderId',
+    attempts: 'attempts',
+    claimedAt: 'claimedAt',
+    lastError: 'lastError',
+    createdAt: 'createdAt',
+    publishedAt: 'publishedAt'
+  };
+
+  export type OutboxEventScalarFieldEnum = (typeof OutboxEventScalarFieldEnum)[keyof typeof OutboxEventScalarFieldEnum]
 
 
   export const MealScalarFieldEnum: {
@@ -7194,6 +8547,13 @@ export namespace Prisma {
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+  export const JsonNullValueInput: {
+    JsonNull: typeof JsonNull
+  };
+
+  export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
   export const QueryMode: {
     default: 'default',
     insensitive: 'insensitive'
@@ -7208,6 +8568,15 @@ export namespace Prisma {
   };
 
   export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+  export const JsonNullValueFilter: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull,
+    AnyNull: typeof AnyNull
+  };
+
+  export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
   /**
@@ -7258,16 +8627,16 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'MealStatus'
+   * Reference to a field of type 'Json'
    */
-  export type EnumMealStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MealStatus'>
+  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
     
 
 
   /**
-   * Reference to a field of type 'MealStatus[]'
+   * Reference to a field of type 'QueryMode'
    */
-  export type ListEnumMealStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MealStatus[]'>
+  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 
@@ -7282,6 +8651,20 @@ export namespace Prisma {
    * Reference to a field of type 'DateTime[]'
    */
   export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'MealStatus'
+   */
+  export type EnumMealStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MealStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'MealStatus[]'
+   */
+  export type ListEnumMealStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MealStatus[]'>
     
 
 
@@ -7444,25 +8827,30 @@ export namespace Prisma {
     NOT?: OrderWhereInput | OrderWhereInput[]
     id?: IntFilter<"Order"> | number
     tableNumber?: IntFilter<"Order"> | number
+    idempotencyKey?: StringNullableFilter<"Order"> | string | null
     restaurantId?: IntFilter<"Order"> | number
     waiterId?: IntFilter<"Order"> | number
     restaurant?: XOR<RestaurantScalarRelationFilter, RestaurantWhereInput>
     waiter?: XOR<UserScalarRelationFilter, UserWhereInput>
     meals?: MealListRelationFilter
+    outboxEvents?: OutboxEventListRelationFilter
   }
 
   export type OrderOrderByWithRelationInput = {
     id?: SortOrder
     tableNumber?: SortOrder
+    idempotencyKey?: SortOrderInput | SortOrder
     restaurantId?: SortOrder
     waiterId?: SortOrder
     restaurant?: RestaurantOrderByWithRelationInput
     waiter?: UserOrderByWithRelationInput
     meals?: MealOrderByRelationAggregateInput
+    outboxEvents?: OutboxEventOrderByRelationAggregateInput
   }
 
   export type OrderWhereUniqueInput = Prisma.AtLeast<{
     id?: number
+    idempotencyKey?: string
     AND?: OrderWhereInput | OrderWhereInput[]
     OR?: OrderWhereInput[]
     NOT?: OrderWhereInput | OrderWhereInput[]
@@ -7472,11 +8860,13 @@ export namespace Prisma {
     restaurant?: XOR<RestaurantScalarRelationFilter, RestaurantWhereInput>
     waiter?: XOR<UserScalarRelationFilter, UserWhereInput>
     meals?: MealListRelationFilter
-  }, "id">
+    outboxEvents?: OutboxEventListRelationFilter
+  }, "id" | "idempotencyKey">
 
   export type OrderOrderByWithAggregationInput = {
     id?: SortOrder
     tableNumber?: SortOrder
+    idempotencyKey?: SortOrderInput | SortOrder
     restaurantId?: SortOrder
     waiterId?: SortOrder
     _count?: OrderCountOrderByAggregateInput
@@ -7492,8 +8882,96 @@ export namespace Prisma {
     NOT?: OrderScalarWhereWithAggregatesInput | OrderScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"Order"> | number
     tableNumber?: IntWithAggregatesFilter<"Order"> | number
+    idempotencyKey?: StringNullableWithAggregatesFilter<"Order"> | string | null
     restaurantId?: IntWithAggregatesFilter<"Order"> | number
     waiterId?: IntWithAggregatesFilter<"Order"> | number
+  }
+
+  export type OutboxEventWhereInput = {
+    AND?: OutboxEventWhereInput | OutboxEventWhereInput[]
+    OR?: OutboxEventWhereInput[]
+    NOT?: OutboxEventWhereInput | OutboxEventWhereInput[]
+    id?: IntFilter<"OutboxEvent"> | number
+    type?: StringFilter<"OutboxEvent"> | string
+    restaurantCode?: StringFilter<"OutboxEvent"> | string
+    roles?: JsonFilter<"OutboxEvent">
+    payload?: JsonFilter<"OutboxEvent">
+    orderId?: IntNullableFilter<"OutboxEvent"> | number | null
+    attempts?: IntFilter<"OutboxEvent"> | number
+    claimedAt?: DateTimeNullableFilter<"OutboxEvent"> | Date | string | null
+    lastError?: StringNullableFilter<"OutboxEvent"> | string | null
+    createdAt?: DateTimeFilter<"OutboxEvent"> | Date | string
+    publishedAt?: DateTimeNullableFilter<"OutboxEvent"> | Date | string | null
+    order?: XOR<OrderNullableScalarRelationFilter, OrderWhereInput> | null
+  }
+
+  export type OutboxEventOrderByWithRelationInput = {
+    id?: SortOrder
+    type?: SortOrder
+    restaurantCode?: SortOrder
+    roles?: SortOrder
+    payload?: SortOrder
+    orderId?: SortOrderInput | SortOrder
+    attempts?: SortOrder
+    claimedAt?: SortOrderInput | SortOrder
+    lastError?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    publishedAt?: SortOrderInput | SortOrder
+    order?: OrderOrderByWithRelationInput
+  }
+
+  export type OutboxEventWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: OutboxEventWhereInput | OutboxEventWhereInput[]
+    OR?: OutboxEventWhereInput[]
+    NOT?: OutboxEventWhereInput | OutboxEventWhereInput[]
+    type?: StringFilter<"OutboxEvent"> | string
+    restaurantCode?: StringFilter<"OutboxEvent"> | string
+    roles?: JsonFilter<"OutboxEvent">
+    payload?: JsonFilter<"OutboxEvent">
+    orderId?: IntNullableFilter<"OutboxEvent"> | number | null
+    attempts?: IntFilter<"OutboxEvent"> | number
+    claimedAt?: DateTimeNullableFilter<"OutboxEvent"> | Date | string | null
+    lastError?: StringNullableFilter<"OutboxEvent"> | string | null
+    createdAt?: DateTimeFilter<"OutboxEvent"> | Date | string
+    publishedAt?: DateTimeNullableFilter<"OutboxEvent"> | Date | string | null
+    order?: XOR<OrderNullableScalarRelationFilter, OrderWhereInput> | null
+  }, "id">
+
+  export type OutboxEventOrderByWithAggregationInput = {
+    id?: SortOrder
+    type?: SortOrder
+    restaurantCode?: SortOrder
+    roles?: SortOrder
+    payload?: SortOrder
+    orderId?: SortOrderInput | SortOrder
+    attempts?: SortOrder
+    claimedAt?: SortOrderInput | SortOrder
+    lastError?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    publishedAt?: SortOrderInput | SortOrder
+    _count?: OutboxEventCountOrderByAggregateInput
+    _avg?: OutboxEventAvgOrderByAggregateInput
+    _max?: OutboxEventMaxOrderByAggregateInput
+    _min?: OutboxEventMinOrderByAggregateInput
+    _sum?: OutboxEventSumOrderByAggregateInput
+  }
+
+  export type OutboxEventScalarWhereWithAggregatesInput = {
+    AND?: OutboxEventScalarWhereWithAggregatesInput | OutboxEventScalarWhereWithAggregatesInput[]
+    OR?: OutboxEventScalarWhereWithAggregatesInput[]
+    NOT?: OutboxEventScalarWhereWithAggregatesInput | OutboxEventScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"OutboxEvent"> | number
+    type?: StringWithAggregatesFilter<"OutboxEvent"> | string
+    restaurantCode?: StringWithAggregatesFilter<"OutboxEvent"> | string
+    roles?: JsonWithAggregatesFilter<"OutboxEvent">
+    payload?: JsonWithAggregatesFilter<"OutboxEvent">
+    orderId?: IntNullableWithAggregatesFilter<"OutboxEvent"> | number | null
+    attempts?: IntWithAggregatesFilter<"OutboxEvent"> | number
+    claimedAt?: DateTimeNullableWithAggregatesFilter<"OutboxEvent"> | Date | string | null
+    lastError?: StringNullableWithAggregatesFilter<"OutboxEvent"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"OutboxEvent"> | Date | string
+    publishedAt?: DateTimeNullableWithAggregatesFilter<"OutboxEvent"> | Date | string | null
   }
 
   export type MealWhereInput = {
@@ -7748,50 +9226,155 @@ export namespace Prisma {
 
   export type OrderCreateInput = {
     tableNumber: number
+    idempotencyKey?: string | null
     restaurant: RestaurantCreateNestedOneWithoutOrdersInput
     waiter: UserCreateNestedOneWithoutOrdersInput
     meals?: MealCreateNestedManyWithoutOrderInput
+    outboxEvents?: OutboxEventCreateNestedManyWithoutOrderInput
   }
 
   export type OrderUncheckedCreateInput = {
     id?: number
     tableNumber: number
+    idempotencyKey?: string | null
     restaurantId: number
     waiterId: number
     meals?: MealUncheckedCreateNestedManyWithoutOrderInput
+    outboxEvents?: OutboxEventUncheckedCreateNestedManyWithoutOrderInput
   }
 
   export type OrderUpdateInput = {
     tableNumber?: IntFieldUpdateOperationsInput | number
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     restaurant?: RestaurantUpdateOneRequiredWithoutOrdersNestedInput
     waiter?: UserUpdateOneRequiredWithoutOrdersNestedInput
     meals?: MealUpdateManyWithoutOrderNestedInput
+    outboxEvents?: OutboxEventUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     tableNumber?: IntFieldUpdateOperationsInput | number
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     restaurantId?: IntFieldUpdateOperationsInput | number
     waiterId?: IntFieldUpdateOperationsInput | number
     meals?: MealUncheckedUpdateManyWithoutOrderNestedInput
+    outboxEvents?: OutboxEventUncheckedUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderCreateManyInput = {
     id?: number
     tableNumber: number
+    idempotencyKey?: string | null
     restaurantId: number
     waiterId: number
   }
 
   export type OrderUpdateManyMutationInput = {
     tableNumber?: IntFieldUpdateOperationsInput | number
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type OrderUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     tableNumber?: IntFieldUpdateOperationsInput | number
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     restaurantId?: IntFieldUpdateOperationsInput | number
     waiterId?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type OutboxEventCreateInput = {
+    type: string
+    restaurantCode: string
+    roles: JsonNullValueInput | InputJsonValue
+    payload: JsonNullValueInput | InputJsonValue
+    attempts?: number
+    claimedAt?: Date | string | null
+    lastError?: string | null
+    createdAt?: Date | string
+    publishedAt?: Date | string | null
+    order?: OrderCreateNestedOneWithoutOutboxEventsInput
+  }
+
+  export type OutboxEventUncheckedCreateInput = {
+    id?: number
+    type: string
+    restaurantCode: string
+    roles: JsonNullValueInput | InputJsonValue
+    payload: JsonNullValueInput | InputJsonValue
+    orderId?: number | null
+    attempts?: number
+    claimedAt?: Date | string | null
+    lastError?: string | null
+    createdAt?: Date | string
+    publishedAt?: Date | string | null
+  }
+
+  export type OutboxEventUpdateInput = {
+    type?: StringFieldUpdateOperationsInput | string
+    restaurantCode?: StringFieldUpdateOperationsInput | string
+    roles?: JsonNullValueInput | InputJsonValue
+    payload?: JsonNullValueInput | InputJsonValue
+    attempts?: IntFieldUpdateOperationsInput | number
+    claimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    order?: OrderUpdateOneWithoutOutboxEventsNestedInput
+  }
+
+  export type OutboxEventUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    type?: StringFieldUpdateOperationsInput | string
+    restaurantCode?: StringFieldUpdateOperationsInput | string
+    roles?: JsonNullValueInput | InputJsonValue
+    payload?: JsonNullValueInput | InputJsonValue
+    orderId?: NullableIntFieldUpdateOperationsInput | number | null
+    attempts?: IntFieldUpdateOperationsInput | number
+    claimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type OutboxEventCreateManyInput = {
+    id?: number
+    type: string
+    restaurantCode: string
+    roles: JsonNullValueInput | InputJsonValue
+    payload: JsonNullValueInput | InputJsonValue
+    orderId?: number | null
+    attempts?: number
+    claimedAt?: Date | string | null
+    lastError?: string | null
+    createdAt?: Date | string
+    publishedAt?: Date | string | null
+  }
+
+  export type OutboxEventUpdateManyMutationInput = {
+    type?: StringFieldUpdateOperationsInput | string
+    restaurantCode?: StringFieldUpdateOperationsInput | string
+    roles?: JsonNullValueInput | InputJsonValue
+    payload?: JsonNullValueInput | InputJsonValue
+    attempts?: IntFieldUpdateOperationsInput | number
+    claimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type OutboxEventUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    type?: StringFieldUpdateOperationsInput | string
+    restaurantCode?: StringFieldUpdateOperationsInput | string
+    roles?: JsonNullValueInput | InputJsonValue
+    payload?: JsonNullValueInput | InputJsonValue
+    orderId?: NullableIntFieldUpdateOperationsInput | number | null
+    attempts?: IntFieldUpdateOperationsInput | number
+    claimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type MealCreateInput = {
@@ -8098,85 +9681,6 @@ export namespace Prisma {
     _max?: NestedEnumRoleFilter<$PrismaModel>
   }
 
-  export type UserScalarRelationFilter = {
-    is?: UserWhereInput
-    isNot?: UserWhereInput
-  }
-
-  export type MealListRelationFilter = {
-    every?: MealWhereInput
-    some?: MealWhereInput
-    none?: MealWhereInput
-  }
-
-  export type MealOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type OrderCountOrderByAggregateInput = {
-    id?: SortOrder
-    tableNumber?: SortOrder
-    restaurantId?: SortOrder
-    waiterId?: SortOrder
-  }
-
-  export type OrderAvgOrderByAggregateInput = {
-    id?: SortOrder
-    tableNumber?: SortOrder
-    restaurantId?: SortOrder
-    waiterId?: SortOrder
-  }
-
-  export type OrderMaxOrderByAggregateInput = {
-    id?: SortOrder
-    tableNumber?: SortOrder
-    restaurantId?: SortOrder
-    waiterId?: SortOrder
-  }
-
-  export type OrderMinOrderByAggregateInput = {
-    id?: SortOrder
-    tableNumber?: SortOrder
-    restaurantId?: SortOrder
-    waiterId?: SortOrder
-  }
-
-  export type OrderSumOrderByAggregateInput = {
-    id?: SortOrder
-    tableNumber?: SortOrder
-    restaurantId?: SortOrder
-    waiterId?: SortOrder
-  }
-
-  export type EnumMealStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.MealStatus | EnumMealStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.MealStatus[] | ListEnumMealStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.MealStatus[] | ListEnumMealStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumMealStatusFilter<$PrismaModel> | $Enums.MealStatus
-  }
-
-  export type DateTimeFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
-  }
-
-  export type DecimalFilter<$PrismaModel = never> = {
-    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
-  }
-
   export type StringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -8192,14 +9696,294 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
-  export type OrderScalarRelationFilter = {
-    is?: OrderWhereInput
-    isNot?: OrderWhereInput
+  export type UserScalarRelationFilter = {
+    is?: UserWhereInput
+    isNot?: UserWhereInput
+  }
+
+  export type MealListRelationFilter = {
+    every?: MealWhereInput
+    some?: MealWhereInput
+    none?: MealWhereInput
+  }
+
+  export type OutboxEventListRelationFilter = {
+    every?: OutboxEventWhereInput
+    some?: OutboxEventWhereInput
+    none?: OutboxEventWhereInput
   }
 
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
+  }
+
+  export type MealOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type OutboxEventOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type OrderCountOrderByAggregateInput = {
+    id?: SortOrder
+    tableNumber?: SortOrder
+    idempotencyKey?: SortOrder
+    restaurantId?: SortOrder
+    waiterId?: SortOrder
+  }
+
+  export type OrderAvgOrderByAggregateInput = {
+    id?: SortOrder
+    tableNumber?: SortOrder
+    restaurantId?: SortOrder
+    waiterId?: SortOrder
+  }
+
+  export type OrderMaxOrderByAggregateInput = {
+    id?: SortOrder
+    tableNumber?: SortOrder
+    idempotencyKey?: SortOrder
+    restaurantId?: SortOrder
+    waiterId?: SortOrder
+  }
+
+  export type OrderMinOrderByAggregateInput = {
+    id?: SortOrder
+    tableNumber?: SortOrder
+    idempotencyKey?: SortOrder
+    restaurantId?: SortOrder
+    waiterId?: SortOrder
+  }
+
+  export type OrderSumOrderByAggregateInput = {
+    id?: SortOrder
+    tableNumber?: SortOrder
+    restaurantId?: SortOrder
+    waiterId?: SortOrder
+  }
+
+  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+  export type JsonFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type IntNullableFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type DateTimeFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+  }
+
+  export type OrderNullableScalarRelationFilter = {
+    is?: OrderWhereInput | null
+    isNot?: OrderWhereInput | null
+  }
+
+  export type OutboxEventCountOrderByAggregateInput = {
+    id?: SortOrder
+    type?: SortOrder
+    restaurantCode?: SortOrder
+    roles?: SortOrder
+    payload?: SortOrder
+    orderId?: SortOrder
+    attempts?: SortOrder
+    claimedAt?: SortOrder
+    lastError?: SortOrder
+    createdAt?: SortOrder
+    publishedAt?: SortOrder
+  }
+
+  export type OutboxEventAvgOrderByAggregateInput = {
+    id?: SortOrder
+    orderId?: SortOrder
+    attempts?: SortOrder
+  }
+
+  export type OutboxEventMaxOrderByAggregateInput = {
+    id?: SortOrder
+    type?: SortOrder
+    restaurantCode?: SortOrder
+    orderId?: SortOrder
+    attempts?: SortOrder
+    claimedAt?: SortOrder
+    lastError?: SortOrder
+    createdAt?: SortOrder
+    publishedAt?: SortOrder
+  }
+
+  export type OutboxEventMinOrderByAggregateInput = {
+    id?: SortOrder
+    type?: SortOrder
+    restaurantCode?: SortOrder
+    orderId?: SortOrder
+    attempts?: SortOrder
+    claimedAt?: SortOrder
+    lastError?: SortOrder
+    createdAt?: SortOrder
+    publishedAt?: SortOrder
+  }
+
+  export type OutboxEventSumOrderByAggregateInput = {
+    id?: SortOrder
+    orderId?: SortOrder
+    attempts?: SortOrder
+  }
+  export type JsonWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedJsonFilter<$PrismaModel>
+    _max?: NestedJsonFilter<$PrismaModel>
+  }
+
+  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedDateTimeFilter<$PrismaModel>
+    _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type EnumMealStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.MealStatus | EnumMealStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.MealStatus[] | ListEnumMealStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.MealStatus[] | ListEnumMealStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumMealStatusFilter<$PrismaModel> | $Enums.MealStatus
+  }
+
+  export type DecimalFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+  }
+
+  export type OrderScalarRelationFilter = {
+    is?: OrderWhereInput
+    isNot?: OrderWhereInput
   }
 
   export type MealCountOrderByAggregateInput = {
@@ -8259,20 +10043,6 @@ export namespace Prisma {
     _max?: NestedEnumMealStatusFilter<$PrismaModel>
   }
 
-  export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
-  }
-
   export type DecimalWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
     in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
@@ -8287,24 +10057,6 @@ export namespace Prisma {
     _sum?: NestedDecimalFilter<$PrismaModel>
     _min?: NestedDecimalFilter<$PrismaModel>
     _max?: NestedDecimalFilter<$PrismaModel>
-  }
-
-  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
-    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
   export type MessageCountOrderByAggregateInput = {
@@ -8602,11 +10354,29 @@ export namespace Prisma {
     connect?: MealWhereUniqueInput | MealWhereUniqueInput[]
   }
 
+  export type OutboxEventCreateNestedManyWithoutOrderInput = {
+    create?: XOR<OutboxEventCreateWithoutOrderInput, OutboxEventUncheckedCreateWithoutOrderInput> | OutboxEventCreateWithoutOrderInput[] | OutboxEventUncheckedCreateWithoutOrderInput[]
+    connectOrCreate?: OutboxEventCreateOrConnectWithoutOrderInput | OutboxEventCreateOrConnectWithoutOrderInput[]
+    createMany?: OutboxEventCreateManyOrderInputEnvelope
+    connect?: OutboxEventWhereUniqueInput | OutboxEventWhereUniqueInput[]
+  }
+
   export type MealUncheckedCreateNestedManyWithoutOrderInput = {
     create?: XOR<MealCreateWithoutOrderInput, MealUncheckedCreateWithoutOrderInput> | MealCreateWithoutOrderInput[] | MealUncheckedCreateWithoutOrderInput[]
     connectOrCreate?: MealCreateOrConnectWithoutOrderInput | MealCreateOrConnectWithoutOrderInput[]
     createMany?: MealCreateManyOrderInputEnvelope
     connect?: MealWhereUniqueInput | MealWhereUniqueInput[]
+  }
+
+  export type OutboxEventUncheckedCreateNestedManyWithoutOrderInput = {
+    create?: XOR<OutboxEventCreateWithoutOrderInput, OutboxEventUncheckedCreateWithoutOrderInput> | OutboxEventCreateWithoutOrderInput[] | OutboxEventUncheckedCreateWithoutOrderInput[]
+    connectOrCreate?: OutboxEventCreateOrConnectWithoutOrderInput | OutboxEventCreateOrConnectWithoutOrderInput[]
+    createMany?: OutboxEventCreateManyOrderInputEnvelope
+    connect?: OutboxEventWhereUniqueInput | OutboxEventWhereUniqueInput[]
+  }
+
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
   }
 
   export type RestaurantUpdateOneRequiredWithoutOrdersNestedInput = {
@@ -8639,6 +10409,20 @@ export namespace Prisma {
     deleteMany?: MealScalarWhereInput | MealScalarWhereInput[]
   }
 
+  export type OutboxEventUpdateManyWithoutOrderNestedInput = {
+    create?: XOR<OutboxEventCreateWithoutOrderInput, OutboxEventUncheckedCreateWithoutOrderInput> | OutboxEventCreateWithoutOrderInput[] | OutboxEventUncheckedCreateWithoutOrderInput[]
+    connectOrCreate?: OutboxEventCreateOrConnectWithoutOrderInput | OutboxEventCreateOrConnectWithoutOrderInput[]
+    upsert?: OutboxEventUpsertWithWhereUniqueWithoutOrderInput | OutboxEventUpsertWithWhereUniqueWithoutOrderInput[]
+    createMany?: OutboxEventCreateManyOrderInputEnvelope
+    set?: OutboxEventWhereUniqueInput | OutboxEventWhereUniqueInput[]
+    disconnect?: OutboxEventWhereUniqueInput | OutboxEventWhereUniqueInput[]
+    delete?: OutboxEventWhereUniqueInput | OutboxEventWhereUniqueInput[]
+    connect?: OutboxEventWhereUniqueInput | OutboxEventWhereUniqueInput[]
+    update?: OutboxEventUpdateWithWhereUniqueWithoutOrderInput | OutboxEventUpdateWithWhereUniqueWithoutOrderInput[]
+    updateMany?: OutboxEventUpdateManyWithWhereWithoutOrderInput | OutboxEventUpdateManyWithWhereWithoutOrderInput[]
+    deleteMany?: OutboxEventScalarWhereInput | OutboxEventScalarWhereInput[]
+  }
+
   export type MealUncheckedUpdateManyWithoutOrderNestedInput = {
     create?: XOR<MealCreateWithoutOrderInput, MealUncheckedCreateWithoutOrderInput> | MealCreateWithoutOrderInput[] | MealUncheckedCreateWithoutOrderInput[]
     connectOrCreate?: MealCreateOrConnectWithoutOrderInput | MealCreateOrConnectWithoutOrderInput[]
@@ -8653,6 +10437,52 @@ export namespace Prisma {
     deleteMany?: MealScalarWhereInput | MealScalarWhereInput[]
   }
 
+  export type OutboxEventUncheckedUpdateManyWithoutOrderNestedInput = {
+    create?: XOR<OutboxEventCreateWithoutOrderInput, OutboxEventUncheckedCreateWithoutOrderInput> | OutboxEventCreateWithoutOrderInput[] | OutboxEventUncheckedCreateWithoutOrderInput[]
+    connectOrCreate?: OutboxEventCreateOrConnectWithoutOrderInput | OutboxEventCreateOrConnectWithoutOrderInput[]
+    upsert?: OutboxEventUpsertWithWhereUniqueWithoutOrderInput | OutboxEventUpsertWithWhereUniqueWithoutOrderInput[]
+    createMany?: OutboxEventCreateManyOrderInputEnvelope
+    set?: OutboxEventWhereUniqueInput | OutboxEventWhereUniqueInput[]
+    disconnect?: OutboxEventWhereUniqueInput | OutboxEventWhereUniqueInput[]
+    delete?: OutboxEventWhereUniqueInput | OutboxEventWhereUniqueInput[]
+    connect?: OutboxEventWhereUniqueInput | OutboxEventWhereUniqueInput[]
+    update?: OutboxEventUpdateWithWhereUniqueWithoutOrderInput | OutboxEventUpdateWithWhereUniqueWithoutOrderInput[]
+    updateMany?: OutboxEventUpdateManyWithWhereWithoutOrderInput | OutboxEventUpdateManyWithWhereWithoutOrderInput[]
+    deleteMany?: OutboxEventScalarWhereInput | OutboxEventScalarWhereInput[]
+  }
+
+  export type OrderCreateNestedOneWithoutOutboxEventsInput = {
+    create?: XOR<OrderCreateWithoutOutboxEventsInput, OrderUncheckedCreateWithoutOutboxEventsInput>
+    connectOrCreate?: OrderCreateOrConnectWithoutOutboxEventsInput
+    connect?: OrderWhereUniqueInput
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
+  }
+
+  export type DateTimeFieldUpdateOperationsInput = {
+    set?: Date | string
+  }
+
+  export type OrderUpdateOneWithoutOutboxEventsNestedInput = {
+    create?: XOR<OrderCreateWithoutOutboxEventsInput, OrderUncheckedCreateWithoutOutboxEventsInput>
+    connectOrCreate?: OrderCreateOrConnectWithoutOutboxEventsInput
+    upsert?: OrderUpsertWithoutOutboxEventsInput
+    disconnect?: OrderWhereInput | boolean
+    delete?: OrderWhereInput | boolean
+    connect?: OrderWhereUniqueInput
+    update?: XOR<XOR<OrderUpdateToOneWithWhereWithoutOutboxEventsInput, OrderUpdateWithoutOutboxEventsInput>, OrderUncheckedUpdateWithoutOutboxEventsInput>
+  }
+
+  export type NullableIntFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type OrderCreateNestedOneWithoutMealsInput = {
     create?: XOR<OrderCreateWithoutMealsInput, OrderUncheckedCreateWithoutMealsInput>
     connectOrCreate?: OrderCreateOrConnectWithoutMealsInput
@@ -8663,20 +10493,12 @@ export namespace Prisma {
     set?: $Enums.MealStatus
   }
 
-  export type DateTimeFieldUpdateOperationsInput = {
-    set?: Date | string
-  }
-
   export type DecimalFieldUpdateOperationsInput = {
     set?: Decimal | DecimalJsLike | number | string
     increment?: Decimal | DecimalJsLike | number | string
     decrement?: Decimal | DecimalJsLike | number | string
     multiply?: Decimal | DecimalJsLike | number | string
     divide?: Decimal | DecimalJsLike | number | string
-  }
-
-  export type NullableStringFieldUpdateOperationsInput = {
-    set?: string | null
   }
 
   export type OrderUpdateOneRequiredWithoutMealsNestedInput = {
@@ -8801,35 +10623,6 @@ export namespace Prisma {
     _max?: NestedEnumRoleFilter<$PrismaModel>
   }
 
-  export type NestedEnumMealStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.MealStatus | EnumMealStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.MealStatus[] | ListEnumMealStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.MealStatus[] | ListEnumMealStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumMealStatusFilter<$PrismaModel> | $Enums.MealStatus
-  }
-
-  export type NestedDateTimeFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
-  }
-
-  export type NestedDecimalFilter<$PrismaModel = never> = {
-    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
-  }
-
   export type NestedStringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -8842,46 +10635,6 @@ export namespace Prisma {
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
-  }
-
-  export type NestedEnumMealStatusWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.MealStatus | EnumMealStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.MealStatus[] | ListEnumMealStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.MealStatus[] | ListEnumMealStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumMealStatusWithAggregatesFilter<$PrismaModel> | $Enums.MealStatus
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedEnumMealStatusFilter<$PrismaModel>
-    _max?: NestedEnumMealStatusFilter<$PrismaModel>
-  }
-
-  export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
-  }
-
-  export type NestedDecimalWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedDecimalFilter<$PrismaModel>
-    _sum?: NestedDecimalFilter<$PrismaModel>
-    _min?: NestedDecimalFilter<$PrismaModel>
-    _max?: NestedDecimalFilter<$PrismaModel>
   }
 
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -8910,6 +10663,150 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type NestedDateTimeFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeFilter<$PrismaModel> | Date | string
+  }
+  export type NestedJsonFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedIntNullableFilter<$PrismaModel>
+    _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedDateTimeFilter<$PrismaModel>
+    _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumMealStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.MealStatus | EnumMealStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.MealStatus[] | ListEnumMealStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.MealStatus[] | ListEnumMealStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumMealStatusFilter<$PrismaModel> | $Enums.MealStatus
+  }
+
+  export type NestedDecimalFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+  }
+
+  export type NestedEnumMealStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.MealStatus | EnumMealStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.MealStatus[] | ListEnumMealStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.MealStatus[] | ListEnumMealStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumMealStatusWithAggregatesFilter<$PrismaModel> | $Enums.MealStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumMealStatusFilter<$PrismaModel>
+    _max?: NestedEnumMealStatusFilter<$PrismaModel>
+  }
+
+  export type NestedDecimalWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
+    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
+    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedDecimalFilter<$PrismaModel>
+    _sum?: NestedDecimalFilter<$PrismaModel>
+    _min?: NestedDecimalFilter<$PrismaModel>
+    _max?: NestedDecimalFilter<$PrismaModel>
   }
 
   export type UserCreateWithoutRestaurantInput = {
@@ -8943,15 +10840,19 @@ export namespace Prisma {
 
   export type OrderCreateWithoutRestaurantInput = {
     tableNumber: number
+    idempotencyKey?: string | null
     waiter: UserCreateNestedOneWithoutOrdersInput
     meals?: MealCreateNestedManyWithoutOrderInput
+    outboxEvents?: OutboxEventCreateNestedManyWithoutOrderInput
   }
 
   export type OrderUncheckedCreateWithoutRestaurantInput = {
     id?: number
     tableNumber: number
+    idempotencyKey?: string | null
     waiterId: number
     meals?: MealUncheckedCreateNestedManyWithoutOrderInput
+    outboxEvents?: OutboxEventUncheckedCreateNestedManyWithoutOrderInput
   }
 
   export type OrderCreateOrConnectWithoutRestaurantInput = {
@@ -9037,6 +10938,7 @@ export namespace Prisma {
     NOT?: OrderScalarWhereInput | OrderScalarWhereInput[]
     id?: IntFilter<"Order"> | number
     tableNumber?: IntFilter<"Order"> | number
+    idempotencyKey?: StringNullableFilter<"Order"> | string | null
     restaurantId?: IntFilter<"Order"> | number
     waiterId?: IntFilter<"Order"> | number
   }
@@ -9090,15 +10992,19 @@ export namespace Prisma {
 
   export type OrderCreateWithoutWaiterInput = {
     tableNumber: number
+    idempotencyKey?: string | null
     restaurant: RestaurantCreateNestedOneWithoutOrdersInput
     meals?: MealCreateNestedManyWithoutOrderInput
+    outboxEvents?: OutboxEventCreateNestedManyWithoutOrderInput
   }
 
   export type OrderUncheckedCreateWithoutWaiterInput = {
     id?: number
     tableNumber: number
+    idempotencyKey?: string | null
     restaurantId: number
     meals?: MealUncheckedCreateNestedManyWithoutOrderInput
+    outboxEvents?: OutboxEventUncheckedCreateNestedManyWithoutOrderInput
   }
 
   export type OrderCreateOrConnectWithoutWaiterInput = {
@@ -9265,6 +11171,41 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type OutboxEventCreateWithoutOrderInput = {
+    type: string
+    restaurantCode: string
+    roles: JsonNullValueInput | InputJsonValue
+    payload: JsonNullValueInput | InputJsonValue
+    attempts?: number
+    claimedAt?: Date | string | null
+    lastError?: string | null
+    createdAt?: Date | string
+    publishedAt?: Date | string | null
+  }
+
+  export type OutboxEventUncheckedCreateWithoutOrderInput = {
+    id?: number
+    type: string
+    restaurantCode: string
+    roles: JsonNullValueInput | InputJsonValue
+    payload: JsonNullValueInput | InputJsonValue
+    attempts?: number
+    claimedAt?: Date | string | null
+    lastError?: string | null
+    createdAt?: Date | string
+    publishedAt?: Date | string | null
+  }
+
+  export type OutboxEventCreateOrConnectWithoutOrderInput = {
+    where: OutboxEventWhereUniqueInput
+    create: XOR<OutboxEventCreateWithoutOrderInput, OutboxEventUncheckedCreateWithoutOrderInput>
+  }
+
+  export type OutboxEventCreateManyOrderInputEnvelope = {
+    data: OutboxEventCreateManyOrderInput | OutboxEventCreateManyOrderInput[]
+    skipDuplicates?: boolean
+  }
+
   export type RestaurantUpsertWithoutOrdersInput = {
     update: XOR<RestaurantUpdateWithoutOrdersInput, RestaurantUncheckedUpdateWithoutOrdersInput>
     create: XOR<RestaurantCreateWithoutOrdersInput, RestaurantUncheckedCreateWithoutOrdersInput>
@@ -9351,17 +11292,104 @@ export namespace Prisma {
     orderId?: IntFilter<"Meal"> | number
   }
 
-  export type OrderCreateWithoutMealsInput = {
+  export type OutboxEventUpsertWithWhereUniqueWithoutOrderInput = {
+    where: OutboxEventWhereUniqueInput
+    update: XOR<OutboxEventUpdateWithoutOrderInput, OutboxEventUncheckedUpdateWithoutOrderInput>
+    create: XOR<OutboxEventCreateWithoutOrderInput, OutboxEventUncheckedCreateWithoutOrderInput>
+  }
+
+  export type OutboxEventUpdateWithWhereUniqueWithoutOrderInput = {
+    where: OutboxEventWhereUniqueInput
+    data: XOR<OutboxEventUpdateWithoutOrderInput, OutboxEventUncheckedUpdateWithoutOrderInput>
+  }
+
+  export type OutboxEventUpdateManyWithWhereWithoutOrderInput = {
+    where: OutboxEventScalarWhereInput
+    data: XOR<OutboxEventUpdateManyMutationInput, OutboxEventUncheckedUpdateManyWithoutOrderInput>
+  }
+
+  export type OutboxEventScalarWhereInput = {
+    AND?: OutboxEventScalarWhereInput | OutboxEventScalarWhereInput[]
+    OR?: OutboxEventScalarWhereInput[]
+    NOT?: OutboxEventScalarWhereInput | OutboxEventScalarWhereInput[]
+    id?: IntFilter<"OutboxEvent"> | number
+    type?: StringFilter<"OutboxEvent"> | string
+    restaurantCode?: StringFilter<"OutboxEvent"> | string
+    roles?: JsonFilter<"OutboxEvent">
+    payload?: JsonFilter<"OutboxEvent">
+    orderId?: IntNullableFilter<"OutboxEvent"> | number | null
+    attempts?: IntFilter<"OutboxEvent"> | number
+    claimedAt?: DateTimeNullableFilter<"OutboxEvent"> | Date | string | null
+    lastError?: StringNullableFilter<"OutboxEvent"> | string | null
+    createdAt?: DateTimeFilter<"OutboxEvent"> | Date | string
+    publishedAt?: DateTimeNullableFilter<"OutboxEvent"> | Date | string | null
+  }
+
+  export type OrderCreateWithoutOutboxEventsInput = {
     tableNumber: number
+    idempotencyKey?: string | null
     restaurant: RestaurantCreateNestedOneWithoutOrdersInput
     waiter: UserCreateNestedOneWithoutOrdersInput
+    meals?: MealCreateNestedManyWithoutOrderInput
+  }
+
+  export type OrderUncheckedCreateWithoutOutboxEventsInput = {
+    id?: number
+    tableNumber: number
+    idempotencyKey?: string | null
+    restaurantId: number
+    waiterId: number
+    meals?: MealUncheckedCreateNestedManyWithoutOrderInput
+  }
+
+  export type OrderCreateOrConnectWithoutOutboxEventsInput = {
+    where: OrderWhereUniqueInput
+    create: XOR<OrderCreateWithoutOutboxEventsInput, OrderUncheckedCreateWithoutOutboxEventsInput>
+  }
+
+  export type OrderUpsertWithoutOutboxEventsInput = {
+    update: XOR<OrderUpdateWithoutOutboxEventsInput, OrderUncheckedUpdateWithoutOutboxEventsInput>
+    create: XOR<OrderCreateWithoutOutboxEventsInput, OrderUncheckedCreateWithoutOutboxEventsInput>
+    where?: OrderWhereInput
+  }
+
+  export type OrderUpdateToOneWithWhereWithoutOutboxEventsInput = {
+    where?: OrderWhereInput
+    data: XOR<OrderUpdateWithoutOutboxEventsInput, OrderUncheckedUpdateWithoutOutboxEventsInput>
+  }
+
+  export type OrderUpdateWithoutOutboxEventsInput = {
+    tableNumber?: IntFieldUpdateOperationsInput | number
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
+    restaurant?: RestaurantUpdateOneRequiredWithoutOrdersNestedInput
+    waiter?: UserUpdateOneRequiredWithoutOrdersNestedInput
+    meals?: MealUpdateManyWithoutOrderNestedInput
+  }
+
+  export type OrderUncheckedUpdateWithoutOutboxEventsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    tableNumber?: IntFieldUpdateOperationsInput | number
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
+    restaurantId?: IntFieldUpdateOperationsInput | number
+    waiterId?: IntFieldUpdateOperationsInput | number
+    meals?: MealUncheckedUpdateManyWithoutOrderNestedInput
+  }
+
+  export type OrderCreateWithoutMealsInput = {
+    tableNumber: number
+    idempotencyKey?: string | null
+    restaurant: RestaurantCreateNestedOneWithoutOrdersInput
+    waiter: UserCreateNestedOneWithoutOrdersInput
+    outboxEvents?: OutboxEventCreateNestedManyWithoutOrderInput
   }
 
   export type OrderUncheckedCreateWithoutMealsInput = {
     id?: number
     tableNumber: number
+    idempotencyKey?: string | null
     restaurantId: number
     waiterId: number
+    outboxEvents?: OutboxEventUncheckedCreateNestedManyWithoutOrderInput
   }
 
   export type OrderCreateOrConnectWithoutMealsInput = {
@@ -9382,15 +11410,19 @@ export namespace Prisma {
 
   export type OrderUpdateWithoutMealsInput = {
     tableNumber?: IntFieldUpdateOperationsInput | number
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     restaurant?: RestaurantUpdateOneRequiredWithoutOrdersNestedInput
     waiter?: UserUpdateOneRequiredWithoutOrdersNestedInput
+    outboxEvents?: OutboxEventUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateWithoutMealsInput = {
     id?: IntFieldUpdateOperationsInput | number
     tableNumber?: IntFieldUpdateOperationsInput | number
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     restaurantId?: IntFieldUpdateOperationsInput | number
     waiterId?: IntFieldUpdateOperationsInput | number
+    outboxEvents?: OutboxEventUncheckedUpdateManyWithoutOrderNestedInput
   }
 
   export type RestaurantCreateWithoutMessagesInput = {
@@ -9504,6 +11536,7 @@ export namespace Prisma {
   export type OrderCreateManyRestaurantInput = {
     id?: number
     tableNumber: number
+    idempotencyKey?: string | null
     waiterId: number
   }
 
@@ -9543,20 +11576,25 @@ export namespace Prisma {
 
   export type OrderUpdateWithoutRestaurantInput = {
     tableNumber?: IntFieldUpdateOperationsInput | number
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     waiter?: UserUpdateOneRequiredWithoutOrdersNestedInput
     meals?: MealUpdateManyWithoutOrderNestedInput
+    outboxEvents?: OutboxEventUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateWithoutRestaurantInput = {
     id?: IntFieldUpdateOperationsInput | number
     tableNumber?: IntFieldUpdateOperationsInput | number
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     waiterId?: IntFieldUpdateOperationsInput | number
     meals?: MealUncheckedUpdateManyWithoutOrderNestedInput
+    outboxEvents?: OutboxEventUncheckedUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateManyWithoutRestaurantInput = {
     id?: IntFieldUpdateOperationsInput | number
     tableNumber?: IntFieldUpdateOperationsInput | number
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     waiterId?: IntFieldUpdateOperationsInput | number
   }
 
@@ -9583,6 +11621,7 @@ export namespace Prisma {
   export type OrderCreateManyWaiterInput = {
     id?: number
     tableNumber: number
+    idempotencyKey?: string | null
     restaurantId: number
   }
 
@@ -9595,20 +11634,25 @@ export namespace Prisma {
 
   export type OrderUpdateWithoutWaiterInput = {
     tableNumber?: IntFieldUpdateOperationsInput | number
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     restaurant?: RestaurantUpdateOneRequiredWithoutOrdersNestedInput
     meals?: MealUpdateManyWithoutOrderNestedInput
+    outboxEvents?: OutboxEventUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateWithoutWaiterInput = {
     id?: IntFieldUpdateOperationsInput | number
     tableNumber?: IntFieldUpdateOperationsInput | number
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     restaurantId?: IntFieldUpdateOperationsInput | number
     meals?: MealUncheckedUpdateManyWithoutOrderNestedInput
+    outboxEvents?: OutboxEventUncheckedUpdateManyWithoutOrderNestedInput
   }
 
   export type OrderUncheckedUpdateManyWithoutWaiterInput = {
     id?: IntFieldUpdateOperationsInput | number
     tableNumber?: IntFieldUpdateOperationsInput | number
+    idempotencyKey?: NullableStringFieldUpdateOperationsInput | string | null
     restaurantId?: IntFieldUpdateOperationsInput | number
   }
 
@@ -9642,6 +11686,19 @@ export namespace Prisma {
     comment?: string | null
   }
 
+  export type OutboxEventCreateManyOrderInput = {
+    id?: number
+    type: string
+    restaurantCode: string
+    roles: JsonNullValueInput | InputJsonValue
+    payload: JsonNullValueInput | InputJsonValue
+    attempts?: number
+    claimedAt?: Date | string | null
+    lastError?: string | null
+    createdAt?: Date | string
+    publishedAt?: Date | string | null
+  }
+
   export type MealUpdateWithoutOrderInput = {
     status?: EnumMealStatusFieldUpdateOperationsInput | $Enums.MealStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9669,6 +11726,44 @@ export namespace Prisma {
     quantity?: IntFieldUpdateOperationsInput | number
     price?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
     comment?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type OutboxEventUpdateWithoutOrderInput = {
+    type?: StringFieldUpdateOperationsInput | string
+    restaurantCode?: StringFieldUpdateOperationsInput | string
+    roles?: JsonNullValueInput | InputJsonValue
+    payload?: JsonNullValueInput | InputJsonValue
+    attempts?: IntFieldUpdateOperationsInput | number
+    claimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type OutboxEventUncheckedUpdateWithoutOrderInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    type?: StringFieldUpdateOperationsInput | string
+    restaurantCode?: StringFieldUpdateOperationsInput | string
+    roles?: JsonNullValueInput | InputJsonValue
+    payload?: JsonNullValueInput | InputJsonValue
+    attempts?: IntFieldUpdateOperationsInput | number
+    claimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type OutboxEventUncheckedUpdateManyWithoutOrderInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    type?: StringFieldUpdateOperationsInput | string
+    restaurantCode?: StringFieldUpdateOperationsInput | string
+    roles?: JsonNullValueInput | InputJsonValue
+    payload?: JsonNullValueInput | InputJsonValue
+    attempts?: IntFieldUpdateOperationsInput | number
+    claimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastError?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    publishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
 

@@ -1,8 +1,9 @@
-import { defer, finalize, interval, map, merge, Subject } from "rxjs";
+import { concat, defer, finalize, from, interval, map, merge, mergeMap, Subject } from "rxjs";
 import { Role, type OrderOutputType } from "shared";
-import {Injectable} from "@nestjs/common";
+import { Injectable, Optional } from "@nestjs/common";
+import { PrismaService } from "../../prisma/prisma.service.js";
 
-type OrderEvent = { data: OrderOutputType };
+type OrderEvent = { id?: string; data: OrderOutputType };
 
 @Injectable()
 export class SseService {
@@ -15,6 +16,8 @@ export class SseService {
             subscribers: number;
         }
     >();
+
+    constructor(@Optional() private readonly prisma?: PrismaService) {}
 
     private getOrCreate(restaurantCode: string) {
         if (!this.channels.has(restaurantCode)) {
@@ -29,12 +32,21 @@ export class SseService {
         return this.channels.get(restaurantCode)!;
     }
 
-    stream(role: Role, restaurantCode: string) {
+    stream(role: Role, restaurantCode: string, lastEventId?: string) {
         return defer(() => {
             const channels = this.getOrCreate(restaurantCode);
             channels.subscribers++;
             const heartbeat = interval(15000).pipe(map(() => ({ comment: "keep-alive" })));
-            return merge(channels[role].asObservable(), heartbeat).pipe(
+            const live = merge(channels[role].asObservable(), heartbeat);
+            const stream = this.prisma && lastEventId
+                ? concat(
+                    from(this.replay(role, restaurantCode, lastEventId)).pipe(
+                        mergeMap((events) => from(events)),
+                    ),
+                    live,
+                )
+                : live;
+            return stream.pipe(
                 finalize(() => {
                     channels.subscribers--;
                     if (channels.subscribers === 0) {
@@ -48,13 +60,28 @@ export class SseService {
         });
     }
 
-    emit(role: Role, restaurantCode: string, data: OrderOutputType) {
-        this.getOrCreate(restaurantCode)[role].next({ data });
+    emit(role: Role, restaurantCode: string, data: OrderOutputType, id?: string) {
+        this.getOrCreate(restaurantCode)[role].next({ id, data });
     }
 
-    emitMany(roles: Role[], restaurantCode: string, data: OrderOutputType) {
+    emitMany(roles: Role[], restaurantCode: string, data: OrderOutputType, id?: string) {
         roles.forEach((role) => {
-            this.emit(role, restaurantCode, data);
+            this.emit(role, restaurantCode, data, id);
         });
+    }
+
+    private async replay(role: Role, restaurantCode: string, lastEventId?: string): Promise<OrderEvent[]> {
+        if (!this.prisma || !lastEventId || !/^\d+$/.test(lastEventId)) return [];
+        const events = await this.prisma.outboxEvent.findMany({
+            where: { id: { gt: Number(lastEventId) }, restaurantCode },
+            orderBy: { id: "asc" },
+            take: 100,
+        });
+        return events
+            .filter((event) => Array.isArray(event.roles) && event.roles.includes(role))
+            .map((event) => ({
+                id: String(event.id),
+                data: event.payload as unknown as OrderOutputType,
+            }));
     }
 }

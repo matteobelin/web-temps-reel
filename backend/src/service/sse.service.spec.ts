@@ -1,8 +1,31 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+import { firstValueFrom } from "rxjs";
 import { Role, type OrderOutputType } from "shared";
 import { SseService } from "./sse.service.js";
 
 describe("SseService", () => {
+    it("replays only newer events addressed to the requested role", async () => {
+        const prisma = {
+            outboxEvent: {
+                findMany: vi.fn().mockResolvedValue([
+                    { id: 11, roles: [Role.COOK], payload: { id: 11 } },
+                    { id: 12, roles: [Role.WAITER], payload: { id: 12 } },
+                    { id: 13, roles: [Role.COOK, Role.MANAGER], payload: { id: 13 } },
+                ]),
+            },
+        } as never;
+        const service = new SseService(prisma);
+
+        const event = await firstValueFrom(service.stream(Role.COOK, "PARIS", "10"));
+
+        expect(event).toEqual({ id: "11", data: { id: 11 } });
+        expect(prisma.outboxEvent.findMany).toHaveBeenCalledWith({
+            where: { id: { gt: 10 }, restaurantCode: "PARIS" },
+            orderBy: { id: "asc" },
+            take: 100,
+        });
+    });
+
     it("emits events to the subscribed role channel", () => {
         const service = new SseService();
         const payload: OrderOutputType = {

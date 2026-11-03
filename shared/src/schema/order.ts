@@ -11,6 +11,7 @@ const MealFields = z.object({
 export const MealInput = MealFields;
 
 export const MealOutput = MealFields.extend({
+    price: z.string().regex(/^\d+\.\d{2}$/),
     status: z.enum(MealStatus),
     createdAt: z.coerce.date(),
 });

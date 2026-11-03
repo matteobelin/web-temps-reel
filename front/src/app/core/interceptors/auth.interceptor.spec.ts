@@ -30,10 +30,10 @@ describe('authInterceptor', () => {
 
   it('clears the session and redirects on an API 401', () => {
     const client = TestBed.inject(HttpClient);
-    client.get('/api/orders').subscribe({
+    client.get('/api/v1/orders').subscribe({
       error: (error: HttpErrorResponse) => expect(error.status).toBe(401),
     });
-    http.expectOne('/api/orders').flush({}, { status: 401, statusText: 'Unauthorized' });
+    http.expectOne('/api/v1/orders').flush({}, { status: 401, statusText: 'Unauthorized' });
 
     expect(auth.clearSession).toHaveBeenCalled();
     expect(router.navigate).toHaveBeenCalledWith(['/login']);
@@ -41,10 +41,10 @@ describe('authInterceptor', () => {
 
   it('does not redirect for authentication bootstrap requests', () => {
     const client = TestBed.inject(HttpClient);
-    client.get('/api/auth/me').subscribe({
+    client.get('/api/v1/auth/me').subscribe({
       error: (error: HttpErrorResponse) => expect(error.status).toBe(401),
     });
-    http.expectOne('/api/auth/me').flush({}, { status: 401, statusText: 'Unauthorized' });
+    http.expectOne('/api/v1/auth/me').flush({}, { status: 401, statusText: 'Unauthorized' });
 
     expect(auth.clearSession).not.toHaveBeenCalled();
     expect(router.navigate).not.toHaveBeenCalled();

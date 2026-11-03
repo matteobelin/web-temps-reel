@@ -48,8 +48,9 @@ model User {
 }
 
 model Order {
-  id          Int @id @default(autoincrement())
-  tableNumber Int
+  id             Int     @id @default(autoincrement())
+  tableNumber    Int
+  idempotencyKey String? @unique
 
   restaurantId Int
   restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
@@ -57,7 +58,27 @@ model Order {
   waiterId Int
   waiter   User @relation(fields: [waiterId], references: [id])
 
-  meals Meal[]
+  meals        Meal[]
+  outboxEvents OutboxEvent[]
+
+  @@index([restaurantId, id])
+}
+
+model OutboxEvent {
+  id             Int       @id @default(autoincrement())
+  type           String
+  restaurantCode String
+  roles          Json
+  payload        Json
+  orderId        Int?
+  order          Order?    @relation(fields: [orderId], references: [id])
+  attempts       Int       @default(0)
+  claimedAt      DateTime?
+  lastError      String?
+  createdAt      DateTime  @default(now())
+  publishedAt    DateTime?
+
+  @@index([publishedAt, id])
 }
 
 model Meal {
@@ -71,6 +92,8 @@ model Meal {
 
   orderId Int
   order   Order @relation(fields: [orderId], references: [id])
+
+  @@index([orderId, status])
 }
 
 model Message {

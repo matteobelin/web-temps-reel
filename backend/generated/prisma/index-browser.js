@@ -24,12 +24,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 7.10.0
- * Query Engine version: 0edf323efd1d98336f3f0a68684b56f689b900d3
+ * Prisma Client JS version: 7.10.1
+ * Query Engine version: d1b3f377ca835d73fd50954a5e22128b9ebdd6b8
  */
 Prisma.prismaVersion = {
-  client: "7.10.0",
-  engine: "0edf323efd1d98336f3f0a68684b56f689b900d3"
+  client: "7.10.1",
+  engine: "d1b3f377ca835d73fd50954a5e22128b9ebdd6b8"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -138,8 +138,23 @@ exports.Prisma.UserScalarFieldEnum = {
 exports.Prisma.OrderScalarFieldEnum = {
   id: 'id',
   tableNumber: 'tableNumber',
+  idempotencyKey: 'idempotencyKey',
   restaurantId: 'restaurantId',
   waiterId: 'waiterId'
+};
+
+exports.Prisma.OutboxEventScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  restaurantCode: 'restaurantCode',
+  roles: 'roles',
+  payload: 'payload',
+  orderId: 'orderId',
+  attempts: 'attempts',
+  claimedAt: 'claimedAt',
+  lastError: 'lastError',
+  createdAt: 'createdAt',
+  publishedAt: 'publishedAt'
 };
 
 exports.Prisma.MealScalarFieldEnum = {
@@ -166,6 +181,10 @@ exports.Prisma.SortOrder = {
   desc: 'desc'
 };
 
+exports.Prisma.JsonNullValueInput = {
+  JsonNull: Prisma.JsonNull
+};
+
 exports.Prisma.QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
@@ -174,6 +193,12 @@ exports.Prisma.QueryMode = {
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
+};
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
 };
 exports.Role = exports.$Enums.Role = {
   MANAGER: 'MANAGER',
@@ -193,6 +218,7 @@ exports.Prisma.ModelName = {
   Restaurant: 'Restaurant',
   User: 'User',
   Order: 'Order',
+  OutboxEvent: 'OutboxEvent',
   Meal: 'Meal',
   Message: 'Message'
 };

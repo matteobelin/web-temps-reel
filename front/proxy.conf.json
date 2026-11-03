@@ -5,5 +5,12 @@
     "changeOrigin": true,
     "ws": true,
     "logLevel": "warn"
+  },
+  "/socket.io": {
+    "target": "http://localhost:3000",
+    "secure": false,
+    "changeOrigin": true,
+    "ws": true,
+    "logLevel": "warn"
   }
 }

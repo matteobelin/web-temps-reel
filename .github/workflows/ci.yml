@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: |
+            shared/package-lock.json
+            backend/package-lock.json
+      - run: npm ci
+        working-directory: shared
+      - run: npm run build
+        working-directory: shared
+      - run: npm ci
+        working-directory: backend
+      - run: npm audit --audit-level=high
+        working-directory: backend
+      - run: npm run build
+        working-directory: backend
+      - run: npm run lint
+        working-directory: backend
+      - run: npm test -- --run
+        working-directory: backend
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: |
+            shared/package-lock.json
+            front/package-lock.json
+      - run: npm ci
+        working-directory: shared
+      - run: npm run build
+        working-directory: shared
+      - run: npm ci
+        working-directory: front
+      - run: npm audit --audit-level=high
+        working-directory: front
+      - run: npm run build
+        working-directory: front
+      - run: npm test -- --watch=false
+        working-directory: front
+
+  dependency-audit:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        directory: [shared, backend, front]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: ${{ matrix.directory }}/package-lock.json
+      - run: npm ci
+        working-directory: ${{ matrix.directory }}
+      - run: npm audit --audit-level=high
+        working-directory: ${{ matrix.directory }}
